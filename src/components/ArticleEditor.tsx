@@ -6,7 +6,7 @@ import { Textarea } from './ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Switch } from './ui/switch';
-import { ArrowLeft, Save, Upload, X } from 'lucide-react';
+import { ArrowLeft, Save, Upload, X, Calendar } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
 import ImageUploader from './ImageUploader';
 import { useArticleImages } from '../hooks/useArticleImages';
@@ -21,6 +21,7 @@ interface Article {
   featured: boolean;
   image_url?: string;
   slug: string;
+  publication_date: string;
 }
 
 interface ArticleEditorProps {
@@ -59,7 +60,8 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
     published: false,
     featured: false,
     image_url: '',
-    slug: ''
+    slug: '',
+    publication_date: ''
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -71,6 +73,12 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
 
   useEffect(() => {
     if (article) {
+      // Format the publication_date for datetime-local input
+      const publicationDate = new Date(article.publication_date);
+      const formattedDate = new Date(publicationDate.getTime() - publicationDate.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16);
+
       setFormData({
         title: article.title,
         content: article.content,
@@ -79,12 +87,23 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
         published: article.published,
         featured: article.featured,
         image_url: article.image_url || '',
-        slug: article.slug
+        slug: article.slug,
+        publication_date: formattedDate
       });
+    } else {
+      // Set default publication date to current date/time for new articles
+      const now = new Date();
+      const formattedNow = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+        .toISOString()
+        .slice(0, 16);
+      
+      setFormData(prev => ({
+        ...prev,
+        publication_date: formattedNow
+      }));
     }
   }, [article]);
 
-  // Convert existing images to upload format when they load
   useEffect(() => {
     if (existingImages.length > 0) {
       const convertedImages: ImageUploadItem[] = existingImages.map(img => ({
@@ -169,8 +188,12 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
         return;
       }
 
+      // Convert the datetime-local input back to ISO string
+      const publicationDate = new Date(formData.publication_date).toISOString();
+
       const articleData = {
         ...formData,
+        publication_date: publicationDate,
         author_id: user.id,
         updated_at: new Date().toISOString()
       };
@@ -204,9 +227,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
         savedArticleId = data.id;
       }
 
-      // Handle image uploads for new articles
       if (savedArticleId && uploadImages.some(img => img.isNew)) {
-        // Upload new images
         for (const image of uploadImages) {
           if (image.isNew && image.file) {
             try {
@@ -226,7 +247,6 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
                 .from('article-images')
                 .getPublicUrl(fileName);
 
-              // Save to database
               await supabase
                 .from('article_images')
                 .insert({
@@ -377,6 +397,22 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
                       ))}
                     </SelectContent>
                   </Select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <Calendar className="w-4 h-4 inline mr-2" />
+                    Publication Date & Time
+                  </label>
+                  <Input
+                    type="datetime-local"
+                    value={formData.publication_date}
+                    onChange={(e) => setFormData(prev => ({ ...prev, publication_date: e.target.value }))}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Set when this article should be considered published
+                  </p>
                 </div>
 
                 <div>

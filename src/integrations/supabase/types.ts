@@ -54,6 +54,7 @@ export type Database = {
           featured: boolean
           id: string
           image_url: string | null
+          publication_date: string
           published: boolean
           slug: string
           title: string
@@ -68,6 +69,7 @@ export type Database = {
           featured?: boolean
           id?: string
           image_url?: string | null
+          publication_date?: string
           published?: boolean
           slug: string
           title: string
@@ -82,6 +84,7 @@ export type Database = {
           featured?: boolean
           id?: string
           image_url?: string | null
+          publication_date?: string
           published?: boolean
           slug?: string
           title?: string

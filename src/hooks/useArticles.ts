@@ -14,6 +14,7 @@ export interface Article {
   featured: boolean;
   created_at: string;
   updated_at: string;
+  publication_date: string;
   slug: string;
 }
 
@@ -31,7 +32,8 @@ export const useArticles = (category?: string, featured?: boolean) => {
           .from('articles')
           .select('*')
           .eq('published', true)
-          .order('created_at', { ascending: false });
+          .lte('publication_date', new Date().toISOString()) // Only show articles with publication date in the past
+          .order('publication_date', { ascending: false }); // Order by publication date
 
         if (category) {
           query = query.eq('category', category);

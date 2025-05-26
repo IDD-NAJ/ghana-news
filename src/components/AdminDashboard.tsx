@@ -5,7 +5,7 @@ import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Badge } from './ui/badge';
-import { LogOut, Plus, Edit, Trash2, Eye } from 'lucide-react';
+import { LogOut, Plus, Edit, Trash2, Eye, Calendar } from 'lucide-react';
 import ArticleEditor from './ArticleEditor';
 import ArticleViewDialog from './ArticleViewDialog';
 
@@ -21,6 +21,7 @@ interface Article {
   slug: string;
   created_at: string;
   updated_at: string;
+  publication_date: string;
   author_id: string;
 }
 
@@ -114,6 +115,22 @@ const AdminDashboard: React.FC = () => {
     });
   };
 
+  const formatPublicationDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const isScheduled = date > now;
+    
+    const formatted = date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+
+    return { formatted, isScheduled };
+  };
+
   if (showEditor) {
     return <ArticleEditor article={editingArticle} onClose={handleEditorClose} />;
   }
@@ -159,61 +176,79 @@ const AdminDashboard: React.FC = () => {
                       <TableHead>Category</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead>Featured</TableHead>
+                      <TableHead>Publication Date</TableHead>
                       <TableHead>Created</TableHead>
                       <TableHead>Last Updated</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {articles.map((article) => (
-                      <TableRow key={article.id}>
-                        <TableCell className="font-medium max-w-xs truncate">
-                          {article.title}
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline">{article.category}</Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant={article.published ? "default" : "secondary"}>
-                            {article.published ? "Published" : "Draft"}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          {article.featured && <Badge variant="default">Featured</Badge>}
-                        </TableCell>
-                        <TableCell className="text-sm text-gray-600">
-                          {formatDate(article.created_at)}
-                        </TableCell>
-                        <TableCell className="text-sm text-gray-600">
-                          {formatDate(article.updated_at)}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex space-x-2">
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleViewArticle(article)}
-                            >
-                              <Eye className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleEditArticle(article)}
-                            >
-                              <Edit className="w-4 h-4" />
-                            </Button>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              onClick={() => handleDeleteArticle(article.id)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </Button>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
+                    {articles.map((article) => {
+                      const { formatted: pubDate, isScheduled } = formatPublicationDate(article.publication_date);
+                      
+                      return (
+                        <TableRow key={article.id}>
+                          <TableCell className="font-medium max-w-xs truncate">
+                            {article.title}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline">{article.category}</Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={article.published ? "default" : "secondary"}>
+                              {article.published ? "Published" : "Draft"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {article.featured && <Badge variant="default">Featured</Badge>}
+                          </TableCell>
+                          <TableCell className="text-sm">
+                            <div className="flex items-center space-x-1">
+                              <Calendar className="w-3 h-3" />
+                              <span className={isScheduled ? 'text-orange-600 font-medium' : 'text-gray-600'}>
+                                {pubDate}
+                              </span>
+                              {isScheduled && (
+                                <Badge variant="outline" className="text-xs">
+                                  Scheduled
+                                </Badge>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-sm text-gray-600">
+                            {formatDate(article.created_at)}
+                          </TableCell>
+                          <TableCell className="text-sm text-gray-600">
+                            {formatDate(article.updated_at)}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex space-x-2">
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleViewArticle(article)}
+                              >
+                                <Eye className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleEditArticle(article)}
+                              >
+                                <Edit className="w-4 h-4" />
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => handleDeleteArticle(article.id)}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </Button>
+                            </div>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
                   </TableBody>
                 </Table>
               </div>
