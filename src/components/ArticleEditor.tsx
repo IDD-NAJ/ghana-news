@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { Button } from './ui/button';
@@ -7,7 +6,7 @@ import { Textarea } from './ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
 import { Switch } from './ui/switch';
-import { ArrowLeft, Save } from 'lucide-react';
+import { ArrowLeft, Save, Upload, X } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
 import ImageUploader from './ImageUploader';
 import { useArticleImages } from '../hooks/useArticleImages';
@@ -65,6 +64,8 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [uploadImages, setUploadImages] = useState<ImageUploadItem[]>([]);
+  const [featuredImageFile, setFeaturedImageFile] = useState<File | null>(null);
+  const [isUploadingFeatured, setIsUploadingFeatured] = useState(false);
 
   const { images: existingImages, loading: imagesLoading } = useArticleImages(article?.id);
 
@@ -110,6 +111,51 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
       title,
       slug: generateSlug(title)
     }));
+  };
+
+  const handleFeaturedImageUpload = async (file: File) => {
+    setIsUploadingFeatured(true);
+    setError('');
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `featured-${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('article-images')
+        .upload(fileName, file);
+
+      if (uploadError) {
+        setError('Failed to upload featured image');
+        return;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('article-images')
+        .getPublicUrl(fileName);
+
+      setFormData(prev => ({ ...prev, image_url: publicUrl }));
+      setFeaturedImageFile(null);
+    } catch (err) {
+      console.error('Error uploading featured image:', err);
+      setError('Failed to upload featured image');
+    } finally {
+      setIsUploadingFeatured(false);
+    }
+  };
+
+  const handleFeaturedImageSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file && file.type.startsWith('image/')) {
+      setFeaturedImageFile(file);
+      handleFeaturedImageUpload(file);
+    }
+    event.target.value = '';
+  };
+
+  const removeFeaturedImage = () => {
+    setFormData(prev => ({ ...prev, image_url: '' }));
+    setFeaturedImageFile(null);
   };
 
   const handleSave = async () => {
@@ -337,11 +383,59 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Featured Image URL (Legacy)
                   </label>
-                  <Input
-                    value={formData.image_url}
-                    onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                    placeholder="https://example.com/image.jpg"
-                  />
+                  <div className="space-y-3">
+                    <Input
+                      value={formData.image_url}
+                      onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
+                      placeholder="https://example.com/image.jpg"
+                    />
+                    
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-gray-600">Or upload an image:</span>
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleFeaturedImageSelect}
+                          className="hidden"
+                          id="featured-image-upload"
+                          disabled={isUploadingFeatured}
+                        />
+                        <label htmlFor="featured-image-upload">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={isUploadingFeatured}
+                            asChild
+                          >
+                            <span className="cursor-pointer">
+                              <Upload className="w-4 h-4 mr-2" />
+                              {isUploadingFeatured ? 'Uploading...' : 'Upload'}
+                            </span>
+                          </Button>
+                        </label>
+                        {formData.image_url && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={removeFeaturedImage}
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    {formData.image_url && (
+                      <div className="mt-2">
+                        <img
+                          src={formData.image_url}
+                          alt="Featured image preview"
+                          className="w-full h-32 object-cover rounded border"
+                        />
+                      </div>
+                    )}
+                  </div>
                   <p className="text-xs text-gray-500 mt-1">
                     Use the Images section above for better image management
                   </p>
