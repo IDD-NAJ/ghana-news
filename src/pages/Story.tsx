@@ -5,52 +5,60 @@ import { ArrowLeft, Clock, User, Share2, Facebook, Twitter, Linkedin } from 'luc
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
+import { getNewsById } from '../data/newsData';
 
 const Story = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Sample story data - in a real app, this would come from an API or database
-  const storyData = {
-    title: "President Akufo-Addo Announces Major Infrastructure Development Plan for Northern Ghana",
-    content: `
-      <p>In a landmark announcement that promises to reshape the economic landscape of northern Ghana, President Nana Addo Dankwa Akufo-Addo unveiled an ambitious infrastructure development plan worth over GH₵15 billion during a state visit to Tamale yesterday.</p>
-      
-      <p>The comprehensive plan includes the construction of four new regional hospitals, 200 kilometers of new roads connecting major towns, three technical universities, and a modern airport in Wa. The President emphasized that this initiative represents the largest single investment in northern Ghana's infrastructure since independence.</p>
-      
-      <h3>Key Components of the Development Plan</h3>
-      
-      <p><strong>Healthcare Infrastructure:</strong> The new hospitals will be built in Tamale, Bolgatanga, Wa, and Yendi, each equipped with modern medical equipment and specialist departments. These facilities are expected to serve over 2 million people and reduce the burden on southern Ghana's healthcare system.</p>
-      
-      <p><strong>Transportation Network:</strong> The road construction project will focus on connecting agricultural areas to major markets, facilitating the movement of goods and people. Priority routes include the Tamale-Yendi highway and the Wa-Hamile border road.</p>
-      
-      <p><strong>Educational Facilities:</strong> Three new technical universities will be established to provide specialized training in agriculture, renewable energy, and information technology, addressing the region's specific economic needs.</p>
-      
-      <h3>Economic Impact and Job Creation</h3>
-      
-      <p>Government economists project that the infrastructure development will create over 50,000 direct jobs during the construction phase and approximately 100,000 indirect jobs in supporting industries. The plan is expected to boost the region's GDP by 25% over the next five years.</p>
-      
-      <p>Local chiefs and opinion leaders have welcomed the announcement, with the Overlord of Dagbon, Ya-Na Abukari II, describing it as "a new dawn for the northern regions." The traditional leader pledged full support for the project and called for unity among communities to ensure its success.</p>
-      
-      <h3>Implementation Timeline</h3>
-      
-      <p>The project will be implemented in three phases over seven years, with groundbreaking ceremonies scheduled to begin in the second quarter of 2025. The government has secured funding through a combination of domestic resources, international development loans, and private sector partnerships.</p>
-      
-      <p>President Akufo-Addo emphasized that the project represents a commitment to balanced national development and will help bridge the economic gap between northern and southern Ghana. "No region should be left behind in our march toward prosperity," the President stated during his address to regional stakeholders.</p>
-      
-      <p>The announcement comes as Ghana continues to recover from recent economic challenges, with the government positioning infrastructure development as a key driver of economic growth and job creation.</p>
-    `,
+  // Get the actual news item by ID
+  const newsItem = id ? getNewsById(id) : null;
+
+  // Fallback content if news item not found
+  const storyData = newsItem || {
+    title: "Story Not Found",
+    content: "<p>The requested story could not be found.</p>",
     image: "photo-1581091226825-a6a2a5aee158",
-    author: "Kwame Asante",
-    timeAgo: "1 hour ago",
-    category: "Politics",
-    readTime: "5 min read",
+    author: "News Desk",
+    timeAgo: "Unknown",
+    category: "News",
+    readTime: "1 min read",
+    publishDate: "Friday, May 26, 2025"
+  };
+
+  // Generate full content based on the news item
+  const generateFullContent = (item: any) => {
+    if (!newsItem) return storyData.content;
+    
+    return `
+      <p>${item.excerpt}</p>
+      
+      <p>This is the full story content for "${item.title}". In a real news application, this would contain the complete article text pulled from a content management system or database.</p>
+      
+      <h3>Key Details</h3>
+      
+      <p>This story was reported by ${item.author} and published in the ${item.category} section. The article covers important developments that affect the Ghanaian community and provides insight into current events.</p>
+      
+      <p>Our newsroom is committed to providing accurate, timely, and comprehensive coverage of events that matter to Ghana and West Africa. We strive to present balanced reporting that informs our readers and contributes to public discourse.</p>
+      
+      <h3>Related Coverage</h3>
+      
+      <p>This story is part of our ongoing coverage of developments in Ghana. Stay tuned for more updates as this story continues to develop.</p>
+      
+      <p>For more news and analysis, visit our other sections including Politics, Sports, Business, Technology, Education, Culture, Entertainment, and Opinion.</p>
+    `;
+  };
+
+  const fullStoryData = {
+    ...storyData,
+    content: generateFullContent(newsItem),
+    readTime: "3 min read",
     publishDate: "Friday, May 26, 2025"
   };
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
-    const title = storyData.title;
+    const title = fullStoryData.title;
     
     switch (platform) {
       case 'facebook':
@@ -85,34 +93,34 @@ const Story = () => {
             <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
               <div className="relative">
                 <img
-                  src={`https://images.unsplash.com/${storyData.image}?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80`}
-                  alt={storyData.title}
+                  src={`https://images.unsplash.com/${fullStoryData.image}?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80`}
+                  alt={fullStoryData.title}
                   className="w-full h-96 object-cover"
                 />
                 <div className="absolute top-4 left-4">
                   <span className="bg-ghana-red text-white px-3 py-1 text-sm font-semibold rounded-full">
-                    {storyData.category}
+                    {fullStoryData.category}
                   </span>
                 </div>
               </div>
               
               <div className="p-8">
                 <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-6 leading-tight">
-                  {storyData.title}
+                  {fullStoryData.title}
                 </h1>
                 
                 <div className="flex flex-wrap items-center justify-between border-b border-gray-200 pb-6 mb-6">
                   <div className="flex items-center space-x-6 text-gray-600">
                     <div className="flex items-center space-x-2">
                       <User className="w-5 h-5" />
-                      <span className="font-medium">{storyData.author}</span>
+                      <span className="font-medium">{fullStoryData.author}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Clock className="w-5 h-5" />
-                      <span>{storyData.timeAgo}</span>
+                      <span>{fullStoryData.timeAgo}</span>
                     </div>
                     <span className="text-sm bg-gray-100 px-3 py-1 rounded-full">
-                      {storyData.readTime}
+                      {fullStoryData.readTime}
                     </span>
                   </div>
                   
@@ -142,12 +150,12 @@ const Story = () => {
                 {/* Article Content */}
                 <div 
                   className="prose prose-lg max-w-none text-gray-800 leading-relaxed"
-                  dangerouslySetInnerHTML={{ __html: storyData.content }}
+                  dangerouslySetInnerHTML={{ __html: fullStoryData.content }}
                 />
                 
                 <div className="mt-8 pt-6 border-t border-gray-200">
                   <p className="text-sm text-gray-500">
-                    Published on {storyData.publishDate}
+                    Published on {fullStoryData.publishDate}
                   </p>
                 </div>
               </div>

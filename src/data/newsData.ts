@@ -133,3 +133,7 @@ export const getFeaturedNews = (): NewsItem => {
 export const getMainNews = (): NewsItem[] => {
   return allNews.slice(1, 7);
 };
+
+export const getNewsById = (id: string): NewsItem | undefined => {
+  return allNews.find(news => news.id === id);
+};
