@@ -1,33 +1,82 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, User, Share2, Facebook, Twitter, Linkedin } from 'lucide-react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
-import { getNewsById } from '../data/newsData';
+import { supabase } from '../integrations/supabase/client';
+import { useArticleImages } from '../hooks/useArticleImages';
+
+interface Article {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string;
+  category: string;
+  published: boolean;
+  featured: boolean;
+  image_url?: string;
+  slug: string;
+  created_at: string;
+  updated_at: string;
+  author_id: string;
+}
 
 const Story = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [article, setArticle] = useState<Article | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Get the actual news item by ID
-  const newsItem = id ? getNewsById(id) : null;
+  const { images: articleImages, loading: imagesLoading } = useArticleImages(article?.id);
 
-  // Fallback content if news item not found
-  const storyData = newsItem || {
-    title: "Story Not Found",
-    excerpt: "The requested story could not be found.",
-    content: "<p>The requested story could not be found.</p>",
-    image: "photo-1581091226825-a6a2a5aee158",
-    author: "News Desk",
-    timeAgo: "Unknown",
-    category: "News"
+  useEffect(() => {
+    if (id) {
+      fetchArticle(id);
+    }
+  }, [id]);
+
+  const fetchArticle = async (articleId: string) => {
+    try {
+      console.log('Fetching article with ID:', articleId);
+      
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('id', articleId)
+        .eq('published', true)
+        .single();
+
+      if (error) {
+        console.error('Error fetching article:', error);
+        setError('Article not found');
+        return;
+      }
+
+      console.log('Fetched article:', data);
+      setArticle(data);
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      setError('Failed to load article');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
   };
 
   const handleShare = (platform: string) => {
     const url = window.location.href;
-    const title = storyData.title;
+    const title = article?.title || '';
     
     switch (platform) {
       case 'facebook':
@@ -41,6 +90,43 @@ const Story = () => {
         break;
     }
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2">Loading article...</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error || !article) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg text-red-600 mb-2">Article Not Found</div>
+            <div className="text-sm text-gray-600 mb-4">
+              {error || 'The requested article could not be found.'}
+            </div>
+            <button
+              onClick={() => navigate('/')}
+              className="bg-ghana-red text-white px-4 py-2 rounded hover:bg-red-700"
+            >
+              Back to Home
+            </button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -61,32 +147,35 @@ const Story = () => {
             {/* Article Header */}
             <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
               <div className="relative">
-                <img
-                  src={`https://images.unsplash.com/${storyData.image}?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2000&q=80`}
-                  alt={storyData.title}
-                  className="w-full h-96 object-cover"
-                />
+                {/* Featured Image */}
+                {article.image_url && (
+                  <img
+                    src={article.image_url}
+                    alt={article.title}
+                    className="w-full h-96 object-cover"
+                  />
+                )}
                 <div className="absolute top-4 left-4">
                   <span className="bg-ghana-red text-white px-3 py-1 text-sm font-semibold rounded-full">
-                    {storyData.category}
+                    {article.category}
                   </span>
                 </div>
               </div>
               
               <div className="p-8">
                 <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-6 leading-tight">
-                  {storyData.title}
+                  {article.title}
                 </h1>
                 
                 <div className="flex flex-wrap items-center justify-between border-b border-gray-200 pb-6 mb-6">
                   <div className="flex items-center space-x-6 text-gray-600">
                     <div className="flex items-center space-x-2">
                       <User className="w-5 h-5" />
-                      <span className="font-medium">{storyData.author}</span>
+                      <span className="font-medium">News Desk</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Clock className="w-5 h-5" />
-                      <span>{storyData.timeAgo}</span>
+                      <span>{formatDate(article.created_at)}</span>
                     </div>
                     <span className="text-sm bg-gray-100 px-3 py-1 rounded-full">
                       3 min read
@@ -118,17 +207,40 @@ const Story = () => {
                 
                 {/* Article Content */}
                 <div className="prose prose-lg max-w-none text-gray-800 leading-relaxed">
-                  <p className="text-xl text-gray-700 mb-6 font-medium">
-                    {storyData.excerpt}
-                  </p>
+                  {article.excerpt && (
+                    <p className="text-xl text-gray-700 mb-6 font-medium">
+                      {article.excerpt}
+                    </p>
+                  )}
                   <div className="whitespace-pre-line">
-                    {storyData.content}
+                    {article.content}
                   </div>
                 </div>
+
+                {/* Article Images */}
+                {articleImages.length > 0 && (
+                  <div className="mt-8 space-y-6">
+                    <h3 className="text-xl font-semibold text-gray-900">Images</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {articleImages.map((image, index) => (
+                        <div key={image.id} className="space-y-2">
+                          <img
+                            src={image.image_url}
+                            alt={image.caption || `Article image ${index + 1}`}
+                            className="w-full h-64 object-cover rounded-lg"
+                          />
+                          {image.caption && (
+                            <p className="text-sm text-gray-600 italic">{image.caption}</p>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
                 
                 <div className="mt-8 pt-6 border-t border-gray-200">
                   <p className="text-sm text-gray-500">
-                    Published on Friday, May 26, 2025
+                    Published on {formatDate(article.created_at)}
                   </p>
                 </div>
               </div>
