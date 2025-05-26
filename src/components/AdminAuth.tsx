@@ -17,6 +17,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,21 +61,51 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
     }
   };
 
+  const handleSignUp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    setError('');
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        setError(error.message);
+        return;
+      }
+
+      if (data.user) {
+        setError('Account created successfully! You can now contact the system administrator to grant admin privileges, or switch to login if you already have admin access.');
+        setIsSignUp(false);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred during signup');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-gray-900">
-            Admin Login
+            {isSignUp ? 'Admin Sign Up' : 'Admin Login'}
           </CardTitle>
           <p className="text-gray-600">
-            Sign in to access the admin dashboard
+            {isSignUp 
+              ? 'Create an account to request admin access' 
+              : 'Sign in to access the admin dashboard'
+            }
           </p>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+          <form onSubmit={isSignUp ? handleSignUp : handleLogin} className="space-y-4">
             {error && (
-              <Alert variant="destructive">
+              <Alert variant={error.includes('successfully') ? "default" : "destructive"}>
                 <AlertDescription>{error}</AlertDescription>
               </Alert>
             )}
@@ -121,9 +152,28 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
               className="w-full bg-ghana-red hover:bg-red-700"
               disabled={isLoading}
             >
-              {isLoading ? 'Signing in...' : 'Sign In'}
+              {isLoading 
+                ? (isSignUp ? 'Creating Account...' : 'Signing in...') 
+                : (isSignUp ? 'Sign Up' : 'Sign In')
+              }
             </Button>
           </form>
+          
+          <div className="mt-4 text-center">
+            <button
+              type="button"
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setError('');
+              }}
+              className="text-sm text-ghana-red hover:text-red-700 underline"
+            >
+              {isSignUp 
+                ? 'Already have an account? Sign in' 
+                : 'Need an account? Sign up'
+              }
+            </button>
+          </div>
         </CardContent>
       </Card>
     </div>
