@@ -1,4 +1,3 @@
-
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -28,7 +27,7 @@ const About = () => {
             <section>
               <h2 className="text-2xl font-semibold text-slate-700 mb-4">Our Story</h2>
               <p className="text-gray-700 leading-relaxed">
-                Founded in 2025, +233BLOG-NEWS emerged from a vision to create a modern, accessible news 
+                Founded in 2017, +233BLOG-NEWS emerged from a vision to create a modern, accessible news 
                 platform that bridges the gap between traditional journalism and digital innovation. Our team 
                 of experienced journalists, editors, and digital specialists work around the clock to bring 
                 you the most important stories from across Ghana and beyond.
