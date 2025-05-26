@@ -3,10 +3,11 @@ import React from 'react';
 import { TrendingUp, Tag } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useTrendingArticles } from '../hooks/useTrendingArticles';
+import { useViewTracking } from '../hooks/useViewTracking';
 import NewsletterSubscription from './NewsletterSubscription';
 
-const Sidebar = () => {
-  const { trendingArticles, loading } = useTrendingArticles(4);
+const TrendingArticleItem = ({ article, index }: { article: any, index: number }) => {
+  const { viewCount } = useViewTracking(article.id);
 
   const formatTimeAgo = (dateString: string) => {
     const date = new Date(dateString);
@@ -27,11 +28,37 @@ const Sidebar = () => {
     }
   };
 
-  const generateViewCount = (index: number) => {
-    // Generate realistic view counts based on position
-    const baseCounts = [12500, 8200, 6100, 5800];
-    return baseCounts[index] || Math.floor(Math.random() * 5000) + 3000;
+  const formatViewCount = (count: number) => {
+    if (count >= 1000000) {
+      return `${(count / 1000000).toFixed(1)}M`;
+    } else if (count >= 1000) {
+      return `${(count / 1000).toFixed(1)}K`;
+    }
+    return count.toString();
   };
+
+  return (
+    <div className="group">
+      <Link 
+        to={`/story/${article.id}/${article.slug}`}
+        className="block cursor-pointer"
+      >
+        <h4 className="font-medium text-gray-900 group-hover:text-ghana-red transition-colors mb-2 line-clamp-2">
+          {article.title}
+        </h4>
+        <div className="flex items-center text-sm text-gray-500 space-x-3">
+          <span>{formatViewCount(viewCount)} views</span>
+          <span>•</span>
+          <span>{formatTimeAgo(article.publication_date)}</span>
+        </div>
+      </Link>
+      {index < 3 && <hr className="mt-4" />}
+    </div>
+  );
+};
+
+const Sidebar = () => {
+  const { trendingArticles, loading } = useTrendingArticles(4);
 
   const categories = [
     { name: "Politics", count: 45, color: "bg-ghana-red" },
@@ -64,22 +91,7 @@ const Sidebar = () => {
         ) : trendingArticles.length > 0 ? (
           <div className="space-y-4">
             {trendingArticles.map((article, index) => (
-              <div key={article.id} className="group">
-                <Link 
-                  to={`/story/${article.id}/${article.slug}`}
-                  className="block cursor-pointer"
-                >
-                  <h4 className="font-medium text-gray-900 group-hover:text-ghana-red transition-colors mb-2 line-clamp-2">
-                    {article.title}
-                  </h4>
-                  <div className="flex items-center text-sm text-gray-500 space-x-3">
-                    <span>{(generateViewCount(index) / 1000).toFixed(1)}K views</span>
-                    <span>•</span>
-                    <span>{formatTimeAgo(article.publication_date)}</span>
-                  </div>
-                </Link>
-                {index < trendingArticles.length - 1 && <hr className="mt-4" />}
-              </div>
+              <TrendingArticleItem key={article.id} article={article} index={index} />
             ))}
           </div>
         ) : (
