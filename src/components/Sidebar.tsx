@@ -1,30 +1,36 @@
 
 import React from 'react';
 import { TrendingUp, Calendar, Tag } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { useTrendingArticles } from '../hooks/useTrendingArticles';
 
 const Sidebar = () => {
-  const trendingNews = [
-    {
-      title: "Black Stars prepare for AFCON qualifiers",
-      views: "12.5K",
-      time: "2 hours ago"
-    },
-    {
-      title: "Ghana's economy shows positive growth",
-      views: "8.2K",
-      time: "4 hours ago"
-    },
-    {
-      title: "New tech hub opens in Accra",
-      views: "6.1K",
-      time: "6 hours ago"
-    },
-    {
-      title: "Educational reforms announced",
-      views: "5.8K",
-      time: "8 hours ago"
+  const { trendingArticles, loading } = useTrendingArticles(4);
+
+  const formatTimeAgo = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - date.getTime());
+    const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    if (diffHours < 24) {
+      return `${diffHours} hours ago`;
+    } else if (diffDays === 1) {
+      return '1 day ago';
+    } else if (diffDays < 7) {
+      return `${diffDays} days ago`;
+    } else {
+      const diffWeeks = Math.floor(diffDays / 7);
+      return `${diffWeeks} weeks ago`;
     }
-  ];
+  };
+
+  const generateViewCount = (index: number) => {
+    // Generate realistic view counts based on position
+    const baseCounts = [12500, 8200, 6100, 5800];
+    return baseCounts[index] || Math.floor(Math.random() * 5000) + 3000;
+  };
 
   const categories = [
     { name: "Politics", count: 45, color: "bg-ghana-red" },
@@ -44,21 +50,42 @@ const Sidebar = () => {
           <h3 className="text-xl font-playfair font-semibold text-gray-900">Trending Now</h3>
         </div>
         
-        <div className="space-y-4">
-          {trendingNews.map((news, index) => (
-            <div key={index} className="group cursor-pointer">
-              <h4 className="font-medium text-gray-900 group-hover:text-ghana-red transition-colors mb-2 line-clamp-2">
-                {news.title}
-              </h4>
-              <div className="flex items-center text-sm text-gray-500 space-x-3">
-                <span>{news.views} views</span>
-                <span>•</span>
-                <span>{news.time}</span>
+        {loading ? (
+          <div className="space-y-4">
+            {[...Array(4)].map((_, index) => (
+              <div key={index} className="animate-pulse">
+                <div className="h-4 bg-gray-200 rounded mb-2"></div>
+                <div className="h-3 bg-gray-100 rounded w-3/4"></div>
+                {index < 3 && <hr className="mt-4" />}
               </div>
-              {index < trendingNews.length - 1 && <hr className="mt-4" />}
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : trendingArticles.length > 0 ? (
+          <div className="space-y-4">
+            {trendingArticles.map((article, index) => (
+              <div key={article.id} className="group">
+                <Link 
+                  to={`/story/${article.id}/${article.slug}`}
+                  className="block cursor-pointer"
+                >
+                  <h4 className="font-medium text-gray-900 group-hover:text-ghana-red transition-colors mb-2 line-clamp-2">
+                    {article.title}
+                  </h4>
+                  <div className="flex items-center text-sm text-gray-500 space-x-3">
+                    <span>{(generateViewCount(index) / 1000).toFixed(1)}K views</span>
+                    <span>•</span>
+                    <span>{formatTimeAgo(article.publication_date)}</span>
+                  </div>
+                </Link>
+                {index < trendingArticles.length - 1 && <hr className="mt-4" />}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-4 text-gray-500">
+            <p>No trending articles at the moment.</p>
+          </div>
+        )}
       </div>
 
       {/* Categories */}
@@ -70,7 +97,11 @@ const Sidebar = () => {
         
         <div className="space-y-3">
           {categories.map((category, index) => (
-            <div key={index} className="flex items-center justify-between group cursor-pointer">
+            <Link 
+              key={index}
+              to={`/${category.name.toLowerCase()}`}
+              className="flex items-center justify-between group cursor-pointer"
+            >
               <div className="flex items-center">
                 <div className={`w-3 h-3 rounded-full ${category.color} mr-3`}></div>
                 <span className="text-gray-700 group-hover:text-ghana-red transition-colors">
@@ -80,7 +111,7 @@ const Sidebar = () => {
               <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
                 {category.count}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
