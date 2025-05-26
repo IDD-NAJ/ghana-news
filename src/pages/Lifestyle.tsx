@@ -4,42 +4,45 @@ import Header from '../components/Header';
 import NewsCard from '../components/NewsCard';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
+import { usePagination } from '../hooks/usePagination';
+import { useArticles } from '../hooks/useArticles';
 
 const Lifestyle = () => {
-  const lifestyleNews = [
-    {
-      title: "Traditional Ghanaian Cuisine Gains International Recognition",
-      excerpt: "Local chefs are bringing authentic Ghanaian flavors to world-class restaurants, showcasing the rich culinary heritage of West Africa.",
-      image: "photo-1488590528505-98d2b5aba04b",
-      author: "Food & Culture Writer",
-      timeAgo: "1 hour ago",
-      category: "Lifestyle"
-    },
-    {
-      title: "Wellness Tourism: Ghana's Hidden Gem Destinations",
-      excerpt: "Discover serene locations across Ghana perfect for wellness retreats, eco-tourism, and spiritual rejuvenation away from city life.",
-      image: "photo-1581091226825-a6a2a5aee158",
-      author: "Travel Correspondent",
-      timeAgo: "3 hours ago",
-      category: "Lifestyle"
-    },
-    {
-      title: "Fashion Forward: Young Ghanaian Designers Make Their Mark",
-      excerpt: "Emerging fashion talents are blending traditional African aesthetics with contemporary design, creating unique styles that appeal globally.",
-      image: "photo-1526374965328-7f61d4dc18c5",
-      author: "Fashion Editor",
-      timeAgo: "5 hours ago",
-      category: "Lifestyle"
-    },
-    {
-      title: "Home Decor Trends: Bringing African Heritage Indoors",
-      excerpt: "Interior design experts share tips on incorporating traditional Ghanaian art and craftsmanship into modern home decoration.",
-      image: "photo-1461749280684-dccba630e2f6",
-      author: "Design Specialist",
-      timeAgo: "7 hours ago",
-      category: "Lifestyle"
-    }
-  ];
+  const { articles: lifestyleNews, loading, error } = useArticles('Lifestyle');
+  
+  const { currentItems, hasMore, loadMore } = usePagination({
+    items: lifestyleNews,
+    itemsPerPage: 2
+  });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2">Loading lifestyle articles...</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2 text-red-600">Error loading articles</div>
+            <div className="text-sm text-gray-600">{error}</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -48,18 +51,43 @@ const Lifestyle = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <section>
-              <h1 className="text-3xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-slate-500 pl-4">
+            <section className="animate-fade-in-up">
+              <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-slate-500 pl-4">
                 Lifestyle
               </h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {lifestyleNews.map((news, index) => (
-                  <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <NewsCard {...news} />
-                  </div>
-                ))}
-              </div>
+              <p className="text-lg text-gray-600 mb-8">
+                Explore lifestyle trends, wellness tips, and cultural insights from Ghana and beyond.
+              </p>
             </section>
+
+            <section>
+              {currentItems.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {currentItems.map((news, index) => (
+                    <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <NewsCard
+                        article={news}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No lifestyle articles available at the moment.</p>
+                </div>
+              )}
+            </section>
+
+            {hasMore && (
+              <div className="text-center pt-8">
+                <button 
+                  onClick={loadMore}
+                  className="bg-ghana-red text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                >
+                  Load More Lifestyle Stories
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="lg:col-span-1">

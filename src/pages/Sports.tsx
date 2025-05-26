@@ -66,13 +66,7 @@ const Sports = () => {
                   {currentItems.map((news, index) => (
                     <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                       <NewsCard
-                        id={news.id}
-                        title={news.title}
-                        excerpt={news.excerpt || ''}
-                        image={news.image_url || 'photo-1488590528505-98d2b5aba04b'}
-                        author="News Team"
-                        timeAgo={new Date(news.created_at).toLocaleDateString()}
-                        category={news.category}
+                        article={news}
                       />
                     </div>
                   ))}

@@ -4,42 +4,45 @@ import Header from '../components/Header';
 import NewsCard from '../components/NewsCard';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
+import { usePagination } from '../hooks/usePagination';
+import { useArticles } from '../hooks/useArticles';
 
 const Business = () => {
-  const businessNews = [
-    {
-      title: "Ghana Stock Exchange Records Significant Growth",
-      excerpt: "Local bourse shows remarkable performance with increased trading volumes and new listings, reflecting growing investor confidence in Ghana's economy.",
-      image: "photo-1488590528505-98d2b5aba04b",
-      author: "Business Editor",
-      timeAgo: "45 minutes ago",
-      category: "Business"
-    },
-    {
-      title: "Tech Startup Raises $5M in Series A Funding",
-      excerpt: "Ghanaian fintech company secures major investment round to expand digital payment solutions across West Africa, creating hundreds of new jobs.",
-      image: "photo-1518770660439-4636190af475",
-      author: "Startup Reporter",
-      timeAgo: "2 hours ago",
-      category: "Business"
-    },
-    {
-      title: "Mining Sector Implements New Environmental Standards",
-      excerpt: "Industry leaders announce comprehensive sustainability measures to balance economic growth with environmental protection and community welfare.",
-      image: "photo-1581091226825-a6a2a5aee158",
-      author: "Mining Correspondent",
-      timeAgo: "4 hours ago",
-      category: "Business"
-    },
-    {
-      title: "Banking Sector Launches Digital Transformation Initiative",
-      excerpt: "Major banks collaborate on modernization project to enhance customer experience and compete with emerging fintech solutions.",
-      image: "photo-1461749280684-dccba630e2f6",
-      author: "Banking Reporter",
-      timeAgo: "6 hours ago",
-      category: "Business"
-    }
-  ];
+  const { articles: businessNews, loading, error } = useArticles('Business');
+  
+  const { currentItems, hasMore, loadMore } = usePagination({
+    items: businessNews,
+    itemsPerPage: 2
+  });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2">Loading business articles...</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2 text-red-600">Error loading articles</div>
+            <div className="text-sm text-gray-600">{error}</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -48,18 +51,43 @@ const Business = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <section>
-              <h1 className="text-3xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-slate-600 pl-4">
-                Business
+            <section className="animate-fade-in-up">
+              <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-slate-600 pl-4">
+                Business News
               </h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {businessNews.map((news, index) => (
-                  <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <NewsCard {...news} />
-                  </div>
-                ))}
-              </div>
+              <p className="text-lg text-gray-600 mb-8">
+                Stay updated with the latest business developments, market trends, and economic news from Ghana.
+              </p>
             </section>
+
+            <section>
+              {currentItems.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {currentItems.map((news, index) => (
+                    <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <NewsCard
+                        article={news}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No business articles available at the moment.</p>
+                </div>
+              )}
+            </section>
+
+            {hasMore && (
+              <div className="text-center pt-8">
+                <button 
+                  onClick={loadMore}
+                  className="bg-ghana-red text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                >
+                  Load More Business Stories
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="lg:col-span-1">

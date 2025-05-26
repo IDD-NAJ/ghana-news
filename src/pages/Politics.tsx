@@ -51,22 +51,22 @@ const Politics = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <section>
-              <h1 className="text-3xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-ghana-red pl-4">
+            <section className="animate-fade-in-up">
+              <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-ghana-red pl-4">
                 Politics
               </h1>
+              <p className="text-lg text-gray-600 mb-8">
+                Stay informed with the latest political developments, government policies, and democratic processes in Ghana.
+              </p>
+            </section>
+
+            <section>
               {currentItems.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {currentItems.map((news, index) => (
                     <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                       <NewsCard
-                        id={news.id}
-                        title={news.title}
-                        excerpt={news.excerpt || ''}
-                        image={news.image_url || 'photo-1488590528505-98d2b5aba04b'}
-                        author="News Team"
-                        timeAgo={new Date(news.created_at).toLocaleDateString()}
-                        category={news.category}
+                        article={news}
                       />
                     </div>
                   ))}

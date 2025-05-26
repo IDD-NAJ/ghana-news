@@ -4,42 +4,45 @@ import Header from '../components/Header';
 import NewsCard from '../components/NewsCard';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
+import { usePagination } from '../hooks/usePagination';
+import { useArticles } from '../hooks/useArticles';
 
 const Entertainment = () => {
-  const entertainmentNews = [
-    {
-      title: "Ghanaian Film Wins Award at Cannes Film Festival",
-      excerpt: "Local filmmaker receives international recognition for groundbreaking drama that explores contemporary African storytelling and cultural heritage.",
-      image: "photo-1526374965328-7f61d4dc18c5",
-      author: "Entertainment Editor",
-      timeAgo: "1 hour ago",
-      category: "Entertainment"
-    },
-    {
-      title: "Highlife Legend Announces Farewell Concert Series",
-      excerpt: "Veteran musician plans nationwide tour to celebrate decades of contribution to Ghana's music industry and pass the torch to younger generation.",
-      image: "photo-1488590528505-98d2b5aba04b",
-      author: "Music Correspondent",
-      timeAgo: "3 hours ago",
-      category: "Entertainment"
-    },
-    {
-      title: "New TV Series Showcases Ghanaian Culture to Global Audience",
-      excerpt: "Production company launches ambitious series highlighting Ghana's rich traditions, modern lifestyle, and diverse communities for international streaming platforms.",
-      image: "photo-1581091226825-a6a2a5aee158",
-      author: "Media Reporter",
-      timeAgo: "5 hours ago",
-      category: "Entertainment"
-    },
-    {
-      title: "Fashion Week Accra Announces Star-Studded Lineup",
-      excerpt: "Annual fashion event promises spectacular showcase of African designers, with international models and celebrities expected to grace the runway.",
-      image: "photo-1461749280684-dccba630e2f6",
-      author: "Fashion Writer",
-      timeAgo: "7 hours ago",
-      category: "Entertainment"
-    }
-  ];
+  const { articles: entertainmentNews, loading, error } = useArticles('Entertainment');
+  
+  const { currentItems, hasMore, loadMore } = usePagination({
+    items: entertainmentNews,
+    itemsPerPage: 2
+  });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2">Loading entertainment articles...</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2 text-red-600">Error loading articles</div>
+            <div className="text-sm text-gray-600">{error}</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -48,18 +51,43 @@ const Entertainment = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <section>
-              <h1 className="text-3xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-ghana-gold pl-4">
-                Entertainment
+            <section className="animate-fade-in-up">
+              <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-ghana-gold pl-4">
+                Entertainment News
               </h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {entertainmentNews.map((news, index) => (
-                  <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <NewsCard {...news} />
-                  </div>
-                ))}
-              </div>
+              <p className="text-lg text-gray-600 mb-8">
+                Discover the latest in Ghanaian entertainment, from music and film to fashion and cultural events.
+              </p>
             </section>
+
+            <section>
+              {currentItems.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {currentItems.map((news, index) => (
+                    <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <NewsCard
+                        article={news}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No entertainment articles available at the moment.</p>
+                </div>
+              )}
+            </section>
+
+            {hasMore && (
+              <div className="text-center pt-8">
+                <button 
+                  onClick={loadMore}
+                  className="bg-ghana-red text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                >
+                  Load More Entertainment Stories
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="lg:col-span-1">
