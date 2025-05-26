@@ -27,7 +27,8 @@ export const useAdvertisingInquiry = () => {
     try {
       console.log('Submitting advertising inquiry:', inquiryData);
       
-      const { data, error } = await supabase
+      // Using type assertion to work around TypeScript issue with new table
+      const { data, error } = await (supabase as any)
         .from('advertising_inquiries')
         .insert({
           name: inquiryData.name.trim(),
