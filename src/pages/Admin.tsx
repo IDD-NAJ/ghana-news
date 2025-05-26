@@ -56,11 +56,19 @@ const Admin: React.FC = () => {
   const checkAdminStatus = async (userId: string) => {
     try {
       console.log('Checking admin status for user:', userId);
-      const { data, error } = await supabase
+      
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Admin check timeout')), 10000);
+      });
+
+      const queryPromise = supabase
         .from('profiles')
         .select('role')
         .eq('id', userId)
         .single();
+
+      const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any;
 
       console.log('Admin check result:', { data, error });
 
@@ -69,6 +77,8 @@ const Admin: React.FC = () => {
         if (error.code === 'PGRST116') {
           setError('User profile not found. Please contact the system administrator to set up your admin profile.');
           await supabase.auth.signOut();
+        } else if (error.message === 'Admin check timeout') {
+          setError('Connection timeout. Please try again.');
         } else {
           setError(`Failed to verify admin status: ${error.message}`);
         }
