@@ -6,7 +6,8 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { LogOut, Plus, Edit, Trash2, Eye, Calendar, Mail } from 'lucide-react';
+import { LogOut, Plus, Edit, Trash2, Eye, Calendar, Mail, Check, X } from 'lucide-react';
+import { Input } from './ui/input';
 import ArticleEditor from './ArticleEditor';
 import ArticleViewDialog from './ArticleViewDialog';
 import ContactMessages from './ContactMessages';
@@ -35,6 +36,8 @@ const AdminDashboard: React.FC = () => {
   const [viewingArticle, setViewingArticle] = useState<Article | null>(null);
   const [showViewDialog, setShowViewDialog] = useState(false);
   const [activeTab, setActiveTab] = useState('articles');
+  const [editingDate, setEditingDate] = useState<string | null>(null);
+  const [tempDate, setTempDate] = useState('');
 
   useEffect(() => {
     fetchArticles();
@@ -94,6 +97,42 @@ const AdminDashboard: React.FC = () => {
     }
 
     fetchArticles();
+  };
+
+  const handleEditCreatedDate = (articleId: string, currentDate: string) => {
+    setEditingDate(articleId);
+    // Format the date for the datetime-local input
+    const date = new Date(currentDate);
+    const formattedDate = date.toISOString().slice(0, 16);
+    setTempDate(formattedDate);
+  };
+
+  const handleSaveCreatedDate = async (articleId: string) => {
+    try {
+      const { error } = await supabase
+        .from('articles')
+        .update({ 
+          created_at: new Date(tempDate).toISOString(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', articleId);
+
+      if (error) {
+        console.error('Error updating created date:', error);
+        return;
+      }
+
+      setEditingDate(null);
+      setTempDate('');
+      fetchArticles();
+    } catch (err) {
+      console.error('Error updating date:', err);
+    }
+  };
+
+  const handleCancelDateEdit = () => {
+    setEditingDate(null);
+    setTempDate('');
   };
 
   const handleEditorClose = () => {
@@ -229,7 +268,37 @@ const AdminDashboard: React.FC = () => {
                                 </div>
                               </TableCell>
                               <TableCell className="text-sm text-gray-600">
-                                {formatDate(article.created_at)}
+                                {editingDate === article.id ? (
+                                  <div className="flex items-center space-x-2">
+                                    <Input
+                                      type="datetime-local"
+                                      value={tempDate}
+                                      onChange={(e) => setTempDate(e.target.value)}
+                                      className="w-48"
+                                    />
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={() => handleSaveCreatedDate(article.id)}
+                                    >
+                                      <Check className="w-3 h-3" />
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      variant="outline"
+                                      onClick={handleCancelDateEdit}
+                                    >
+                                      <X className="w-3 h-3" />
+                                    </Button>
+                                  </div>
+                                ) : (
+                                  <div 
+                                    className="cursor-pointer hover:bg-gray-100 px-2 py-1 rounded"
+                                    onClick={() => handleEditCreatedDate(article.id, article.created_at)}
+                                  >
+                                    {formatDate(article.created_at)}
+                                  </div>
+                                )}
                               </TableCell>
                               <TableCell className="text-sm text-gray-600">
                                 {formatDate(article.updated_at)}
