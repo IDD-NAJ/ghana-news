@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { X, ExternalLink, Clock, Calendar } from 'lucide-react';
 
@@ -16,12 +15,12 @@ interface BannerItem {
 const Banner = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
-  const [currentDate, setCurrentDate] = useState(new Date());
+  const [currentDate, setCurrentDate] = useState(new Date('2025-05-26'));
 
-  // Update date every minute
+  // Update date every minute (keeping the same fixed date)
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentDate(new Date());
+      setCurrentDate(new Date('2025-05-26'));
     }, 60000);
     return () => clearInterval(timer);
   }, []);
