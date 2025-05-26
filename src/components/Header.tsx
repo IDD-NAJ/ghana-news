@@ -1,19 +1,20 @@
 
 import React, { useState } from 'react';
 import { Search, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    'Home',
-    'Politics',
-    'Sports',
-    'Entertainment',
-    'Business',
-    'Opinion',
-    'Lifestyle',
-    'Technology'
+    { name: 'Home', path: '/' },
+    { name: 'Politics', path: '/politics' },
+    { name: 'Sports', path: '/sports' },
+    { name: 'Entertainment', path: '/entertainment' },
+    { name: 'Business', path: '/business' },
+    { name: 'Opinion', path: '/opinion' },
+    { name: 'Lifestyle', path: '/lifestyle' },
+    { name: 'Technology', path: '/technology' }
   ];
 
   return (
@@ -36,23 +37,25 @@ const Header = () => {
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <h1 className="text-3xl font-playfair font-bold text-ghana-black">
-              <span className="text-ghana-red">+233</span>
-              <span className="text-ghana-gold">BLOG</span>
-              <span className="text-ghana-green">-NEWS</span>
-            </h1>
+            <Link to="/">
+              <h1 className="text-3xl font-playfair font-bold text-ghana-black">
+                <span className="text-ghana-red">+233</span>
+                <span className="text-ghana-gold">BLOG</span>
+                <span className="text-ghana-green">-NEWS</span>
+              </h1>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
             {navItems.map((item) => (
-              <a
-                key={item}
-                href="#"
+              <Link
+                key={item.name}
+                to={item.path}
                 className="text-gray-700 hover:text-ghana-red transition-colors duration-200 font-medium"
               >
-                {item}
-              </a>
+                {item.name}
+              </Link>
             ))}
           </nav>
 
@@ -81,13 +84,14 @@ const Header = () => {
           <div className="lg:hidden mt-4 py-4 border-t">
             <nav className="flex flex-col space-y-4">
               {navItems.map((item) => (
-                <a
-                  key={item}
-                  href="#"
+                <Link
+                  key={item.name}
+                  to={item.path}
                   className="text-gray-700 hover:text-ghana-red transition-colors duration-200 font-medium py-2"
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  {item}
-                </a>
+                  {item.name}
+                </Link>
               ))}
             </nav>
           </div>
