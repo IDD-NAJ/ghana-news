@@ -24,6 +24,7 @@ import Careers from "./pages/Careers";
 import RSSFeed from "./pages/RSSFeed";
 import Sitemap from "./pages/Sitemap";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +54,7 @@ const App = () => (
           <Route path="/careers" element={<Careers />} />
           <Route path="/rss" element={<RSSFeed />} />
           <Route path="/sitemap" element={<Sitemap />} />
+          <Route path="/admin" element={<Admin />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
