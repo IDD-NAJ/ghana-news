@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { Button } from './ui/button';
@@ -19,6 +20,7 @@ interface Article {
   image_url?: string;
   slug: string;
   created_at: string;
+  updated_at: string;
   author_id: string;
 }
 
@@ -101,6 +103,17 @@ const AdminDashboard: React.FC = () => {
     setViewingArticle(null);
   };
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  };
+
   if (showEditor) {
     return <ArticleEditor article={editingArticle} onClose={handleEditorClose} />;
   }
@@ -138,64 +151,72 @@ const AdminDashboard: React.FC = () => {
                 No articles found. Create your first article!
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Title</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Featured</TableHead>
-                    <TableHead>Created</TableHead>
-                    <TableHead>Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {articles.map((article) => (
-                    <TableRow key={article.id}>
-                      <TableCell className="font-medium">{article.title}</TableCell>
-                      <TableCell>
-                        <Badge variant="outline">{article.category}</Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={article.published ? "default" : "secondary"}>
-                          {article.published ? "Published" : "Draft"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        {article.featured && <Badge variant="default">Featured</Badge>}
-                      </TableCell>
-                      <TableCell>
-                        {new Date(article.created_at).toLocaleDateString()}
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex space-x-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleViewArticle(article)}
-                          >
-                            <Eye className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleEditArticle(article)}
-                          >
-                            <Edit className="w-4 h-4" />
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => handleDeleteArticle(article.id)}
-                          >
-                            <Trash2 className="w-4 h-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead>Category</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Featured</TableHead>
+                      <TableHead>Created</TableHead>
+                      <TableHead>Last Updated</TableHead>
+                      <TableHead>Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                  </TableHeader>
+                  <TableBody>
+                    {articles.map((article) => (
+                      <TableRow key={article.id}>
+                        <TableCell className="font-medium max-w-xs truncate">
+                          {article.title}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant="outline">{article.category}</Badge>
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={article.published ? "default" : "secondary"}>
+                            {article.published ? "Published" : "Draft"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {article.featured && <Badge variant="default">Featured</Badge>}
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-600">
+                          {formatDate(article.created_at)}
+                        </TableCell>
+                        <TableCell className="text-sm text-gray-600">
+                          {formatDate(article.updated_at)}
+                        </TableCell>
+                        <TableCell>
+                          <div className="flex space-x-2">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleViewArticle(article)}
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleEditArticle(article)}
+                            >
+                              <Edit className="w-4 h-4" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => handleDeleteArticle(article.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
             )}
           </CardContent>
         </Card>
