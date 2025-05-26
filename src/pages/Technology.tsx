@@ -4,42 +4,16 @@ import Header from '../components/Header';
 import NewsCard from '../components/NewsCard';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
+import { usePagination } from '../hooks/usePagination';
+import { getNewsByCategory } from '../data/newsData';
 
 const Technology = () => {
-  const technologyNews = [
-    {
-      title: "Ghana Launches 5G Network Across Major Cities",
-      excerpt: "Telecommunications companies rollout high-speed 5G infrastructure, promising to revolutionize internet connectivity and digital services nationwide.",
-      image: "photo-1518770660439-4636190af475",
-      author: "Tech Reporter",
-      timeAgo: "30 minutes ago",
-      category: "Technology"
-    },
-    {
-      title: "AI Research Center Opens at University of Ghana",
-      excerpt: "New artificial intelligence research facility aims to position Ghana as a leader in AI development and application across various sectors.",
-      image: "photo-1487058792275-0ad4aaf24ca7",
-      author: "Science Correspondent",
-      timeAgo: "2 hours ago",
-      category: "Technology"
-    },
-    {
-      title: "Local App Developers Win International Coding Competition",
-      excerpt: "Ghanaian software engineers triumph at global hackathon with innovative mobile application addressing local transportation challenges.",
-      image: "photo-1498050108023-c5249f4df085",
-      author: "Innovation Writer",
-      timeAgo: "4 hours ago",
-      category: "Technology"
-    },
-    {
-      title: "E-Government Initiative Streamlines Public Services",
-      excerpt: "Digital transformation project enables citizens to access government services online, reducing bureaucracy and improving efficiency.",
-      image: "photo-1461749280684-dccba630e2f6",
-      author: "Digital Government Reporter",
-      timeAgo: "6 hours ago",
-      category: "Technology"
-    }
-  ];
+  const technologyNews = getNewsByCategory('Technology');
+  
+  const { currentItems, hasMore, loadMore } = usePagination({
+    items: technologyNews,
+    itemsPerPage: 2
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -48,18 +22,35 @@ const Technology = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <section>
-              <h1 className="text-3xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-slate-600 pl-4">
-                Technology
+            <section className="animate-fade-in-up">
+              <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-slate-600 pl-4">
+                Technology News
               </h1>
+              <p className="text-lg text-gray-600 mb-8">
+                Stay updated with the latest technological innovations and digital developments in Ghana.
+              </p>
+            </section>
+
+            <section>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {technologyNews.map((news, index) => (
-                  <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                {currentItems.map((news, index) => (
+                  <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                     <NewsCard {...news} />
                   </div>
                 ))}
               </div>
             </section>
+
+            {hasMore && (
+              <div className="text-center pt-8">
+                <button 
+                  onClick={loadMore}
+                  className="bg-ghana-red text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                >
+                  Load More Technology Stories
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="lg:col-span-1">

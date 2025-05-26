@@ -4,42 +4,16 @@ import Header from '../components/Header';
 import NewsCard from '../components/NewsCard';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
+import { usePagination } from '../hooks/usePagination';
+import { getNewsByCategory } from '../data/newsData';
 
 const Sports = () => {
-  const sportsNews = [
-    {
-      title: "Black Stars Prepare for AFCON Qualifier Against Nigeria",
-      excerpt: "Ghana's national football team intensifies training ahead of the crucial Africa Cup of Nations qualifier, with coach emphasizing tactical discipline and team unity.",
-      image: "photo-1461749280684-dccba630e2f6",
-      author: "Sports Editor",
-      timeAgo: "30 minutes ago",
-      category: "Sports"
-    },
-    {
-      title: "Hearts of Oak Signs New Striker from Europe",
-      excerpt: "Accra Hearts of Oak FC announces the signing of promising striker from European club, strengthening their squad for the upcoming Ghana Premier League season.",
-      image: "photo-1488590528505-98d2b5aba04b",
-      author: "Football Reporter",
-      timeAgo: "2 hours ago",
-      category: "Sports"
-    },
-    {
-      title: "Ghana Boxing Federation Launches Youth Development Program",
-      excerpt: "New initiative aims to identify and nurture young boxing talents across the country, with plans to establish training centers in all regions.",
-      image: "photo-1581091226825-a6a2a5aee158",
-      author: "Boxing Correspondent",
-      timeAgo: "4 hours ago",
-      category: "Sports"
-    },
-    {
-      title: "Olympic Preparation: Athletes Begin Training Camp",
-      excerpt: "Ghana's Olympic-bound athletes commence intensive training program at the national sports complex, focusing on fitness and technique refinement.",
-      image: "photo-1531297484001-80022131f5a1",
-      author: "Olympics Desk",
-      timeAgo: "6 hours ago",
-      category: "Sports"
-    }
-  ];
+  const sportsNews = getNewsByCategory('Sports');
+  
+  const { currentItems, hasMore, loadMore } = usePagination({
+    items: sportsNews,
+    itemsPerPage: 2
+  });
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -48,18 +22,35 @@ const Sports = () => {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-8">
-            <section>
-              <h1 className="text-3xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-slate-600 pl-4">
-                Sports
+            <section className="animate-fade-in-up">
+              <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-slate-600 pl-4">
+                Sports News
               </h1>
+              <p className="text-lg text-gray-600 mb-8">
+                Get the latest updates on Ghana's sports scene, from football to athletics and beyond.
+              </p>
+            </section>
+
+            <section>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {sportsNews.map((news, index) => (
-                  <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                {currentItems.map((news, index) => (
+                  <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
                     <NewsCard {...news} />
                   </div>
                 ))}
               </div>
             </section>
+
+            {hasMore && (
+              <div className="text-center pt-8">
+                <button 
+                  onClick={loadMore}
+                  className="bg-ghana-red text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                >
+                  Load More Sports Stories
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="lg:col-span-1">
