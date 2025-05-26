@@ -36,7 +36,11 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
 
       if (error) {
         console.error('Login error:', error);
-        setError(error.message);
+        if (error.message === 'Invalid login credentials') {
+          setError('Invalid email or password. Please check your credentials or sign up if you don\'t have an account yet.');
+        } else {
+          setError(error.message);
+        }
         return;
       }
 
@@ -57,12 +61,17 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
 
       if (profileError) {
         console.error('Profile error:', profileError);
-        setError('Failed to verify admin status: ' + profileError.message);
+        if (profileError.code === 'PGRST116') {
+          setError('User profile not found. Please contact the system administrator to set up your admin profile.');
+        } else {
+          setError('Failed to verify admin status: ' + profileError.message);
+        }
+        await supabase.auth.signOut();
         return;
       }
 
       if (profile.role !== 'admin') {
-        setError('Access denied. Admin privileges required.');
+        setError('Access denied. Your account exists but does not have admin privileges. Please contact the system administrator to grant admin access to your account.');
         await supabase.auth.signOut();
         return;
       }
@@ -100,8 +109,11 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
 
       if (data.user) {
         console.log('Signup successful for user:', data.user.id);
-        setError('Account created successfully! You can now contact the system administrator to grant admin privileges, or switch to login if you already have admin access.');
+        setError('Account created successfully! Please contact the system administrator to grant admin privileges to your account, then you can log in.');
         setIsSignUp(false);
+        // Clear the form
+        setEmail('');
+        setPassword('');
       }
     } catch (err) {
       console.error('Unexpected signup error:', err);
@@ -129,7 +141,7 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
           <form onSubmit={isSignUp ? handleSignUp : handleLogin} className="space-y-4">
             {error && (
               <Alert variant={error.includes('successfully') ? "default" : "destructive"}>
-                <AlertDescription>{error}</AlertDescription>
+                <AlertDescription className="text-sm leading-relaxed">{error}</AlertDescription>
               </Alert>
             )}
             
@@ -188,6 +200,8 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
               onClick={() => {
                 setIsSignUp(!isSignUp);
                 setError('');
+                setEmail('');
+                setPassword('');
               }}
               className="text-sm text-ghana-red hover:text-red-700 underline"
             >
@@ -197,6 +211,14 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
               }
             </button>
           </div>
+
+          {!isSignUp && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+              <p className="text-xs text-blue-800">
+                <strong>First time here?</strong> You'll need to sign up first, then contact the system administrator to grant admin privileges to your account.
+              </p>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
