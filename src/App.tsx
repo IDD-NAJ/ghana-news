@@ -12,6 +12,7 @@ import Business from "./pages/Business";
 import Opinion from "./pages/Opinion";
 import Lifestyle from "./pages/Lifestyle";
 import Technology from "./pages/Technology";
+import Story from "./pages/Story";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
@@ -39,6 +40,7 @@ const App = () => (
           <Route path="/opinion" element={<Opinion />} />
           <Route path="/lifestyle" element={<Lifestyle />} />
           <Route path="/technology" element={<Technology />} />
+          <Route path="/story/:id/:slug?" element={<Story />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />

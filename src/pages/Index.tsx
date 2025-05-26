@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 
 const Index = () => {
   const featuredNews = {
+    id: "1",
     title: "President Akufo-Addo Announces Major Infrastructure Development Plan for Northern Ghana",
     excerpt: "In a landmark announcement, the President outlined ambitious plans to transform the northern regions with new roads, hospitals, and educational facilities, marking a significant investment in the area's development.",
     image: "photo-1581091226825-a6a2a5aee158",
@@ -17,6 +18,7 @@ const Index = () => {
 
   const mainNews = [
     {
+      id: "2",
       title: "Black Stars Coach Names Squad for Upcoming AFCON Qualifiers",
       excerpt: "Ghana's national football team coach has announced a 25-man squad featuring both experienced players and promising newcomers for the crucial African Cup of Nations qualifying matches.",
       image: "photo-1461749280684-dccba630e2f6",
@@ -25,6 +27,7 @@ const Index = () => {
       category: "Sports"
     },
     {
+      id: "3",
       title: "Ghana's Digital Economy Surges with New Fintech Innovations",
       excerpt: "Local technology companies are revolutionizing the financial sector with groundbreaking mobile money solutions and digital banking platforms, positioning Ghana as a fintech leader in West Africa.",
       image: "photo-1518770660439-4636190af475",
@@ -33,6 +36,7 @@ const Index = () => {
       category: "Technology"
     },
     {
+      id: "4",
       title: "Cocoa Farmers Benefit from New Government Support Program",
       excerpt: "The Ministry of Agriculture launches comprehensive support initiative providing subsidized farming equipment and training to boost cocoa production and improve farmer livelihoods.",
       image: "photo-1488590528505-98d2b5aba04b",
@@ -41,6 +45,7 @@ const Index = () => {
       category: "Business"
     },
     {
+      id: "5",
       title: "Ghanaian Film Industry Gains International Recognition",
       excerpt: "Local filmmakers receive acclaim at international festivals, showcasing Ghana's rich storytelling tradition and cementing the country's position in global cinema.",
       image: "photo-1526374965328-7f61d4dc18c5",
@@ -49,6 +54,7 @@ const Index = () => {
       category: "Entertainment"
     },
     {
+      id: "6",
       title: "New University Campus Opens in Tamale",
       excerpt: "The University of Ghana inaugurates a state-of-the-art campus in Tamale, expanding access to higher education in the northern regions and promoting academic excellence.",
       image: "photo-1581091226825-a6a2a5aee158",
@@ -57,6 +63,7 @@ const Index = () => {
       category: "Education"
     },
     {
+      id: "7",
       title: "Traditional Chiefs Meet to Discuss Land Management",
       excerpt: "Traditional authorities from across Ghana convene to address modern challenges in land administration while preserving cultural heritage and customary practices.",
       image: "photo-1488590528505-98d2b5aba04b",
