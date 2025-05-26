@@ -9,6 +9,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Switch } from './ui/switch';
 import { ArrowLeft, Save } from 'lucide-react';
 import { Alert, AlertDescription } from './ui/alert';
+import ImageUploader from './ImageUploader';
+import { useArticleImages } from '../hooks/useArticleImages';
 
 interface Article {
   id: string;
@@ -25,6 +27,16 @@ interface Article {
 interface ArticleEditorProps {
   article: Article | null;
   onClose: () => void;
+}
+
+interface ImageUploadItem {
+  id?: string;
+  file?: File;
+  url: string;
+  caption: string;
+  display_order: number;
+  isUploading?: boolean;
+  isNew?: boolean;
 }
 
 const categories = [
@@ -52,6 +64,9 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const [uploadImages, setUploadImages] = useState<ImageUploadItem[]>([]);
+
+  const { images: existingImages, loading: imagesLoading } = useArticleImages(article?.id);
 
   useEffect(() => {
     if (article) {
@@ -67,6 +82,20 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
       });
     }
   }, [article]);
+
+  // Convert existing images to upload format when they load
+  useEffect(() => {
+    if (existingImages.length > 0) {
+      const convertedImages: ImageUploadItem[] = existingImages.map(img => ({
+        id: img.id,
+        url: img.image_url,
+        caption: img.caption || '',
+        display_order: img.display_order,
+        isNew: false
+      }));
+      setUploadImages(convertedImages);
+    }
+  }, [existingImages]);
 
   const generateSlug = (title: string) => {
     return title
@@ -100,6 +129,8 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
         updated_at: new Date().toISOString()
       };
 
+      let savedArticleId = article?.id;
+
       if (article) {
         // Update existing article
         const { error } = await supabase
@@ -113,13 +144,56 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
         }
       } else {
         // Create new article
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('articles')
-          .insert(articleData);
+          .insert(articleData)
+          .select('id')
+          .single();
 
         if (error) {
           setError(error.message);
           return;
+        }
+
+        savedArticleId = data.id;
+      }
+
+      // Handle image uploads for new articles
+      if (savedArticleId && uploadImages.some(img => img.isNew)) {
+        // Upload new images
+        for (const image of uploadImages) {
+          if (image.isNew && image.file) {
+            try {
+              const fileExt = image.file.name.split('.').pop();
+              const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+              
+              const { data: uploadData, error: uploadError } = await supabase.storage
+                .from('article-images')
+                .upload(fileName, image.file);
+
+              if (uploadError) {
+                console.error('Error uploading image:', uploadError);
+                continue;
+              }
+
+              const { data: { publicUrl } } = supabase.storage
+                .from('article-images')
+                .getPublicUrl(fileName);
+
+              // Save to database
+              await supabase
+                .from('article_images')
+                .insert({
+                  article_id: savedArticleId,
+                  image_url: publicUrl,
+                  caption: image.caption,
+                  display_order: image.display_order
+                });
+
+            } catch (err) {
+              console.error('Error processing image:', err);
+            }
+          }
         }
       }
 
@@ -155,7 +229,7 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
 
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
+          <div className="lg:col-span-2 space-y-6">
             <Card>
               <CardHeader>
                 <CardTitle>Article Content</CardTitle>
@@ -217,6 +291,19 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
                 </div>
               </CardContent>
             </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Images</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ImageUploader
+                  articleId={article?.id}
+                  images={uploadImages}
+                  onImagesChange={setUploadImages}
+                />
+              </CardContent>
+            </Card>
           </div>
 
           <div className="lg:col-span-1">
@@ -248,13 +335,16 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Image URL
+                    Featured Image URL (Legacy)
                   </label>
                   <Input
                     value={formData.image_url}
                     onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
                     placeholder="https://example.com/image.jpg"
                   />
+                  <p className="text-xs text-gray-500 mt-1">
+                    Use the Images section above for better image management
+                  </p>
                 </div>
 
                 <div className="flex items-center justify-between">
