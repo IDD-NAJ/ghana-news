@@ -1,5 +1,5 @@
-
 import React from 'react';
+import Banner from '../components/Banner';
 import Header from '../components/Header';
 import NewsCard from '../components/NewsCard';
 import Sidebar from '../components/Sidebar';
@@ -21,6 +21,7 @@ const Index = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 font-inter">
+        <Banner />
         <Header />
         <main className="container mx-auto px-4 py-8">
           <div className="text-center">
@@ -34,6 +35,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
+      <Banner />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
