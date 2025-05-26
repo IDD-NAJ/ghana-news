@@ -34,16 +34,16 @@ const RSSFeed = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-8 border-l-4 border-ghana-red pl-4">
+          <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-8 border-l-4 border-slate-600 pl-4">
             RSS Feeds
           </h1>
           
           {/* Introduction */}
           <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
             <div className="flex items-start space-x-6">
-              <Rss className="w-16 h-16 text-ghana-gold flex-shrink-0 mt-2" />
+              <Rss className="w-16 h-16 text-slate-600 flex-shrink-0 mt-2" />
               <div>
-                <h2 className="text-2xl font-semibold text-ghana-red mb-4">Stay Updated with RSS</h2>
+                <h2 className="text-2xl font-semibold text-slate-700 mb-4">Stay Updated with RSS</h2>
                 <p className="text-gray-700 leading-relaxed mb-4">
                   RSS (Really Simple Syndication) feeds allow you to stay updated with the latest news from 
                   +233BLOG-NEWS without visiting our website. Subscribe to our feeds using your favorite RSS 
@@ -66,8 +66,8 @@ const RSSFeed = () => {
               {feedCategories.map((feed, index) => (
                 <div key={index} className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-200">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-xl font-semibold text-ghana-red">{feed.name}</h3>
-                    <Rss className="w-6 h-6 text-ghana-gold" />
+                    <h3 className="text-xl font-semibold text-slate-700">{feed.name}</h3>
+                    <Rss className="w-6 h-6 text-slate-500" />
                   </div>
                   <p className="text-gray-600 mb-4">{feed.description}</p>
                   <div className="bg-gray-50 p-3 rounded-lg mb-4">
@@ -75,7 +75,7 @@ const RSSFeed = () => {
                   </div>
                   <button
                     onClick={() => copyToClipboard(feed.url)}
-                    className="w-full bg-ghana-red text-white py-2 px-4 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200"
+                    className="w-full bg-slate-700 text-white py-2 px-4 rounded-lg font-semibold hover:bg-slate-800 transition-colors duration-200"
                   >
                     Copy Feed URL
                   </button>
@@ -91,21 +91,21 @@ const RSSFeed = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-                <Settings className="w-12 h-12 text-ghana-red mx-auto mb-4" />
+                <Settings className="w-12 h-12 text-slate-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">1. Choose an RSS Reader</h3>
                 <p className="text-gray-600">
                   Select an RSS reader application or service that works on your preferred devices and platforms.
                 </p>
               </div>
               <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-                <Globe className="w-12 h-12 text-ghana-green mx-auto mb-4" />
+                <Globe className="w-12 h-12 text-slate-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">2. Add Our Feed URL</h3>
                 <p className="text-gray-600">
                   Copy the RSS feed URL from above and add it to your RSS reader by pasting the URL.
                 </p>
               </div>
               <div className="bg-white rounded-lg shadow-lg p-6 text-center">
-                <Smartphone className="w-12 h-12 text-ghana-gold mx-auto mb-4" />
+                <Smartphone className="w-12 h-12 text-slate-600 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">3. Stay Updated</h3>
                 <p className="text-gray-600">
                   Your RSS reader will automatically fetch new articles and notify you when fresh content is available.
@@ -122,13 +122,13 @@ const RSSFeed = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {rssReaders.map((reader, index) => (
                 <div key={index} className="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow duration-200">
-                  <h3 className="text-xl font-semibold text-ghana-red mb-3">{reader.name}</h3>
+                  <h3 className="text-xl font-semibold text-slate-700 mb-3">{reader.name}</h3>
                   <p className="text-gray-600 mb-4">{reader.description}</p>
                   <a
                     href={reader.url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-block bg-ghana-green text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors duration-200"
+                    className="inline-block bg-slate-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-slate-700 transition-colors duration-200"
                   >
                     Visit Website
                   </a>
@@ -138,34 +138,34 @@ const RSSFeed = () => {
           </section>
 
           {/* Benefits */}
-          <div className="bg-ghana-green bg-opacity-10 rounded-lg p-8">
+          <div className="bg-slate-50 rounded-lg p-8">
             <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Benefits of Using RSS</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-ghana-red rounded-full mt-2"></div>
+                  <div className="w-2 h-2 bg-slate-600 rounded-full mt-2"></div>
                   <p className="text-gray-700">No need to remember to check our website manually</p>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-ghana-red rounded-full mt-2"></div>
+                  <div className="w-2 h-2 bg-slate-600 rounded-full mt-2"></div>
                   <p className="text-gray-700">Get updates from multiple news sources in one place</p>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-ghana-red rounded-full mt-2"></div>
+                  <div className="w-2 h-2 bg-slate-600 rounded-full mt-2"></div>
                   <p className="text-gray-700">No email clutter or spam</p>
                 </div>
               </div>
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-ghana-red rounded-full mt-2"></div>
+                  <div className="w-2 h-2 bg-slate-600 rounded-full mt-2"></div>
                   <p className="text-gray-700">Faster loading and data-efficient</p>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-ghana-red rounded-full mt-2"></div>
+                  <div className="w-2 h-2 bg-slate-600 rounded-full mt-2"></div>
                   <p className="text-gray-700">Read articles offline with many RSS readers</p>
                 </div>
                 <div className="flex items-start space-x-3">
-                  <div className="w-2 h-2 bg-ghana-red rounded-full mt-2"></div>
+                  <div className="w-2 h-2 bg-slate-600 rounded-full mt-2"></div>
                   <p className="text-gray-700">Privacy-friendly way to follow news</p>
                 </div>
               </div>

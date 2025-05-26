@@ -36,14 +36,14 @@ const NewsCard: React.FC<NewsCardProps> = ({
           }`}
         />
         <div className="absolute top-4 left-4">
-          <span className="bg-ghana-red text-white px-3 py-1 text-xs font-semibold rounded-full">
+          <span className="bg-slate-700 text-white px-3 py-1 text-xs font-semibold rounded-full">
             {category}
           </span>
         </div>
       </div>
       
       <div className={`p-6 ${isLarge ? 'lg:w-1/2 flex flex-col justify-center' : ''}`}>
-        <h2 className={`font-playfair font-semibold text-gray-900 mb-3 line-clamp-2 hover:text-ghana-red transition-colors cursor-pointer ${
+        <h2 className={`font-playfair font-semibold text-gray-900 mb-3 line-clamp-2 hover:text-slate-600 transition-colors cursor-pointer ${
           isLarge ? 'text-2xl lg:text-3xl' : 'text-xl'
         }`}>
           {title}

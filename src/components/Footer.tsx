@@ -32,9 +32,9 @@ const Footer = () => {
           {/* Logo and Description */}
           <div className="lg:col-span-2">
             <h2 className="text-3xl font-playfair font-bold mb-4">
-              <span className="text-ghana-red">+233</span>
-              <span className="text-ghana-gold">BLOG</span>
-              <span className="text-ghana-green">-NEWS</span>
+              <span className="text-slate-300">+233</span>
+              <span className="text-slate-400">BLOG</span>
+              <span className="text-slate-500">-NEWS</span>
             </h2>
             <p className="text-gray-300 mb-6 max-w-md">
               Ghana's premier news platform delivering accurate, timely, and comprehensive 
@@ -44,15 +44,15 @@ const Footer = () => {
             {/* Contact Info */}
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <MapPin className="w-5 h-5 text-ghana-gold" />
+                <MapPin className="w-5 h-5 text-slate-400" />
                 <span className="text-gray-300">Accra, Ghana</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Phone className="w-5 h-5 text-ghana-gold" />
+                <Phone className="w-5 h-5 text-slate-400" />
                 <span className="text-gray-300">+233 24 123 4567</span>
               </div>
               <div className="flex items-center space-x-3">
-                <Mail className="w-5 h-5 text-ghana-gold" />
+                <Mail className="w-5 h-5 text-slate-400" />
                 <span className="text-gray-300">info@233blognews.com</span>
               </div>
             </div>
@@ -60,13 +60,13 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div>
-            <h3 className="text-xl font-semibold mb-6 text-ghana-gold">Quick Links</h3>
+            <h3 className="text-xl font-semibold mb-6 text-slate-300">Quick Links</h3>
             <ul className="space-y-3">
               {quickLinks.map((link) => (
                 <li key={link.name}>
                   <Link 
                     to={link.path}
-                    className="text-gray-300 hover:text-ghana-gold transition-colors duration-200"
+                    className="text-gray-300 hover:text-slate-400 transition-colors duration-200"
                   >
                     {link.name}
                   </Link>
@@ -77,13 +77,13 @@ const Footer = () => {
 
           {/* More Links */}
           <div>
-            <h3 className="text-xl font-semibold mb-6 text-ghana-gold">More</h3>
+            <h3 className="text-xl font-semibold mb-6 text-slate-300">More</h3>
             <ul className="space-y-3">
               {moreLinks.map((link) => (
                 <li key={link.name}>
                   <Link 
                     to={link.path}
-                    className="text-gray-300 hover:text-ghana-gold transition-colors duration-200"
+                    className="text-gray-300 hover:text-slate-400 transition-colors duration-200"
                   >
                     {link.name}
                   </Link>
@@ -101,7 +101,7 @@ const Footer = () => {
                 <a
                   key={social.label}
                   href={social.href}
-                  className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-ghana-red transition-colors duration-200"
+                  className="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center hover:bg-slate-600 transition-colors duration-200"
                   aria-label={social.label}
                 >
                   <social.icon className="w-5 h-5" />

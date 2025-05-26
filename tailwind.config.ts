@@ -68,10 +68,10 @@ export default {
 					ring: 'hsl(var(--sidebar-ring))'
 				},
 				ghana: {
-					red: '#DC2626',
-					gold: '#F59E0B',
-					green: '#16A34A',
-					black: '#1F2937'
+					red: '#1e293b',
+					gold: '#64748b',
+					green: '#475569',
+					black: '#0f172a'
 				}
 			},
 			borderRadius: {
