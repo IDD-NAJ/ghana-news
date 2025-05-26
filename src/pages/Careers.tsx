@@ -176,7 +176,7 @@ const Careers = () => {
             </p>
             <div className="space-y-2">
               <p className="text-lg font-semibold text-ghana-green">careers@233blognews.com</p>
-              <p className="text-gray-600">HR Department | +233 24 123 4567</p>
+              <p className="text-gray-600">HR Department | +233 59 168 3489</p>
             </div>
           </div>
         </div>
