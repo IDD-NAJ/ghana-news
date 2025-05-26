@@ -32,7 +32,7 @@ export const useArticles = (category?: string, featured?: boolean) => {
           .from('articles')
           .select('*')
           .eq('published', true)
-          .lte('publication_date', new Date().toISOString()) // Only show articles with publication date in the past
+          .lte('publication_date', new Date().toISOString()) // Only show articles with publication date in the past or now
           .order('publication_date', { ascending: false }); // Order by publication date
 
         if (category) {
@@ -52,6 +52,8 @@ export const useArticles = (category?: string, featured?: boolean) => {
         }
 
         console.log('Fetched articles:', data);
+        console.log('Current time:', new Date().toISOString());
+        console.log('Articles after publication date filter:', data?.length);
         setArticles(data || []);
       } catch (err) {
         console.error('Unexpected error:', err);

@@ -20,6 +20,7 @@ interface Article {
   slug: string;
   created_at: string;
   updated_at: string;
+  publication_date: string;
   author_id: string;
 }
 
@@ -47,15 +48,19 @@ const Story = () => {
         .select('*')
         .eq('id', articleId)
         .eq('published', true)
+        .lte('publication_date', new Date().toISOString()) // Only show if publication date has passed
         .single();
 
       if (error) {
         console.error('Error fetching article:', error);
-        setError('Article not found');
+        console.log('Current time:', new Date().toISOString());
+        setError('Article not found or not yet published');
         return;
       }
 
       console.log('Fetched article:', data);
+      console.log('Article publication date:', data.publication_date);
+      console.log('Current time:', new Date().toISOString());
       setArticle(data);
     } catch (err) {
       console.error('Unexpected error:', err);
@@ -113,7 +118,7 @@ const Story = () => {
           <div className="text-center">
             <div className="text-lg text-red-600 mb-2">Article Not Found</div>
             <div className="text-sm text-gray-600 mb-4">
-              {error || 'The requested article could not be found.'}
+              {error || 'The requested article could not be found or is not yet published.'}
             </div>
             <button
               onClick={() => navigate('/')}
