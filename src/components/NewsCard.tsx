@@ -3,6 +3,7 @@ import React from 'react';
 import { Clock, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Article } from '../hooks/useArticles';
+import ViewCount from './ViewCount';
 
 interface NewsCardProps {
   article: Article;
@@ -58,30 +59,36 @@ const NewsCard: React.FC<NewsCardProps> = ({
           </div>
         </div>
         
-        <div className={`p-6 ${isLarge ? 'lg:w-1/2 flex flex-col justify-center' : ''}`}>
+        <div className={`p-4 sm:p-6 ${isLarge ? 'lg:w-1/2 flex flex-col justify-center' : ''}`}>
           <h2 className={`font-playfair font-semibold text-gray-900 mb-3 line-clamp-2 hover:text-slate-600 transition-colors ${
-            isLarge ? 'text-2xl lg:text-3xl' : 'text-xl'
+            isLarge ? 'text-xl sm:text-2xl lg:text-3xl' : 'text-lg sm:text-xl'
           }`}>
             {article.title}
           </h2>
           
           {article.excerpt && (
             <p className={`text-gray-600 mb-4 line-clamp-3 ${
-              isLarge ? 'text-lg' : 'text-base'
+              isLarge ? 'text-base sm:text-lg' : 'text-sm sm:text-base'
             }`}>
               {article.excerpt}
             </p>
           )}
           
-          <div className="flex items-center text-sm text-gray-500 space-x-4">
+          <div className="flex flex-wrap items-center text-xs sm:text-sm text-gray-500 gap-2 sm:gap-4">
             <div className="flex items-center space-x-1">
-              <User className="w-4 h-4" />
+              <User className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>News Desk</span>
             </div>
             <div className="flex items-center space-x-1">
-              <Clock className="w-4 h-4" />
+              <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
               <span>{formatDate(article.created_at)}</span>
             </div>
+            <ViewCount 
+              articleId={article.id} 
+              size="sm"
+              showIcon={false}
+              className="hidden sm:flex"
+            />
           </div>
         </div>
       </article>

@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Clock, User, Share2, Facebook, Twitter, Linkedin } from 'lucide-react';
 import Header from '../components/Header';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
+import ViewCount from '../components/ViewCount';
 import { supabase } from '../integrations/supabase/client';
 import { useArticleImages } from '../hooks/useArticleImages';
 
@@ -167,53 +167,66 @@ const Story = () => {
                 </div>
               </div>
               
-              <div className="p-8">
-                <h1 className="text-4xl font-playfair font-bold text-gray-900 mb-6 leading-tight">
+              <div className="p-4 sm:p-6 lg:p-8">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-playfair font-bold text-gray-900 mb-4 lg:mb-6 leading-tight">
                   {article.title}
                 </h1>
                 
-                <div className="flex flex-wrap items-center justify-between border-b border-gray-200 pb-6 mb-6">
-                  <div className="flex items-center space-x-6 text-gray-600">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between border-b border-gray-200 pb-4 lg:pb-6 mb-4 lg:mb-6 gap-4">
+                  <div className="flex flex-wrap items-center gap-4 lg:gap-6 text-gray-600">
                     <div className="flex items-center space-x-2">
-                      <User className="w-5 h-5" />
-                      <span className="font-medium">News Desk</span>
+                      <User className="w-4 h-4 lg:w-5 lg:h-5" />
+                      <span className="font-medium text-sm lg:text-base">News Desk</span>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <Clock className="w-5 h-5" />
-                      <span>{formatDate(article.created_at)}</span>
+                      <Clock className="w-4 h-4 lg:w-5 lg:h-5" />
+                      <span className="text-sm lg:text-base">{formatDate(article.created_at)}</span>
                     </div>
-                    <span className="text-sm bg-gray-100 px-3 py-1 rounded-full">
+                    <ViewCount 
+                      articleId={article.id} 
+                      size="md"
+                      className="hidden sm:flex"
+                    />
+                    <span className="text-xs lg:text-sm bg-gray-100 px-2 lg:px-3 py-1 rounded-full">
                       3 min read
                     </span>
                   </div>
                   
-                  <div className="flex items-center space-x-3 mt-4 lg:mt-0">
-                    <span className="text-gray-600 text-sm">Share:</span>
+                  <div className="flex items-center space-x-3">
+                    <span className="text-gray-600 text-sm hidden sm:inline">Share:</span>
                     <button
                       onClick={() => handleShare('facebook')}
                       className="p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors"
                     >
-                      <Facebook className="w-4 h-4" />
+                      <Facebook className="w-3 h-3 lg:w-4 lg:h-4" />
                     </button>
                     <button
                       onClick={() => handleShare('twitter')}
                       className="p-2 bg-sky-500 text-white rounded-full hover:bg-sky-600 transition-colors"
                     >
-                      <Twitter className="w-4 h-4" />
+                      <Twitter className="w-3 h-3 lg:w-4 lg:h-4" />
                     </button>
                     <button
                       onClick={() => handleShare('linkedin')}
                       className="p-2 bg-blue-700 text-white rounded-full hover:bg-blue-800 transition-colors"
                     >
-                      <Linkedin className="w-4 h-4" />
+                      <Linkedin className="w-3 h-3 lg:w-4 lg:h-4" />
                     </button>
                   </div>
                 </div>
+
+                {/* Mobile View Count */}
+                <div className="flex sm:hidden mb-4">
+                  <ViewCount 
+                    articleId={article.id} 
+                    size="sm"
+                  />
+                </div>
                 
                 {/* Article Content */}
-                <div className="prose prose-lg max-w-none text-gray-800 leading-relaxed">
+                <div className="prose prose-sm sm:prose lg:prose-lg max-w-none text-gray-800 leading-relaxed">
                   {article.excerpt && (
-                    <p className="text-xl text-gray-700 mb-6 font-medium">
+                    <p className="text-lg sm:text-xl text-gray-700 mb-4 lg:mb-6 font-medium">
                       {article.excerpt}
                     </p>
                   )}
@@ -224,15 +237,15 @@ const Story = () => {
 
                 {/* Article Images */}
                 {articleImages.length > 0 && (
-                  <div className="mt-8 space-y-6">
-                    <h3 className="text-xl font-semibold text-gray-900">Images</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="mt-6 lg:mt-8 space-y-4 lg:space-y-6">
+                    <h3 className="text-lg lg:text-xl font-semibold text-gray-900">Images</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
                       {articleImages.map((image, index) => (
                         <div key={image.id} className="space-y-2">
                           <img
                             src={image.image_url}
                             alt={image.caption || `Article image ${index + 1}`}
-                            className="w-full h-64 object-cover rounded-lg"
+                            className="w-full h-48 sm:h-56 lg:h-64 object-cover rounded-lg"
                           />
                           {image.caption && (
                             <p className="text-sm text-gray-600 italic">{image.caption}</p>
@@ -243,7 +256,7 @@ const Story = () => {
                   </div>
                 )}
                 
-                <div className="mt-8 pt-6 border-t border-gray-200">
+                <div className="mt-6 lg:mt-8 pt-4 lg:pt-6 border-t border-gray-200">
                   <p className="text-sm text-gray-500">
                     Published on {formatDate(article.created_at)}
                   </p>
