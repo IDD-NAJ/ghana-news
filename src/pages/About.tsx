@@ -60,7 +60,7 @@ const About = () => {
               <h2 className="text-2xl font-semibold text-slate-700 mb-4">Contact Information</h2>
               <div className="bg-slate-50 p-6 rounded-lg">
                 <p className="text-gray-700 mb-2"><strong>Address:</strong> Digital Media House, Accra, Ghana</p>
-                <p className="text-gray-700 mb-2"><strong>Phone:</strong> +233 24 123 4567</p>
+                <p className="text-gray-700 mb-2"><strong>Phone:</strong> +233 59 168 3489</p>
                 <p className="text-gray-700 mb-2"><strong>Email:</strong> info@233blognews.com</p>
                 <p className="text-gray-700"><strong>Editorial:</strong> editorial@233blognews.com</p>
               </div>
