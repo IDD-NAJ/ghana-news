@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
+import { supabase } from '../integrations/supabase/client';
+import { useToast } from '../hooks/use-toast';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +13,8 @@ const Contact = () => {
     subject: '',
     message: ''
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData({
@@ -19,11 +23,48 @@ const Contact = () => {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    alert('Thank you for your message! We will get back to you soon.');
-    setFormData({ name: '', email: '', subject: '', message: '' });
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from('contact_messages')
+        .insert([
+          {
+            name: formData.name,
+            email: formData.email,
+            subject: formData.subject,
+            message: formData.message
+          }
+        ]);
+
+      if (error) {
+        console.error('Error submitting message:', error);
+        toast({
+          title: "Error",
+          description: "Failed to send your message. Please try again.",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      toast({
+        title: "Message Sent!",
+        description: "Thank you for your message! We will get back to you soon.",
+      });
+      
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -52,7 +93,8 @@ const Contact = () => {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ghana-red focus:border-transparent"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ghana-red focus:border-transparent disabled:opacity-50"
                     placeholder="Your full name"
                   />
                 </div>
@@ -68,7 +110,8 @@ const Contact = () => {
                     value={formData.email}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ghana-red focus:border-transparent"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ghana-red focus:border-transparent disabled:opacity-50"
                     placeholder="your.email@example.com"
                   />
                 </div>
@@ -84,7 +127,8 @@ const Contact = () => {
                     value={formData.subject}
                     onChange={handleChange}
                     required
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ghana-red focus:border-transparent"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ghana-red focus:border-transparent disabled:opacity-50"
                     placeholder="What is this about?"
                   />
                 </div>
@@ -100,17 +144,19 @@ const Contact = () => {
                     onChange={handleChange}
                     required
                     rows={6}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ghana-red focus:border-transparent"
+                    disabled={isSubmitting}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-ghana-red focus:border-transparent disabled:opacity-50"
                     placeholder="Your message..."
                   />
                 </div>
                 
                 <button
                   type="submit"
-                  className="w-full bg-ghana-red text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 flex items-center justify-center space-x-2"
+                  disabled={isSubmitting}
+                  className="w-full bg-ghana-red text-white py-3 px-6 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send className="w-5 h-5" />
-                  <span>Send Message</span>
+                  <span>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
                 </button>
               </form>
             </div>
@@ -132,7 +178,7 @@ const Contact = () => {
                     <Phone className="w-6 h-6 text-ghana-gold mt-1" />
                     <div>
                       <h3 className="font-semibold text-gray-900">Phone</h3>
-                      <p className="text-gray-600">+233 24 123 4567</p>
+                      <p className="text-gray-600">+233 59 168 3489</p>
                     </div>
                   </div>
                   

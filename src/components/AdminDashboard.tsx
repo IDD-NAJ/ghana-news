@@ -5,9 +5,11 @@ import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Badge } from './ui/badge';
-import { LogOut, Plus, Edit, Trash2, Eye, Calendar } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
+import { LogOut, Plus, Edit, Trash2, Eye, Calendar, Mail } from 'lucide-react';
 import ArticleEditor from './ArticleEditor';
 import ArticleViewDialog from './ArticleViewDialog';
+import ContactMessages from './ContactMessages';
 
 interface Article {
   id: string;
@@ -32,6 +34,7 @@ const AdminDashboard: React.FC = () => {
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   const [viewingArticle, setViewingArticle] = useState<Article | null>(null);
   const [showViewDialog, setShowViewDialog] = useState(false);
+  const [activeTab, setActiveTab] = useState('articles');
 
   useEffect(() => {
     fetchArticles();
@@ -156,105 +159,121 @@ const AdminDashboard: React.FC = () => {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle>Articles Management</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <div className="text-center py-8">Loading articles...</div>
-            ) : articles.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                No articles found. Create your first article!
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Title</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Featured</TableHead>
-                      <TableHead>Publication Date</TableHead>
-                      <TableHead>Created</TableHead>
-                      <TableHead>Last Updated</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {articles.map((article) => {
-                      const { formatted: pubDate, isScheduled } = formatPublicationDate(article.publication_date);
-                      
-                      return (
-                        <TableRow key={article.id}>
-                          <TableCell className="font-medium max-w-xs truncate">
-                            {article.title}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline">{article.category}</Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={article.published ? "default" : "secondary"}>
-                              {article.published ? "Published" : "Draft"}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            {article.featured && <Badge variant="default">Featured</Badge>}
-                          </TableCell>
-                          <TableCell className="text-sm">
-                            <div className="flex items-center space-x-1">
-                              <Calendar className="w-3 h-3" />
-                              <span className={isScheduled ? 'text-orange-600 font-medium' : 'text-gray-600'}>
-                                {pubDate}
-                              </span>
-                              {isScheduled && (
-                                <Badge variant="outline" className="text-xs">
-                                  Scheduled
-                                </Badge>
-                              )}
-                            </div>
-                          </TableCell>
-                          <TableCell className="text-sm text-gray-600">
-                            {formatDate(article.created_at)}
-                          </TableCell>
-                          <TableCell className="text-sm text-gray-600">
-                            {formatDate(article.updated_at)}
-                          </TableCell>
-                          <TableCell>
-                            <div className="flex space-x-2">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleViewArticle(article)}
-                              >
-                                <Eye className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleEditArticle(article)}
-                              >
-                                <Edit className="w-4 h-4" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleDeleteArticle(article.id)}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </Button>
-                            </div>
-                          </TableCell>
+        <Tabs value={activeTab} onValueChange={setActiveTab}>
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="articles">Articles</TabsTrigger>
+            <TabsTrigger value="messages">
+              <Mail className="w-4 h-4 mr-2" />
+              Messages
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="articles">
+            <Card>
+              <CardHeader>
+                <CardTitle>Articles Management</CardTitle>
+              </CardHeader>
+              <CardContent>
+                {isLoading ? (
+                  <div className="text-center py-8">Loading articles...</div>
+                ) : articles.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    No articles found. Create your first article!
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Featured</TableHead>
+                          <TableHead>Publication Date</TableHead>
+                          <TableHead>Created</TableHead>
+                          <TableHead>Last Updated</TableHead>
+                          <TableHead>Actions</TableHead>
                         </TableRow>
-                      );
-                    })}
-                  </TableBody>
-                </Table>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+                      </TableHeader>
+                      <TableBody>
+                        {articles.map((article) => {
+                          const { formatted: pubDate, isScheduled } = formatPublicationDate(article.publication_date);
+                          
+                          return (
+                            <TableRow key={article.id}>
+                              <TableCell className="font-medium max-w-xs truncate">
+                                {article.title}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{article.category}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant={article.published ? "default" : "secondary"}>
+                                  {article.published ? "Published" : "Draft"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>
+                                {article.featured && <Badge variant="default">Featured</Badge>}
+                              </TableCell>
+                              <TableCell className="text-sm">
+                                <div className="flex items-center space-x-1">
+                                  <Calendar className="w-3 h-3" />
+                                  <span className={isScheduled ? 'text-orange-600 font-medium' : 'text-gray-600'}>
+                                    {pubDate}
+                                  </span>
+                                  {isScheduled && (
+                                    <Badge variant="outline" className="text-xs">
+                                      Scheduled
+                                    </Badge>
+                                  )}
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-sm text-gray-600">
+                                {formatDate(article.created_at)}
+                              </TableCell>
+                              <TableCell className="text-sm text-gray-600">
+                                {formatDate(article.updated_at)}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex space-x-2">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleViewArticle(article)}
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleEditArticle(article)}
+                                  >
+                                    <Edit className="w-4 h-4" />
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleDeleteArticle(article.id)}
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="messages">
+            <ContactMessages />
+          </TabsContent>
+        </Tabs>
       </main>
 
       <ArticleViewDialog
