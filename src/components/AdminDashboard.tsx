@@ -11,10 +11,13 @@ import ArticleEditor from './ArticleEditor';
 interface Article {
   id: string;
   title: string;
+  content: string;
   excerpt: string;
   category: string;
   published: boolean;
   featured: boolean;
+  image_url?: string;
+  slug: string;
   created_at: string;
   author_id: string;
 }
