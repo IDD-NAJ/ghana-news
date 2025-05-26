@@ -24,26 +24,40 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
     setIsLoading(true);
     setError('');
 
+    console.log('Attempting login for:', email);
+
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
 
+      console.log('Login response:', { data, error });
+
       if (error) {
+        console.error('Login error:', error);
         setError(error.message);
         return;
       }
 
+      if (!data.user) {
+        setError('No user data received');
+        return;
+      }
+
       // Check if user is admin
+      console.log('Checking admin status for user:', data.user.id);
       const { data: profile, error: profileError } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', data.user.id)
         .single();
 
+      console.log('Profile response:', { profile, profileError });
+
       if (profileError) {
-        setError('Failed to verify admin status');
+        console.error('Profile error:', profileError);
+        setError('Failed to verify admin status: ' + profileError.message);
         return;
       }
 
@@ -53,9 +67,11 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
         return;
       }
 
+      console.log('Admin login successful');
       onAuthSuccess();
     } catch (err) {
-      setError('An unexpected error occurred');
+      console.error('Unexpected login error:', err);
+      setError('An unexpected error occurred: ' + (err instanceof Error ? err.message : 'Unknown error'));
     } finally {
       setIsLoading(false);
     }
@@ -66,23 +82,30 @@ const AdminAuth: React.FC<AdminAuthProps> = ({ onAuthSuccess }) => {
     setIsLoading(true);
     setError('');
 
+    console.log('Attempting signup for:', email);
+
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
 
+      console.log('Signup response:', { data, error });
+
       if (error) {
+        console.error('Signup error:', error);
         setError(error.message);
         return;
       }
 
       if (data.user) {
+        console.log('Signup successful for user:', data.user.id);
         setError('Account created successfully! You can now contact the system administrator to grant admin privileges, or switch to login if you already have admin access.');
         setIsSignUp(false);
       }
     } catch (err) {
-      setError('An unexpected error occurred during signup');
+      console.error('Unexpected signup error:', err);
+      setError('An unexpected error occurred during signup: ' + (err instanceof Error ? err.message : 'Unknown error'));
     } finally {
       setIsLoading(false);
     }
