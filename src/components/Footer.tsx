@@ -1,11 +1,21 @@
 
 import React from 'react';
 import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   const quickLinks = [
-    'About Us', 'Contact', 'Privacy Policy', 'Terms of Service',
-    'Advertise', 'Careers', 'RSS Feed', 'Sitemap'
+    { name: 'About Us', path: '/about' },
+    { name: 'Contact', path: '/contact' },
+    { name: 'Privacy Policy', path: '/privacy' },
+    { name: 'Terms of Service', path: '/terms' }
+  ];
+
+  const moreLinks = [
+    { name: 'Advertise', path: '/advertise' },
+    { name: 'Careers', path: '/careers' },
+    { name: 'RSS Feed', path: '/rss' },
+    { name: 'Sitemap', path: '/sitemap' }
   ];
 
   const socialLinks = [
@@ -52,14 +62,14 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-semibold mb-6 text-ghana-gold">Quick Links</h3>
             <ul className="space-y-3">
-              {quickLinks.slice(0, 4).map((link) => (
-                <li key={link}>
-                  <a 
-                    href="#" 
+              {quickLinks.map((link) => (
+                <li key={link.name}>
+                  <Link 
+                    to={link.path}
                     className="text-gray-300 hover:text-ghana-gold transition-colors duration-200"
                   >
-                    {link}
-                  </a>
+                    {link.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -69,14 +79,14 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-semibold mb-6 text-ghana-gold">More</h3>
             <ul className="space-y-3">
-              {quickLinks.slice(4).map((link) => (
-                <li key={link}>
-                  <a 
-                    href="#" 
+              {moreLinks.map((link) => (
+                <li key={link.name}>
+                  <Link 
+                    to={link.path}
                     className="text-gray-300 hover:text-ghana-gold transition-colors duration-200"
                   >
-                    {link}
-                  </a>
+                    {link.name}
+                  </Link>
                 </li>
               ))}
             </ul>

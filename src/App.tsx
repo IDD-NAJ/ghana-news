@@ -12,6 +12,14 @@ import Business from "./pages/Business";
 import Opinion from "./pages/Opinion";
 import Lifestyle from "./pages/Lifestyle";
 import Technology from "./pages/Technology";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Terms from "./pages/Terms";
+import Advertise from "./pages/Advertise";
+import Careers from "./pages/Careers";
+import RSSFeed from "./pages/RSSFeed";
+import Sitemap from "./pages/Sitemap";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +39,14 @@ const App = () => (
           <Route path="/opinion" element={<Opinion />} />
           <Route path="/lifestyle" element={<Lifestyle />} />
           <Route path="/technology" element={<Technology />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<Terms />} />
+          <Route path="/advertise" element={<Advertise />} />
+          <Route path="/careers" element={<Careers />} />
+          <Route path="/rss" element={<RSSFeed />} />
+          <Route path="/sitemap" element={<Sitemap />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
