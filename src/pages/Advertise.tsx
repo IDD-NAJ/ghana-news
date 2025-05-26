@@ -2,6 +2,7 @@
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import AdvertisingInquiryForm from '../components/AdvertisingInquiryForm';
 import { Target, Users, TrendingUp, Mail } from 'lucide-react';
 
 const Advertise = () => {
@@ -32,6 +33,16 @@ const Advertise = () => {
     { icon: TrendingUp, label: "Page Views", value: "2M+" }
   ];
 
+  const scrollToForm = () => {
+    document.getElementById('inquiry-form')?.scrollIntoView({ 
+      behavior: 'smooth' 
+    });
+  };
+
+  const handleContactClick = () => {
+    window.location.href = 'mailto:advertising@233blognews.com';
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
       <Header />
@@ -50,7 +61,10 @@ const Advertise = () => {
                 Connect with our highly engaged readership and grow your business with targeted advertising 
                 solutions on Ghana's leading digital news platform.
               </p>
-              <button className="bg-white text-ghana-red px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200">
+              <button 
+                onClick={scrollToForm}
+                className="bg-white text-ghana-red px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors duration-200"
+              >
                 Get Started Today
               </button>
             </div>
@@ -59,7 +73,7 @@ const Advertise = () => {
           {/* Statistics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             {stats.map((stat, index) => (
-              <div key={index} className="bg-white rounded-lg shadow-lg p-6 text-center">
+              <div key={index} className="bg-white rounded-lg shadow-lg p-6 text-center hover:shadow-xl transition-shadow duration-200">
                 <stat.icon className="w-12 h-12 text-ghana-gold mx-auto mb-4" />
                 <div className="text-3xl font-bold text-ghana-red mb-2">{stat.value}</div>
                 <div className="text-gray-600">{stat.label}</div>
@@ -86,7 +100,10 @@ const Advertise = () => {
                     ))}
                   </ul>
                   <div className="text-xl font-semibold text-ghana-gold mb-4">{pkg.price}</div>
-                  <button className="w-full bg-ghana-red text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200">
+                  <button 
+                    onClick={scrollToForm}
+                    className="w-full bg-ghana-red text-white py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200"
+                  >
                     Learn More
                   </button>
                 </div>
@@ -100,7 +117,7 @@ const Advertise = () => {
               Why Advertise With +233BLOG-NEWS?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-200">
                 <h3 className="text-xl font-semibold text-ghana-red mb-4">Targeted Audience</h3>
                 <p className="text-gray-700 leading-relaxed">
                   Reach educated, affluent Ghanaians who are actively engaged with current events and 
@@ -108,21 +125,21 @@ const Advertise = () => {
                   influencers across various sectors.
                 </p>
               </div>
-              <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-200">
                 <h3 className="text-xl font-semibold text-ghana-red mb-4">Premium Content Environment</h3>
                 <p className="text-gray-700 leading-relaxed">
                   Your brand will be associated with high-quality journalism and trusted news content. 
                   Our editorial standards ensure your advertisements appear in a professional, credible environment.
                 </p>
               </div>
-              <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-200">
                 <h3 className="text-xl font-semibold text-ghana-red mb-4">Multi-Platform Reach</h3>
                 <p className="text-gray-700 leading-relaxed">
                   Extend your reach across our website, mobile app, newsletters, and social media channels. 
                   Our integrated approach ensures maximum visibility for your brand message.
                 </p>
               </div>
-              <div className="bg-white rounded-lg shadow-lg p-8">
+              <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-200">
                 <h3 className="text-xl font-semibold text-ghana-red mb-4">Detailed Analytics</h3>
                 <p className="text-gray-700 leading-relaxed">
                   Track your campaign performance with comprehensive analytics and reporting. Monitor 
@@ -130,6 +147,11 @@ const Advertise = () => {
                 </p>
               </div>
             </div>
+          </section>
+
+          {/* Inquiry Form */}
+          <section id="inquiry-form" className="mb-12">
+            <AdvertisingInquiryForm />
           </section>
 
           {/* Contact CTA */}
@@ -141,8 +163,13 @@ const Advertise = () => {
               advertising solution that delivers results for your business.
             </p>
             <div className="space-y-2">
-              <p className="text-lg font-semibold text-ghana-green">advertising@233blognews.com</p>
-              <p className="text-gray-600">+233 24 123 4567</p>
+              <button
+                onClick={handleContactClick}
+                className="text-lg font-semibold text-ghana-green hover:text-green-700 transition-colors duration-200 underline"
+              >
+                advertising@233blognews.com
+              </button>
+              <p className="text-gray-600">+233 59 168 3489</p>
             </div>
           </div>
         </div>
