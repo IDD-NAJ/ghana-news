@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { Button } from './ui/button';
@@ -7,6 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { Badge } from './ui/badge';
 import { LogOut, Plus, Edit, Trash2, Eye } from 'lucide-react';
 import ArticleEditor from './ArticleEditor';
+import ArticleViewDialog from './ArticleViewDialog';
 
 interface Article {
   id: string;
@@ -27,6 +27,8 @@ const AdminDashboard: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
+  const [viewingArticle, setViewingArticle] = useState<Article | null>(null);
+  const [showViewDialog, setShowViewDialog] = useState(false);
 
   useEffect(() => {
     fetchArticles();
@@ -67,6 +69,11 @@ const AdminDashboard: React.FC = () => {
     setShowEditor(true);
   };
 
+  const handleViewArticle = (article: Article) => {
+    setViewingArticle(article);
+    setShowViewDialog(true);
+  };
+
   const handleDeleteArticle = async (id: string) => {
     if (!confirm('Are you sure you want to delete this article?')) return;
 
@@ -87,6 +94,11 @@ const AdminDashboard: React.FC = () => {
     setShowEditor(false);
     setEditingArticle(null);
     fetchArticles();
+  };
+
+  const handleViewDialogClose = () => {
+    setShowViewDialog(false);
+    setViewingArticle(null);
   };
 
   if (showEditor) {
@@ -160,6 +172,13 @@ const AdminDashboard: React.FC = () => {
                           <Button
                             size="sm"
                             variant="outline"
+                            onClick={() => handleViewArticle(article)}
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
                             onClick={() => handleEditArticle(article)}
                           >
                             <Edit className="w-4 h-4" />
@@ -181,6 +200,12 @@ const AdminDashboard: React.FC = () => {
           </CardContent>
         </Card>
       </main>
+
+      <ArticleViewDialog
+        article={viewingArticle}
+        open={showViewDialog}
+        onClose={handleViewDialogClose}
+      />
     </div>
   );
 };
