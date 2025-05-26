@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, ExternalLink, Clock } from 'lucide-react';
+import { X, ExternalLink, Clock, Calendar } from 'lucide-react';
 
 interface BannerItem {
   id: string;
@@ -16,6 +16,15 @@ interface BannerItem {
 const Banner = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  // Update date every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentDate(new Date());
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Sample banner data - in a real app, this would come from an API or CMS
   const bannerItems: BannerItem[] = [
@@ -83,6 +92,16 @@ const Banner = () => {
     }
   };
 
+  const formatDate = (date: Date) => {
+    const options: Intl.DateTimeFormatOptions = {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    };
+    return date.toLocaleDateString('en-US', options);
+  };
+
   if (!isVisible || bannerItems.length === 0) return null;
 
   const currentBanner = bannerItems[currentBannerIndex];
@@ -113,7 +132,15 @@ const Banner = () => {
   return (
     <div className={getBannerStyles(currentBanner.type, currentBanner.priority)}>
       <div className="container mx-auto flex items-center justify-between">
-        <div className="flex items-center space-x-3 flex-1 min-w-0">
+        {/* Date Display */}
+        <div className="hidden md:flex items-center space-x-2 bg-white/10 px-3 py-1 rounded-lg">
+          <Calendar className="w-4 h-4" />
+          <span className="text-xs font-semibold whitespace-nowrap">
+            {formatDate(currentDate)}
+          </span>
+        </div>
+
+        <div className="flex items-center space-x-3 flex-1 min-w-0 md:ml-4">
           <div className="flex items-center space-x-2">
             {getTypeIcon(currentBanner.type)}
             <span className="bg-white/20 px-2 py-1 rounded text-xs font-bold uppercase tracking-wide">
