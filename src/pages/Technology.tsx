@@ -5,15 +5,44 @@ import NewsCard from '../components/NewsCard';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import { usePagination } from '../hooks/usePagination';
-import { getNewsByCategory } from '../data/newsData';
+import { useArticles } from '../hooks/useArticles';
 
 const Technology = () => {
-  const technologyNews = getNewsByCategory('Technology');
+  const { articles: technologyNews, loading, error } = useArticles('Technology');
   
   const { currentItems, hasMore, loadMore } = usePagination({
     items: technologyNews,
     itemsPerPage: 2
   });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2">Loading technology articles...</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2 text-red-600">Error loading articles</div>
+            <div className="text-sm text-gray-600">{error}</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -32,13 +61,27 @@ const Technology = () => {
             </section>
 
             <section>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {currentItems.map((news, index) => (
-                  <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <NewsCard {...news} />
-                  </div>
-                ))}
-              </div>
+              {currentItems.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {currentItems.map((news, index) => (
+                    <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <NewsCard
+                        id={news.id}
+                        title={news.title}
+                        excerpt={news.excerpt || ''}
+                        image={news.image_url || 'photo-1488590528505-98d2b5aba04b'}
+                        author="News Team"
+                        timeAgo={new Date(news.created_at).toLocaleDateString()}
+                        category={news.category}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No technology articles available at the moment.</p>
+                </div>
+              )}
             </section>
 
             {hasMore && (

@@ -4,42 +4,45 @@ import Header from '../components/Header';
 import NewsCard from '../components/NewsCard';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
+import { usePagination } from '../hooks/usePagination';
+import { useArticles } from '../hooks/useArticles';
 
 const Politics = () => {
-  const politicsNews = [
-    {
-      title: "Parliament Passes New Electoral Reforms Bill",
-      excerpt: "The Ghanaian Parliament has unanimously passed comprehensive electoral reforms aimed at strengthening democratic processes and ensuring transparent elections in future political contests.",
-      image: "photo-1581091226825-a6a2a5aee158",
-      author: "Political Correspondent",
-      timeAgo: "1 hour ago",
-      category: "Politics"
-    },
-    {
-      title: "President Meets Opposition Leaders for National Dialogue",
-      excerpt: "In a historic meeting, the President hosted opposition party leaders to discuss national unity and collaborative approaches to addressing Ghana's economic challenges.",
-      image: "photo-1488590528505-98d2b5aba04b",
-      author: "State House Reporter",
-      timeAgo: "3 hours ago",
-      category: "Politics"
-    },
-    {
-      title: "Local Government Elections Set for December",
-      excerpt: "The Electoral Commission announces dates for upcoming local government elections, emphasizing the importance of grassroots democracy in Ghana's political system.",
-      image: "photo-1461749280684-dccba630e2f6",
-      author: "Elections Desk",
-      timeAgo: "5 hours ago",
-      category: "Politics"
-    },
-    {
-      title: "Minister of Finance Presents Mid-Year Budget Review",
-      excerpt: "The Finance Minister outlines government's fiscal performance and adjustments to the national budget, addressing economic recovery measures and development priorities.",
-      image: "photo-1531297484001-80022131f5a1",
-      author: "Economic Reporter",
-      timeAgo: "8 hours ago",
-      category: "Politics"
-    }
-  ];
+  const { articles: politicsNews, loading, error } = useArticles('Politics');
+  
+  const { currentItems, hasMore, loadMore } = usePagination({
+    items: politicsNews,
+    itemsPerPage: 2
+  });
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2">Loading politics articles...</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2 text-red-600">Error loading articles</div>
+            <div className="text-sm text-gray-600">{error}</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -52,14 +55,39 @@ const Politics = () => {
               <h1 className="text-3xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-ghana-red pl-4">
                 Politics
               </h1>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {politicsNews.map((news, index) => (
-                  <div key={index} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <NewsCard {...news} />
-                  </div>
-                ))}
-              </div>
+              {currentItems.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {currentItems.map((news, index) => (
+                    <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <NewsCard
+                        id={news.id}
+                        title={news.title}
+                        excerpt={news.excerpt || ''}
+                        image={news.image_url || 'photo-1488590528505-98d2b5aba04b'}
+                        author="News Team"
+                        timeAgo={new Date(news.created_at).toLocaleDateString()}
+                        category={news.category}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No politics articles available at the moment.</p>
+                </div>
+              )}
             </section>
+
+            {hasMore && (
+              <div className="text-center pt-8">
+                <button 
+                  onClick={loadMore}
+                  className="bg-ghana-red text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                >
+                  Load More Politics Stories
+                </button>
+              </div>
+            )}
           </div>
           
           <div className="lg:col-span-1">

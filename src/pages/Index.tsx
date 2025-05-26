@@ -5,16 +5,32 @@ import NewsCard from '../components/NewsCard';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import { usePagination } from '../hooks/usePagination';
-import { getFeaturedNews, getMainNews } from '../data/newsData';
+import { useArticles, useFeaturedArticle } from '../hooks/useArticles';
 
 const Index = () => {
-  const featuredNews = getFeaturedNews();
-  const mainNews = getMainNews();
+  const { featuredArticle, loading: featuredLoading } = useFeaturedArticle();
+  const { articles: mainNews, loading: articlesLoading } = useArticles();
   
   const { currentItems, hasMore, loadMore } = usePagination({
     items: mainNews,
     itemsPerPage: 4
   });
+
+  const isLoading = featuredLoading || articlesLoading;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 font-inter">
+        <Header />
+        <main className="container mx-auto px-4 py-8">
+          <div className="text-center">
+            <div className="text-lg mb-2">Loading articles...</div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
@@ -25,28 +41,50 @@ const Index = () => {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
             {/* Featured News */}
-            <section className="animate-fade-in-up">
-              <h2 className="text-2xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-ghana-red pl-4">
-                Featured Story
-              </h2>
-              <NewsCard
-                {...featuredNews}
-                isLarge={true}
-              />
-            </section>
+            {featuredArticle && (
+              <section className="animate-fade-in-up">
+                <h2 className="text-2xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-ghana-red pl-4">
+                  Featured Story
+                </h2>
+                <NewsCard
+                  id={featuredArticle.id}
+                  title={featuredArticle.title}
+                  excerpt={featuredArticle.excerpt || ''}
+                  image={featuredArticle.image_url || 'photo-1488590528505-98d2b5aba04b'}
+                  author="News Team"
+                  timeAgo={new Date(featuredArticle.created_at).toLocaleDateString()}
+                  category={featuredArticle.category}
+                  isLarge={true}
+                />
+              </section>
+            )}
 
             {/* Latest News Grid */}
             <section>
               <h2 className="text-2xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-ghana-green pl-4">
                 Latest News
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {currentItems.map((news, index) => (
-                  <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <NewsCard {...news} />
-                  </div>
-                ))}
-              </div>
+              {currentItems.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {currentItems.map((news, index) => (
+                    <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                      <NewsCard
+                        id={news.id}
+                        title={news.title}
+                        excerpt={news.excerpt || ''}
+                        image={news.image_url || 'photo-1488590528505-98d2b5aba04b'}
+                        author="News Team"
+                        timeAgo={new Date(news.created_at).toLocaleDateString()}
+                        category={news.category}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">No articles available at the moment.</p>
+                </div>
+              )}
             </section>
 
             {/* Load More Button */}
