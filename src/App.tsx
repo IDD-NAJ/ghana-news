@@ -12,6 +12,8 @@ import Business from "./pages/Business";
 import Opinion from "./pages/Opinion";
 import Lifestyle from "./pages/Lifestyle";
 import Technology from "./pages/Technology";
+import Education from "./pages/Education";
+import Culture from "./pages/Culture";
 import Story from "./pages/Story";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -40,6 +42,8 @@ const App = () => (
           <Route path="/opinion" element={<Opinion />} />
           <Route path="/lifestyle" element={<Lifestyle />} />
           <Route path="/technology" element={<Technology />} />
+          <Route path="/education" element={<Education />} />
+          <Route path="/culture" element={<Culture />} />
           <Route path="/story/:id/:slug?" element={<Story />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
