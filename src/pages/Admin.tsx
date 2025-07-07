@@ -57,18 +57,12 @@ const Admin: React.FC = () => {
     try {
       console.log('Checking admin status for user:', userId);
       
-      // Add timeout to prevent hanging
-      const timeoutPromise = new Promise((_, reject) => {
-        setTimeout(() => reject(new Error('Admin check timeout')), 10000);
-      });
-
-      const queryPromise = supabase
+      // Simplified query with shorter timeout and better error handling
+      const { data, error } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', userId)
         .single();
-
-      const { data, error } = await Promise.race([queryPromise, timeoutPromise]) as any;
 
       console.log('Admin check result:', { data, error });
 
@@ -77,8 +71,6 @@ const Admin: React.FC = () => {
         if (error.code === 'PGRST116') {
           setError('User profile not found. Please contact the system administrator to set up your admin profile.');
           await supabase.auth.signOut();
-        } else if (error.message === 'Admin check timeout') {
-          setError('Connection timeout. Please try again.');
         } else {
           setError(`Failed to verify admin status: ${error.message}`);
         }
@@ -99,7 +91,7 @@ const Admin: React.FC = () => {
       }
     } catch (err) {
       console.error('Unexpected error checking admin status:', err);
-      setError('An unexpected error occurred');
+      setError('An unexpected error occurred. Please try refreshing the page.');
       setIsAuthenticated(false);
     } finally {
       setIsLoading(false);
@@ -112,10 +104,17 @@ const Admin: React.FC = () => {
     setError(null);
   };
 
+  const handleRetry = () => {
+    setError(null);
+    setIsLoading(true);
+    checkAuthStatus();
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <div className="text-lg mb-2">Loading...</div>
           <div className="text-sm text-gray-600">Checking authentication status</div>
         </div>
@@ -126,15 +125,23 @@ const Admin: React.FC = () => {
   if (error) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-lg text-red-600 mb-2">Error</div>
-          <div className="text-sm text-gray-600">{error}</div>
-          <button 
-            onClick={() => window.location.reload()} 
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-          >
-            Retry
-          </button>
+        <div className="text-center max-w-md mx-auto p-6">
+          <div className="text-lg text-red-600 mb-4">Error</div>
+          <div className="text-sm text-gray-600 mb-6">{error}</div>
+          <div className="space-y-3">
+            <button 
+              onClick={handleRetry}
+              className="w-full px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
+            >
+              Retry
+            </button>
+            <button 
+              onClick={() => window.location.href = '/'}
+              className="w-full px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+            >
+              Return to Home
+            </button>
+          </div>
         </div>
       </div>
     );
