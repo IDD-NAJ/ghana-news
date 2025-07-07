@@ -27,13 +27,15 @@ export const useArticles = (category?: string, featured?: boolean) => {
     const fetchArticles = async () => {
       try {
         console.log('Fetching articles with filters:', { category, featured });
+        setLoading(true);
+        setError(null);
         
         let query = supabase
           .from('articles')
           .select('*')
           .eq('published', true)
-          .lte('publication_date', new Date().toISOString()) // Only show articles with publication date in the past or now
-          .order('publication_date', { ascending: false }); // Order by publication date
+          .lte('publication_date', new Date().toISOString())
+          .order('publication_date', { ascending: false });
 
         if (category) {
           query = query.eq('category', category);
@@ -47,17 +49,17 @@ export const useArticles = (category?: string, featured?: boolean) => {
 
         if (error) {
           console.error('Error fetching articles:', error);
-          setError(error.message);
+          setError(`Failed to load articles: ${error.message}`);
+          setArticles([]);
           return;
         }
 
-        console.log('Fetched articles:', data);
-        console.log('Current time:', new Date().toISOString());
-        console.log('Articles after publication date filter:', data?.length);
+        console.log('Successfully fetched articles:', data?.length || 0);
         setArticles(data || []);
       } catch (err) {
         console.error('Unexpected error:', err);
-        setError('Failed to fetch articles');
+        setError('An unexpected error occurred while loading articles');
+        setArticles([]);
       } finally {
         setLoading(false);
       }

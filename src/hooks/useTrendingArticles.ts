@@ -12,6 +12,8 @@ export const useTrendingArticles = (limit: number = 4) => {
     const fetchTrendingArticles = async () => {
       try {
         console.log('Fetching trending articles...');
+        setLoading(true);
+        setError(null);
         
         const { data, error } = await supabase
           .from('articles')
@@ -23,15 +25,17 @@ export const useTrendingArticles = (limit: number = 4) => {
 
         if (error) {
           console.error('Error fetching trending articles:', error);
-          setError(error.message);
+          setError(`Failed to load trending articles: ${error.message}`);
+          setTrendingArticles([]);
           return;
         }
 
-        console.log('Fetched trending articles:', data);
+        console.log('Successfully fetched trending articles:', data?.length || 0);
         setTrendingArticles(data || []);
       } catch (err) {
         console.error('Unexpected error:', err);
-        setError('Failed to fetch trending articles');
+        setError('An unexpected error occurred while loading trending articles');
+        setTrendingArticles([]);
       } finally {
         setLoading(false);
       }

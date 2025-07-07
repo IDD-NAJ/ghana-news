@@ -12,6 +12,7 @@ export const useSearch = (query: string) => {
     if (!query.trim()) {
       setResults([]);
       setLoading(false);
+      setError(null);
       return;
     }
 
@@ -33,15 +34,17 @@ export const useSearch = (query: string) => {
 
         if (error) {
           console.error('Search error:', error);
-          setError(error.message);
+          setError(`Search failed: ${error.message}`);
+          setResults([]);
           return;
         }
 
-        console.log('Search results:', data);
+        console.log('Search results found:', data?.length || 0);
         setResults(data || []);
       } catch (err) {
         console.error('Unexpected search error:', err);
-        setError('Failed to search articles');
+        setError('An unexpected error occurred during search');
+        setResults([]);
       } finally {
         setLoading(false);
       }
