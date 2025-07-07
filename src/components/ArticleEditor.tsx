@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../integrations/supabase/client';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
@@ -7,6 +6,7 @@ import { useArticleImages } from '../hooks/useArticleImages';
 import ArticleEditorHeader from './ArticleEditorHeader';
 import ArticleContentForm from './ArticleContentForm';
 import ArticleSettingsPanel from './ArticleSettingsPanel';
+import UrlArticleImporter from './UrlArticleImporter';
 
 interface Article {
   id: string;
@@ -119,6 +119,22 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
     setFormData(prev => ({ ...prev, ...updates }));
   };
 
+  const handleArticleImported = (articleData: {
+    title: string;
+    content: string;
+    excerpt: string;
+    image_url?: string;
+  }) => {
+    setFormData(prev => ({
+      ...prev,
+      title: articleData.title,
+      content: articleData.content,
+      excerpt: articleData.excerpt,
+      image_url: articleData.image_url || '',
+      slug: generateSlug(articleData.title)
+    }));
+  };
+
   const handleSave = async () => {
     setIsLoading(true);
     setError('');
@@ -225,6 +241,10 @@ const ArticleEditor: React.FC<ArticleEditorProps> = ({ article, onClose }) => {
       <main className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
+            {!article && (
+              <UrlArticleImporter onArticleImported={handleArticleImported} />
+            )}
+
             <ArticleContentForm
               formData={formData}
               error={error}
