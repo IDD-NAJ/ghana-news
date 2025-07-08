@@ -1,0 +1,59 @@
+import { useState, useEffect } from 'react';
+import { supabase } from '../integrations/supabase/client';
+
+export interface DraftArticle {
+  id: string;
+  title: string;
+  excerpt: string | null;
+  content: string;
+  image_url: string | null;
+  category: string;
+  author_id: string;
+  published: boolean;
+  featured: boolean;
+  created_at: string;
+  updated_at: string;
+  publication_date: string;
+  slug: string;
+}
+
+export const useDraftArticles = () => {
+  const [draftArticles, setDraftArticles] = useState<DraftArticle[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDraftArticles = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        const { data, error } = await supabase
+          .from('articles')
+          .select('*')
+          .eq('published', false)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching draft articles:', error);
+          setError(`Failed to load draft articles: ${error.message}`);
+          setDraftArticles([]);
+          return;
+        }
+
+        console.log('Successfully fetched draft articles:', data?.length || 0);
+        setDraftArticles(data || []);
+      } catch (err) {
+        console.error('Unexpected error:', err);
+        setError('An unexpected error occurred while loading draft articles');
+        setDraftArticles([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDraftArticles();
+  }, []);
+
+  return { draftArticles, loading, error };
+};

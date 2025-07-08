@@ -1,12 +1,13 @@
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useStories } from "@/hooks/useStories";
+import { useDraftArticles } from "@/hooks/useDraftArticles";
 import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, XCircle, Eye, FileText, Clock, Send, Plus } from "lucide-react";
+import { CheckCircle, XCircle, Eye, FileText, Clock, Send, Plus, Edit } from "lucide-react";
 import { StoryReviewDialog } from "@/components/StoryReviewDialog";
 import { QuickArticleEditor } from "@/components/QuickArticleEditor";
 import { useToast } from "@/hooks/use-toast";
@@ -20,8 +21,10 @@ const ChiefAuthor = () => {
   const [selectedStory, setSelectedStory] = useState<any>(null);
   const [showArticleEditor, setShowArticleEditor] = useState(false);
   const [publishingStory, setPublishingStory] = useState<string | null>(null);
+  const [publishingArticle, setPublishingArticle] = useState<string | null>(null);
   const { stories: pendingStories, loading: pendingLoading } = useStories(undefined, 'pending');
   const { stories: allStories, loading: allLoading } = useStories();
+  const { draftArticles, loading: draftsLoading } = useDraftArticles();
 
   if (authLoading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
@@ -97,6 +100,40 @@ const ChiefAuthor = () => {
     }
   };
 
+  const handlePublishArticle = async (article: any) => {
+    setPublishingArticle(article.id);
+
+    try {
+      const updates = {
+        published: true,
+        publication_date: new Date().toISOString()
+      };
+
+      const { error } = await supabase
+        .from('articles')
+        .update(updates)
+        .eq('id', article.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Article published",
+        description: "Draft article has been published successfully.",
+      });
+
+      // Refresh the page to update the lists
+      window.location.reload();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to publish article",
+        variant: "destructive"
+      });
+    } finally {
+      setPublishingArticle(null);
+    }
+  };
+
   const renderStoryCard = (story: any) => (
     <Card key={story.id} className="hover:shadow-md transition-shadow">
       <CardHeader>
@@ -149,6 +186,47 @@ const ChiefAuthor = () => {
     </Card>
   );
 
+  const renderDraftArticleCard = (article: any) => (
+    <Card key={article.id} className="hover:shadow-md transition-shadow">
+      <CardHeader>
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <CardTitle className="text-xl mb-2">{article.title}</CardTitle>
+            <p className="text-muted-foreground line-clamp-2">
+              {article.excerpt || article.content.substring(0, 150) + '...'}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 ml-4">
+            <Edit className="h-4 w-4 text-orange-500" />
+            <Badge className="bg-orange-100 text-orange-800">
+              Draft
+            </Badge>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent>
+        <div className="flex justify-between items-center text-sm text-muted-foreground mb-4">
+          <span>Category: {article.category}</span>
+          <span>
+            Created: {new Date(article.created_at).toLocaleDateString()}
+          </span>
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => handlePublishArticle(article)}
+            disabled={publishingArticle === article.id}
+            className="flex items-center gap-1"
+          >
+            <Send className="h-4 w-4" />
+            {publishingArticle === article.id ? 'Publishing...' : 'Publish Now'}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -173,9 +251,12 @@ const ChiefAuthor = () => {
           </div>
 
           <Tabs defaultValue="pending" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="pending">
                 Pending Review ({pendingStories.length})
+              </TabsTrigger>
+              <TabsTrigger value="drafts">
+                Draft Articles ({draftArticles.length})
               </TabsTrigger>
               <TabsTrigger value="all">
                 All Stories ({allStories.length})
@@ -198,6 +279,26 @@ const ChiefAuthor = () => {
                   </Card>
                 ) : (
                   pendingStories.map(renderStoryCard)
+                )}
+              </div>
+            </TabsContent>
+
+            <TabsContent value="drafts" className="mt-6">
+              <div className="grid gap-6">
+                {draftsLoading ? (
+                  <div className="text-center py-8">Loading draft articles...</div>
+                ) : draftArticles.length === 0 ? (
+                  <Card>
+                    <CardContent className="text-center py-12">
+                      <Edit className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">No draft articles</h3>
+                      <p className="text-muted-foreground">
+                        Create your first article using the "Create Article" button above.
+                      </p>
+                    </CardContent>
+                  </Card>
+                ) : (
+                  draftArticles.map(renderDraftArticleCard)
                 )}
               </div>
             </TabsContent>
