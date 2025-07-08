@@ -57,27 +57,17 @@ const Admin: React.FC = () => {
     try {
       console.log('Checking admin status for user:', userId);
       
-      // Add timeout with AbortController
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-      
       const { data, error } = await supabase
         .from('profiles')
         .select('role')
         .eq('id', userId)
-        .abortSignal(controller.signal)
         .maybeSingle();
 
-      clearTimeout(timeoutId);
       console.log('Admin check result:', { data, error });
 
       if (error) {
         console.error('Profile error:', error);
-        if (error.name === 'AbortError') {
-          setError('Admin check timed out. Please check your connection and try again.');
-        } else {
-          setError(`Failed to verify admin status: ${error.message}`);
-        }
+        setError(`Failed to verify admin status: ${error.message}`);
         setIsAuthenticated(false);
         setIsLoading(false);
         return;
@@ -106,11 +96,7 @@ const Admin: React.FC = () => {
       }
     } catch (err) {
       console.error('Unexpected error checking admin status:', err);
-      if (err instanceof Error && err.name === 'AbortError') {
-        setError('Admin check timed out. Please check your connection and try again.');
-      } else {
-        setError('An unexpected error occurred. Please try refreshing the page.');
-      }
+      setError('An unexpected error occurred. Please try refreshing the page.');
       setIsAuthenticated(false);
       setIsLoading(false);
     }
