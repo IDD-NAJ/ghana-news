@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -31,18 +31,21 @@ const Auth = () => {
     fullName: ''
   });
 
-  // Redirect authenticated users to appropriate dashboard
-  if (user && profile) {
-    if (profile.role === 'admin') {
-      return <Navigate to="/admin" replace />;
-    } else if (profile.role === 'chief_author') {
-      return <Navigate to="/chief-author" replace />;
-    } else if (profile.role === 'news_anchor' && profile.verified) {
-      return <Navigate to="/news-anchor" replace />;
-    } else {
-      return <Navigate to="/" replace />;
+  // Handle redirect when user and profile are loaded
+  useEffect(() => {
+    if (user && profile && !loading) {
+      if (profile.role === 'admin') {
+        window.location.href = '/admin';
+      } else if (profile.role === 'chief_author') {
+        window.location.href = '/chief-author';
+      } else if (profile.role === 'news_anchor' && profile.verified) {
+        window.location.href = '/news-anchor';
+      } else {
+        window.location.href = '/';
+      }
     }
-  }
+  }, [user, profile, loading]);
+
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
