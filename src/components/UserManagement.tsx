@@ -142,7 +142,14 @@ const UserManagement = () => {
   const updateUserRole = async () => {
     if (!editingUser || !editRole) return;
 
+    console.log('updateUserRole called:', { 
+      editingUserId: editingUser.id, 
+      currentRole: editingUser.role, 
+      newRole: editRole 
+    });
+
     try {
+      console.log('Attempting to update role...');
       // Update the role in the profiles table
       const { error: updateError } = await supabase
         .from('profiles')
@@ -152,6 +159,7 @@ const UserManagement = () => {
         })
         .eq('id', editingUser.id);
 
+      console.log('Role update result:', { updateError });
       if (updateError) throw updateError;
 
       toast({
@@ -164,6 +172,7 @@ const UserManagement = () => {
       setEditRole("");
       fetchUsers();
     } catch (error: any) {
+      console.error('Role update error:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to update user role",
