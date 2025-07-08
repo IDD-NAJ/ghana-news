@@ -94,8 +94,8 @@ const Header = () => {
               <Link to="/" className="flex items-center">
                 <div className="text-center">
                   <div className="flex items-center justify-center">
-                    <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-primary">+233</span>
-                    <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-foreground">Blog-news</span>
+                    <span className="text-xs sm:text-sm md:text-base lg:text-lg font-serif font-bold text-primary">+233</span>
+                    <span className="text-xs sm:text-sm md:text-base lg:text-lg font-serif font-bold text-foreground">Blog-news</span>
                   </div>
                 </div>
               </Link>
