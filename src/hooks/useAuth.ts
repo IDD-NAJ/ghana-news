@@ -29,13 +29,22 @@ export const useAuth = () => {
           // Fetch user profile with setTimeout to avoid deadlock
           setTimeout(async () => {
             try {
-              const { data: profileData } = await supabase
+              const { data: profileData, error } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('id', session.user.id)
-                .single();
+                .maybeSingle();
               
-              setProfile(profileData);
+              if (error) {
+                console.error('Error fetching profile:', error);
+                setProfile(null);
+              } else if (profileData) {
+                setProfile(profileData);
+              } else {
+                // No profile exists, user needs to complete setup
+                console.log('No profile found for user:', session.user.id);
+                setProfile(null);
+              }
             } catch (error) {
               console.error('Error fetching profile:', error);
               setProfile(null);
@@ -56,13 +65,22 @@ export const useAuth = () => {
       if (session?.user) {
         // Fetch user profile for existing session
         try {
-          const { data: profileData } = await supabase
+          const { data: profileData, error } = await supabase
             .from('profiles')
             .select('*')
             .eq('id', session.user.id)
-            .single();
+            .maybeSingle();
           
-          setProfile(profileData);
+          if (error) {
+            console.error('Error fetching profile:', error);
+            setProfile(null);
+          } else if (profileData) {
+            setProfile(profileData);
+          } else {
+            // No profile exists, user needs to complete setup
+            console.log('No profile found for user:', session.user.id);
+            setProfile(null);
+          }
         } catch (error) {
           console.error('Error fetching profile:', error);
           setProfile(null);
