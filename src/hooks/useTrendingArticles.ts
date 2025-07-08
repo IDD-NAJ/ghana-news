@@ -19,7 +19,7 @@ export const useTrendingArticles = (limit: number = 4) => {
           .from('articles')
           .select(`
             *,
-            profiles!articles_author_id_fkey(
+            profiles(
               full_name,
               email
             )
