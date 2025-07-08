@@ -97,9 +97,6 @@ const Header = () => {
                     <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-primary">+233</span>
                     <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-foreground">Blog-news</span>
                   </div>
-                  <div className="text-[8px] sm:text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-widest mt-0.5 md:mt-1">
-                    Trusted News Since 2024
-                  </div>
                 </div>
               </Link>
             </div>
