@@ -140,7 +140,10 @@ const UserManagement = () => {
   };
 
   const updateUserRole = async () => {
-    if (!editingUser || !editRole) return;
+    if (!editingUser || !editRole) {
+      console.log('Missing data:', { editingUser, editRole });
+      return;
+    }
 
     console.log('updateUserRole called:', { 
       editingUserId: editingUser.id, 
@@ -150,17 +153,25 @@ const UserManagement = () => {
 
     try {
       console.log('Attempting to update role...');
+      
       // Update the role in the profiles table
-      const { error: updateError } = await supabase
+      const { data, error: updateError } = await supabase
         .from('profiles')
         .update({ 
           role: editRole,
           verified: editRole === 'customer' ? false : editingUser.verified // Reset verification if demoting to customer
         })
-        .eq('id', editingUser.id);
+        .eq('id', editingUser.id)
+        .select();
 
-      console.log('Role update result:', { updateError });
-      if (updateError) throw updateError;
+      console.log('Role update result:', { data, updateError });
+      
+      if (updateError) {
+        console.error('Supabase update error:', updateError);
+        throw updateError;
+      }
+
+      console.log('Role update successful:', data);
 
       toast({
         title: "Success",
