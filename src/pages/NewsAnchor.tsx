@@ -21,7 +21,16 @@ const NewsAnchor = () => {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
   }
 
+  console.log('NewsAnchor - Profile:', profile);
+  console.log('NewsAnchor - User role:', profile?.role);
+  console.log('NewsAnchor - User verified:', profile?.verified);
+
   if (!profile || profile.role !== 'news_anchor' || !profile.verified) {
+    console.log('NewsAnchor - Redirecting to auth. Reason:', {
+      noProfile: !profile,
+      wrongRole: profile?.role !== 'news_anchor',
+      notVerified: !profile?.verified
+    });
     return <Navigate to="/auth" replace />;
   }
 
