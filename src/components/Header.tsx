@@ -128,6 +128,14 @@ const Header = () => {
               {/* Authentication Section */}
               {user && profile ? (
                 <div className="hidden md:flex items-center space-x-2">
+                  {/* Profile Icon */}
+                  <div className="flex items-center space-x-2 px-3 py-1 bg-gray-50 rounded-full">
+                    <User className="w-5 h-5 text-gray-600" />
+                    <span className="text-sm font-medium text-gray-700">
+                      {profile.full_name || profile.email}
+                    </span>
+                  </div>
+                  
                   {profile.role === 'admin' && (
                     <Link to="/admin">
                       <Button variant="outline" size="sm">Admin</Button>
@@ -197,6 +205,14 @@ const Header = () => {
                 <div className="border-t pt-4 mt-4">
                   {user && profile ? (
                     <div className="space-y-2">
+                      {/* Mobile Profile Info */}
+                      <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded">
+                        <User className="w-5 h-5 text-gray-600" />
+                        <span className="text-sm font-medium text-gray-700">
+                          {profile.full_name || profile.email}
+                        </span>
+                      </div>
+                      
                       {profile.role === 'admin' && (
                         <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
                           <Button variant="outline" size="sm" className="w-full">Admin</Button>
