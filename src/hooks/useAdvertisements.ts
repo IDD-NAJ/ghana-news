@@ -51,10 +51,12 @@ export const useAdvertisements = (
           query = query.eq('ad_type', adType);
         }
 
+        // Only filter by placement if both are provided and placement_position is not empty
         if (placement) {
-          query = query.eq('placement_position', placement);
+          query = query.or(`placement_position.eq.${placement},placement_position.is.null,placement_position.eq.`);
         }
 
+        console.log('Fetching advertisements with filters:', { adType, placement, currentPage, category });
         const { data, error } = await query;
 
         if (error) {
@@ -82,6 +84,7 @@ export const useAdvertisements = (
           });
         }
 
+        console.log('Filtered advertisements:', filteredAds);
         setAdvertisements(filteredAds as Advertisement[]);
       } catch (err) {
         console.error('Unexpected error:', err);
