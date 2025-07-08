@@ -27,7 +27,7 @@ export const useSearch = (query: string) => {
           .from('articles')
           .select(`
             *,
-            profiles(
+            profiles!articles_author_id_fkey(
               full_name,
               email
             )

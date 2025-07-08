@@ -36,7 +36,7 @@ export const useArticles = (category?: string, featured?: boolean) => {
           .from('articles')
           .select(`
             *,
-            profiles(
+            profiles!articles_author_id_fkey(
               full_name,
               email
             )
