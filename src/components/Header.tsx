@@ -66,15 +66,16 @@ const Header = () => {
       <header className="bg-white border-b-2 border-muted sticky top-0 z-50">
         {/* Top Info Bar */}
         <div className="bg-muted/30 border-b border-border">
-          <div className="container mx-auto px-4 py-2">
-            <div className="flex justify-between items-center text-sm text-muted-foreground">
-              <div className="flex items-center space-x-6">
+          <div className="container mx-auto px-4 py-1.5 md:py-2">
+            <div className="flex justify-between items-center text-xs md:text-sm text-muted-foreground">
+              <div className="flex items-center space-x-3 md:space-x-6">
                 <span className="flex items-center">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  {formattedDate}
+                  <Calendar className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
+                  <span className="hidden sm:inline">{formattedDate}</span>
+                  <span className="sm:hidden">{currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
                 </span>
                 <span className="flex items-center">
-                  <Clock className="w-4 h-4 mr-2" />
+                  <Clock className="w-3 h-3 md:w-4 md:h-4 mr-1 md:mr-2" />
                   {formattedTime}
                 </span>
               </div>
@@ -86,20 +87,20 @@ const Header = () => {
         </div>
 
         {/* Main Header */}
-        <div className="container mx-auto px-4 py-6">
+        <div className="container mx-auto px-4 py-3 md:py-4 lg:py-6">
           <div className="flex items-center justify-between">
             {/* Logo Section */}
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
                 <div className="text-center">
-                  <h1 className="text-4xl font-serif font-bold tracking-tight">
+                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-tight">
                     <span className="text-foreground">THE</span>
                   </h1>
-                  <div className="flex items-center">
-                    <span className="text-2xl font-serif font-bold text-primary mr-1">+233</span>
-                    <span className="text-2xl font-serif font-bold text-foreground">HERALD</span>
+                  <div className="flex items-center justify-center">
+                    <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-serif font-bold text-primary mr-1">+233</span>
+                    <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-serif font-bold text-foreground">HERALD</span>
                   </div>
-                  <div className="text-xs font-medium text-muted-foreground uppercase tracking-widest mt-1">
+                  <div className="text-[8px] sm:text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-widest mt-0.5 md:mt-1">
                     Trusted News Since 2024
                   </div>
                 </div>
@@ -108,12 +109,12 @@ const Header = () => {
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center">
-              <div className="flex items-center space-x-8">
+              <div className="flex items-center space-x-4 xl:space-x-8">
                 {navItems.map((item) => (
                   <Link
                     key={item.name}
                     to={item.path}
-                    className="text-foreground hover:text-primary transition-colors duration-200 font-medium text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-primary pb-1"
+                    className="text-foreground hover:text-primary transition-colors duration-200 font-medium text-xs xl:text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-primary pb-1"
                   >
                     {item.name}
                   </Link>
@@ -122,18 +123,18 @@ const Header = () => {
             </nav>
 
             {/* Right Section */}
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-2 md:space-x-4">
               <button 
-                className="p-2 hover:bg-muted rounded-full transition-colors"
+                className="p-1.5 md:p-2 hover:bg-muted rounded-full transition-colors"
                 onClick={handleSearchClick}
                 title="Search articles (Ctrl+K)"
               >
-                <Search className="w-5 h-5 text-muted-foreground" />
+                <Search className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground" />
               </button>
 
               {/* Authentication Section */}
               {user && profile ? (
-                <div className="hidden md:flex items-center space-x-3">
+                <div className="hidden md:flex items-center space-x-2 lg:space-x-3">
                   <Link 
                     to={
                       profile.role === 'admin' ? '/admin' :
@@ -141,45 +142,43 @@ const Header = () => {
                       profile.role === 'news_anchor' && profile.verified ? '/news-anchor' :
                       '/'
                     }
-                    className="flex items-center space-x-2 px-3 py-2 bg-muted/50 rounded hover:bg-muted transition-colors"
+                    className="flex items-center space-x-1 lg:space-x-2 px-2 lg:px-3 py-1 lg:py-2 bg-muted/50 rounded hover:bg-muted transition-colors"
                   >
-                    <User className="w-4 h-4 text-muted-foreground" />
-                    <span className="text-sm font-medium text-foreground">
+                    <User className="w-3 h-3 lg:w-4 lg:h-4 text-muted-foreground" />
+                    <span className="text-xs lg:text-sm font-medium text-foreground hidden lg:inline">
                       {profile.full_name?.split(' ')[0] || 'User'}
                     </span>
                   </Link>
                   
-                  {profile.role === 'admin' && (
-                    <Link to="/admin">
-                      <Button variant="outline" size="sm" className="text-xs">Dashboard</Button>
-                    </Link>
-                  )}
-                  {profile.role === 'chief_author' && (
-                    <Link to="/chief-author">
-                      <Button variant="outline" size="sm" className="text-xs">Dashboard</Button>
-                    </Link>
-                  )}
-                  {profile.role === 'news_anchor' && profile.verified && (
-                    <Link to="/news-anchor">
-                      <Button variant="outline" size="sm" className="text-xs">Dashboard</Button>
+                  {(profile.role === 'admin' || profile.role === 'chief_author' || (profile.role === 'news_anchor' && profile.verified)) && (
+                    <Link to={
+                      profile.role === 'admin' ? '/admin' :
+                      profile.role === 'chief_author' ? '/chief-author' :
+                      '/news-anchor'
+                    }>
+                      <Button variant="outline" size="sm" className="text-[10px] lg:text-xs px-2 lg:px-3">
+                        <span className="hidden lg:inline">Dashboard</span>
+                        <span className="lg:hidden">•••</span>
+                      </Button>
                     </Link>
                   )}
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => signOut()}
-                    className="flex items-center gap-1 text-xs"
+                    className="flex items-center gap-1 text-[10px] lg:text-xs px-1 lg:px-2"
                   >
                     <LogOut className="w-3 h-3" />
-                    Sign Out
+                    <span className="hidden lg:inline">Sign Out</span>
                   </Button>
                 </div>
               ) : (
                 <div className="hidden md:flex items-center">
                   <Link to="/auth">
-                    <Button variant="outline" size="sm" className="flex items-center gap-1 text-xs">
+                    <Button variant="outline" size="sm" className="flex items-center gap-1 text-[10px] lg:text-xs px-2 lg:px-3">
                       <User className="w-3 h-3" />
-                      Sign In
+                      <span className="hidden lg:inline">Sign In</span>
+                      <span className="lg:hidden">•</span>
                     </Button>
                   </Link>
                 </div>
@@ -187,13 +186,13 @@ const Header = () => {
               
               {/* Mobile menu button */}
               <button
-                className="lg:hidden p-2 hover:bg-muted rounded-full transition-colors"
+                className="lg:hidden p-1.5 md:p-2 hover:bg-muted rounded-full transition-colors"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? (
-                  <X className="w-6 h-6 text-muted-foreground" />
+                  <X className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground" />
                 ) : (
-                  <Menu className="w-6 h-6 text-muted-foreground" />
+                  <Menu className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground" />
                 )}
               </button>
             </div>
