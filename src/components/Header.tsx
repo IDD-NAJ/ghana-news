@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Search, Menu, X, Calendar, Clock, User, LogOut } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SearchDialog from './SearchDialog';
-import { useAuth } from '@/hooks/useAuth';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 
 const Header = () => {

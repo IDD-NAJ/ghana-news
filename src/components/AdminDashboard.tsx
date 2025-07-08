@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../integrations/supabase/client';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
@@ -54,6 +55,7 @@ interface Profile {
 }
 
 const AdminDashboard: React.FC = () => {
+  const { signOut } = useAuth();
   const [articles, setArticles] = useState<Article[]>([]);
   const [stories, setStories] = useState<Story[]>([]);
   const [authorProfiles, setAuthorProfiles] = useState<{[key: string]: Profile}>({});
@@ -132,7 +134,7 @@ const AdminDashboard: React.FC = () => {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await signOut();
     window.location.reload();
   };
 
