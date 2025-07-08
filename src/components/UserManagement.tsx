@@ -333,7 +333,8 @@ const UserManagement = () => {
                       <Edit className="h-4 w-4" />
                       Edit Role
                     </Button>
-                    {(user.role === 'news_anchor' || user.role === 'chief_author') && (
+                    {/* Show verify button for all users except customers */}
+                    {user.role !== 'customer' && (
                       <Button
                         variant="outline"
                         size="sm"
