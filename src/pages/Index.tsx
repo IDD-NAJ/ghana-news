@@ -42,72 +42,201 @@ const Index = () => {
       <Banner />
       <Header />
       
-      <main className="container mx-auto px-4 py-8 relative z-10">
-        {/* Top Banner Ad */}
-        <AdBanner placement="top" currentPage="/" />
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
-            {/* Featured News */}
-            {featuredArticle && (
-              <section className="animate-fade-in-up">
-                <h2 className="text-2xl font-playfair font-bold text-foreground mb-6 border-l-4 border-primary pl-4 text-shadow">
-                  Featured Story
-                </h2>
-                <div className="elegant-card rounded-xl p-6 glow-effect">
-                  <NewsCard
-                    article={featuredArticle}
-                    isLarge={true}
-                  />
-                </div>
-              </section>
-            )}
-
-            {/* Inline Advertisement */}
-            <AdInline currentPage="/" />
-
-            {/* Latest News Grid */}
-            <section>
-              <h2 className="text-2xl font-playfair font-bold text-foreground mb-6 border-l-4 border-primary pl-4 text-shadow">
-                Latest News
-              </h2>
-              {currentItems.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {currentItems.map((news, index) => (
-                    <div key={news.id} className="animate-fade-in-up elegant-card rounded-xl p-6 hover:glow-effect transition-all duration-300" style={{ animationDelay: `${index * 0.1}s` }}>
-                      <NewsCard
-                        article={news}
-                      />
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 elegant-card rounded-lg">
-                  <p className="text-muted-foreground">No articles available at the moment.</p>
-                </div>
-              )}
-            </section>
-
-            {/* Load More Button */}
-            {hasMore && (
-              <div className="text-center pt-8">
-                <button 
-                  onClick={loadMore}
-                  className="elegant-card px-8 py-3 rounded-lg font-semibold hover:glow-effect transition-all duration-300 transform hover:-translate-y-1 text-primary hover:text-primary-foreground hover:bg-primary"
-                >
-                  Load More Stories
+      <main className="relative z-10">
+        {/* Hero Section */}
+        <section className="relative h-[60vh] overflow-hidden">
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{
+              backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1920&h=1080&fit=crop')`
+            }}
+          />
+          <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
+            <div className="max-w-2xl text-white">
+              <h1 className="text-4xl md:text-6xl font-playfair font-bold mb-4 text-shadow animate-fade-in-up">
+                Stay Informed with <span className="text-primary-foreground">+233Blog-news</span>
+              </h1>
+              <p className="text-lg md:text-xl mb-8 text-shadow animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                Your trusted source for breaking news, in-depth analysis, and stories that matter in Ghana and beyond.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                <button className="elegant-card px-8 py-3 rounded-lg font-semibold hover:glow-effect transition-all duration-300 text-foreground hover:scale-105">
+                  Explore Latest News
+                </button>
+                <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-foreground transition-all duration-300">
+                  Subscribe Newsletter
                 </button>
               </div>
-            )}
-          </div>
-
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-24 elegant-card rounded-xl p-6 glow-effect">
-              <Sidebar />
             </div>
           </div>
+        </section>
+
+        <div className="container mx-auto px-4 py-8">
+          {/* Top Banner Ad */}
+          <AdBanner placement="top" currentPage="/" />
+          
+          {/* Breaking News Ticker */}
+          <section className="mb-8">
+            <div className="elegant-card rounded-lg p-4 border-l-4 border-red-500">
+              <div className="flex items-center">
+                <span className="bg-red-500 text-white px-3 py-1 rounded-full text-sm font-bold mr-4 animate-pulse">
+                  BREAKING
+                </span>
+                <div className="flex-1 overflow-hidden">
+                  <div className="animate-marquee whitespace-nowrap text-foreground font-medium">
+                    Latest updates from around the globe • Political developments • Economic indicators • Sports highlights • Technology breakthroughs
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+          
+          {/* Trending Categories Section */}
+          <section className="mb-12">
+            <h2 className="text-3xl font-playfair font-bold text-foreground mb-8 text-center text-shadow">
+              Trending Categories
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              {[
+                { name: 'Politics', image: 'photo-1605810230434-7631ac76ec81', color: 'from-red-500 to-red-700' },
+                { name: 'Technology', image: 'photo-1518770660439-4636190af475', color: 'from-blue-500 to-blue-700' },
+                { name: 'Sports', image: 'photo-1461749280684-dccba630e2f6', color: 'from-green-500 to-green-700' },
+                { name: 'Business', image: 'photo-1486312338219-ce68d2c6f44d', color: 'from-purple-500 to-purple-700' }
+              ].map((category, index) => (
+                <div 
+                  key={category.name}
+                  className="relative h-32 rounded-xl overflow-hidden elegant-card hover:glow-effect transition-all duration-300 transform hover:scale-105 cursor-pointer group"
+                  style={{ animationDelay: `${index * 0.1}s` }}
+                >
+                  <div 
+                    className="absolute inset-0 bg-cover bg-center"
+                    style={{
+                      backgroundImage: `linear-gradient(45deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3)), url('https://images.unsplash.com/${category.image}?w=400&h=300&fit=crop')`
+                    }}
+                  />
+                  <div className="relative z-10 h-full flex items-center justify-center">
+                    <h3 className="text-white font-bold text-lg text-shadow group-hover:scale-110 transition-transform duration-300">
+                      {category.name}
+                    </h3>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2 space-y-8">
+              {/* Featured News */}
+              {featuredArticle && (
+                <section className="animate-fade-in-up">
+                  <h2 className="text-2xl font-playfair font-bold text-foreground mb-6 border-l-4 border-primary pl-4 text-shadow">
+                    Featured Story
+                  </h2>
+                  <div className="elegant-card rounded-xl p-6 glow-effect">
+                    <NewsCard
+                      article={featuredArticle}
+                      isLarge={true}
+                    />
+                  </div>
+                </section>
+              )}
+
+              {/* Inline Advertisement */}
+              <AdInline currentPage="/" />
+
+              {/* Latest News Grid */}
+              <section>
+                <h2 className="text-2xl font-playfair font-bold text-foreground mb-6 border-l-4 border-primary pl-4 text-shadow">
+                  Latest News
+                </h2>
+                {currentItems.length > 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {currentItems.map((news, index) => (
+                      <div key={news.id} className="animate-fade-in-up elegant-card rounded-xl p-6 hover:glow-effect transition-all duration-300" style={{ animationDelay: `${index * 0.1}s` }}>
+                        <NewsCard
+                          article={news}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 elegant-card rounded-lg">
+                    <p className="text-muted-foreground">No articles available at the moment.</p>
+                  </div>
+                )}
+              </section>
+
+              {/* Load More Button */}
+              {hasMore && (
+                <div className="text-center pt-8">
+                  <button 
+                    onClick={loadMore}
+                    className="elegant-card px-8 py-3 rounded-lg font-semibold hover:glow-effect transition-all duration-300 transform hover:-translate-y-1 text-primary hover:text-primary-foreground hover:bg-primary"
+                  >
+                    Load More Stories
+                  </button>
+                </div>
+              )}
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              <div className="sticky top-24 elegant-card rounded-xl p-6 glow-effect">
+                <Sidebar />
+              </div>
+            </div>
+          </div>
+          
+          {/* Statistics Section */}
+          <section className="my-16">
+            <div className="elegant-card rounded-2xl p-8 glow-effect">
+              <h2 className="text-3xl font-playfair font-bold text-foreground mb-8 text-center text-shadow">
+                News at a Glance
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                {[
+                  { number: '50K+', label: 'Daily Readers', icon: '👥' },
+                  { number: '1000+', label: 'Articles Published', icon: '📰' },
+                  { number: '24/7', label: 'News Coverage', icon: '⏰' },
+                  { number: '15', label: 'Categories', icon: '📋' }
+                ].map((stat, index) => (
+                  <div key={stat.label} className="text-center animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <div className="text-4xl mb-2">{stat.icon}</div>
+                    <div className="text-3xl font-bold text-primary mb-1">{stat.number}</div>
+                    <div className="text-muted-foreground text-sm">{stat.label}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Newsletter Section */}
+          <section className="my-16">
+            <div 
+              className="relative rounded-2xl overflow-hidden p-12 text-center"
+              style={{
+                backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&h=600&fit=crop')`
+              }}
+            >
+              <h2 className="text-3xl md:text-4xl font-playfair font-bold text-white mb-4 text-shadow">
+                Never Miss a Story
+              </h2>
+              <p className="text-lg text-white mb-8 max-w-2xl mx-auto text-shadow">
+                Subscribe to our newsletter and get the latest news delivered straight to your inbox.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+                <input 
+                  type="email" 
+                  placeholder="Enter your email"
+                  className="flex-1 px-4 py-3 rounded-lg border-0 elegant-card"
+                />
+                <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:glow-effect transition-all duration-300">
+                  Subscribe
+                </button>
+              </div>
+            </div>
+          </section>
         </div>
       </main>
 
