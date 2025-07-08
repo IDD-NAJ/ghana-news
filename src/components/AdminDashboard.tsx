@@ -6,13 +6,14 @@ import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
 import { Badge } from './ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import { LogOut, Plus, Edit, Trash2, Eye, Calendar, Mail, Check, X } from 'lucide-react';
+import { LogOut, Plus, Edit, Trash2, Eye, Calendar, Mail, Check, X, FileText, User, Clock } from 'lucide-react';
 import { Input } from './ui/input';
 import ArticleEditor from './ArticleEditor';
 import ArticleViewDialog from './ArticleViewDialog';
 import ContactMessages from './ContactMessages';
 import BannerManager from './BannerManager';
 import UserManagement from './UserManagement';
+import { StoryReviewDialog } from './StoryReviewDialog';
 
 interface Article {
   id: string;
@@ -30,19 +31,47 @@ interface Article {
   author_id: string;
 }
 
+interface Story {
+  id: string;
+  title: string;
+  content: string;
+  excerpt: string | null;
+  category: string;
+  image_url: string | null;
+  status: string;
+  author_id: string;
+  created_at: string;
+  updated_at: string;
+  review_notes: string | null;
+  reviewed_at: string | null;
+  reviewed_by: string | null;
+}
+
+interface Profile {
+  id: string;
+  full_name: string | null;
+  email: string;
+}
+
 const AdminDashboard: React.FC = () => {
   const [articles, setArticles] = useState<Article[]>([]);
+  const [stories, setStories] = useState<Story[]>([]);
+  const [authorProfiles, setAuthorProfiles] = useState<{[key: string]: Profile}>({});
   const [isLoading, setIsLoading] = useState(true);
+  const [storiesLoading, setStoriesLoading] = useState(true);
   const [showEditor, setShowEditor] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
   const [viewingArticle, setViewingArticle] = useState<Article | null>(null);
   const [showViewDialog, setShowViewDialog] = useState(false);
-  const [activeTab, setActiveTab] = useState('articles');
+  const [reviewingStory, setReviewingStory] = useState<Story | null>(null);
+  const [showStoryReview, setShowStoryReview] = useState(false);
+  const [activeTab, setActiveTab] = useState('stories');
   const [editingDate, setEditingDate] = useState<string | null>(null);
   const [tempDate, setTempDate] = useState('');
 
   useEffect(() => {
     fetchArticles();
+    fetchStories();
   }, []);
 
   const fetchArticles = async () => {
@@ -62,6 +91,43 @@ const AdminDashboard: React.FC = () => {
       console.error('Error:', err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchStories = async () => {
+    try {
+      const { data: storiesData, error: storiesError } = await supabase
+        .from('stories')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (storiesError) {
+        console.error('Error fetching stories:', storiesError);
+        return;
+      }
+
+      setStories(storiesData || []);
+
+      // Fetch author profiles for stories
+      if (storiesData && storiesData.length > 0) {
+        const authorIds = [...new Set(storiesData.map(story => story.author_id))];
+        const { data: profilesData, error: profilesError } = await supabase
+          .from('profiles')
+          .select('id, full_name, email')
+          .in('id', authorIds);
+
+        if (!profilesError && profilesData) {
+          const profilesMap = profilesData.reduce((acc, profile) => {
+            acc[profile.id] = profile;
+            return acc;
+          }, {} as {[key: string]: Profile});
+          setAuthorProfiles(profilesMap);
+        }
+      }
+    } catch (err) {
+      console.error('Error:', err);
+    } finally {
+      setStoriesLoading(false);
     }
   };
 
@@ -148,6 +214,47 @@ const AdminDashboard: React.FC = () => {
     setViewingArticle(null);
   };
 
+  const handleReviewStory = (story: Story) => {
+    setReviewingStory(story);
+    setShowStoryReview(true);
+  };
+
+  const handleStoryReviewClose = () => {
+    setShowStoryReview(false);
+    setReviewingStory(null);
+    fetchStories();
+  };
+
+  const getStatusColor = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'approved':
+        return 'bg-green-100 text-green-800';
+      case 'published':
+        return 'bg-blue-100 text-blue-800';
+      case 'rejected':
+        return 'bg-red-100 text-red-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case 'pending':
+        return <Clock className="h-4 w-4 text-yellow-500" />;
+      case 'approved':
+        return <Check className="h-4 w-4 text-green-500" />;
+      case 'published':
+        return <FileText className="h-4 w-4 text-blue-500" />;
+      case 'rejected':
+        return <X className="h-4 w-4 text-red-500" />;
+      default:
+        return <FileText className="h-4 w-4" />;
+    }
+  };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -201,7 +308,16 @@ const AdminDashboard: React.FC = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
+            <TabsTrigger value="stories" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Stories
+              {stories.filter(s => s.status === 'pending').length > 0 && (
+                <Badge variant="destructive" className="ml-1 px-1 text-xs">
+                  {stories.filter(s => s.status === 'pending').length}
+                </Badge>
+              )}
+            </TabsTrigger>
             <TabsTrigger value="articles">Articles</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="banners">Banners</TabsTrigger>
@@ -210,6 +326,97 @@ const AdminDashboard: React.FC = () => {
               Messages
             </TabsTrigger>
           </TabsList>
+          
+          <TabsContent value="stories">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center justify-between">
+                  <span>Stories Management</span>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    {storiesLoading ? (
+                      <span>Loading...</span>
+                    ) : (
+                      <span>{stories.length} total stories</span>
+                    )}
+                  </div>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {storiesLoading ? (
+                  <div className="text-center py-8">Loading stories...</div>
+                ) : stories.length === 0 ? (
+                  <div className="text-center py-8 text-gray-500">
+                    No stories found. News anchors can submit stories for review.
+                  </div>
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Title</TableHead>
+                          <TableHead>Author</TableHead>
+                          <TableHead>Category</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Submitted</TableHead>
+                          <TableHead>Last Updated</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {stories.map((story) => {
+                          const author = authorProfiles[story.author_id];
+                          return (
+                            <TableRow key={story.id}>
+                              <TableCell className="font-medium max-w-xs truncate">
+                                {story.title}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  <User className="h-4 w-4 text-muted-foreground" />
+                                  <span className="text-sm">
+                                    {author?.full_name || author?.email || 'Unknown'}
+                                  </span>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{story.category}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex items-center gap-2">
+                                  {getStatusIcon(story.status)}
+                                  <Badge className={getStatusColor(story.status)}>
+                                    {story.status}
+                                  </Badge>
+                                </div>
+                              </TableCell>
+                              <TableCell className="text-sm text-gray-600">
+                                {formatDate(story.created_at)}
+                              </TableCell>
+                              <TableCell className="text-sm text-gray-600">
+                                {formatDate(story.updated_at)}
+                              </TableCell>
+                              <TableCell>
+                                <div className="flex space-x-2">
+                                  <Button
+                                    size="sm"
+                                    variant={story.status === 'pending' ? 'default' : 'outline'}
+                                    onClick={() => handleReviewStory(story)}
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                    {story.status === 'pending' ? 'Review' : 'View'}
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
           
           <TabsContent value="articles">
             <Card>
@@ -362,6 +569,13 @@ const AdminDashboard: React.FC = () => {
         open={showViewDialog}
         onClose={handleViewDialogClose}
       />
+
+      {reviewingStory && (
+        <StoryReviewDialog
+          story={reviewingStory}
+          onClose={handleStoryReviewClose}
+        />
+      )}
     </div>
   );
 };
