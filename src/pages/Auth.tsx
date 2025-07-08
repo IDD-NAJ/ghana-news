@@ -31,15 +31,29 @@ const Auth = () => {
     fullName: ''
   });
 
+  // Debug logging for auth redirect
+  console.log('Auth page - Debug state:', {
+    user: !!user,
+    userId: user?.id,
+    profile: profile,
+    loading,
+    profileRole: profile?.role,
+    profileVerified: profile?.verified
+  });
+
   // Redirect authenticated users to appropriate dashboard
   if (user && profile && !loading) {
+    console.log('Auth page - Redirecting user with role:', profile.role, 'verified:', profile.verified);
+    
     if (profile.role === 'admin') {
       return <Navigate to="/admin" replace />;
     } else if (profile.role === 'chief_author') {
       return <Navigate to="/chief-author" replace />;
     } else if (profile.role === 'news_anchor' && profile.verified) {
+      console.log('Auth page - Redirecting to news-anchor dashboard');
       return <Navigate to="/news-anchor" replace />;
     } else {
+      console.log('Auth page - Redirecting to home page');
       return <Navigate to="/" replace />;
     }
   }
