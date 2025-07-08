@@ -157,32 +157,6 @@ const Index = () => {
           </div>
           
 
-          {/* Newsletter Section */}
-          <section className="my-16">
-            <div 
-              className="relative rounded-2xl overflow-hidden p-12 text-center"
-              style={{
-                backgroundImage: `linear-gradient(135deg, rgba(0,0,0,0.7), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&h=600&fit=crop')`
-              }}
-            >
-              <h2 className="text-3xl md:text-4xl font-playfair font-bold text-white mb-4 text-shadow">
-                Never Miss a Story
-              </h2>
-              <p className="text-lg text-white mb-8 max-w-2xl mx-auto text-shadow">
-                Subscribe to our newsletter and get the latest news delivered straight to your inbox.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-                <input 
-                  type="email" 
-                  placeholder="Enter your email"
-                  className="flex-1 px-4 py-3 rounded-lg border-0 elegant-card"
-                />
-                <button className="px-8 py-3 bg-primary text-primary-foreground rounded-lg font-semibold hover:glow-effect transition-all duration-300">
-                  Subscribe
-                </button>
-              </div>
-            </div>
-          </section>
         </div>
       </main>
 
