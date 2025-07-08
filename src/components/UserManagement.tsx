@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { UserPlus, Shield, Eye, CheckCircle, XCircle } from "lucide-react";
+import { UserPlus, Shield, Eye, CheckCircle, XCircle, Edit } from "lucide-react";
 
 interface UserProfile {
   id: string;
@@ -27,6 +27,9 @@ const UserManagement = () => {
   const [promotionEmail, setPromotionEmail] = useState("");
   const [promotionRole, setPromotionRole] = useState("");
   const [isPromoteDialogOpen, setIsPromoteDialogOpen] = useState(false);
+  const [editingUser, setEditingUser] = useState<UserProfile | null>(null);
+  const [editRole, setEditRole] = useState("");
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
   useEffect(() => {
     fetchUsers();
@@ -125,6 +128,45 @@ const UserManagement = () => {
     }
   };
 
+  const openEditDialog = (user: UserProfile) => {
+    setEditingUser(user);
+    setEditRole(user.role);
+    setIsEditDialogOpen(true);
+  };
+
+  const updateUserRole = async () => {
+    if (!editingUser || !editRole) return;
+
+    try {
+      // Update the role in the profiles table
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ 
+          role: editRole,
+          verified: editRole === 'customer' ? false : editingUser.verified // Reset verification if demoting to customer
+        })
+        .eq('id', editingUser.id);
+
+      if (updateError) throw updateError;
+
+      toast({
+        title: "Success",
+        description: `User role updated to ${editRole.replace('_', ' ')} successfully`,
+      });
+
+      setIsEditDialogOpen(false);
+      setEditingUser(null);
+      setEditRole("");
+      fetchUsers();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to update user role",
+        variant: "destructive"
+      });
+    }
+  };
+
   const getRoleBadgeColor = (role: string) => {
     switch (role) {
       case 'admin':
@@ -192,6 +234,52 @@ const UserManagement = () => {
             </div>
           </DialogContent>
         </Dialog>
+
+        {/* Edit User Role Dialog */}
+        <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Edit User Role</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>User</Label>
+                <p className="text-sm text-muted-foreground">
+                  {editingUser?.full_name || editingUser?.email}
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="editRole">Role</Label>
+                <Select value={editRole} onValueChange={setEditRole}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select role" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="customer">Customer</SelectItem>
+                    <SelectItem value="news_anchor">News Anchor</SelectItem>
+                    <SelectItem value="chief_author">Chief Author</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="flex justify-end gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={() => {
+                    setIsEditDialogOpen(false);
+                    setEditingUser(null);
+                    setEditRole("");
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button onClick={updateUserRole}>
+                  Update Role
+                </Button>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="grid gap-4">
@@ -236,6 +324,15 @@ const UserManagement = () => {
                     Joined: {new Date(user.created_at).toLocaleDateString()}
                   </div>
                   <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openEditDialog(user)}
+                      className="flex items-center gap-1"
+                    >
+                      <Edit className="h-4 w-4" />
+                      Edit Role
+                    </Button>
                     {(user.role === 'news_anchor' || user.role === 'chief_author') && (
                       <Button
                         variant="outline"
