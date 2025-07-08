@@ -23,12 +23,13 @@ const Index = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 font-inter">
+      <div className="min-h-screen font-inter">
         <Banner />
         <Header />
         <main className="container mx-auto px-4 py-8">
-          <div className="text-center">
-            <div className="text-lg mb-2">Loading articles...</div>
+          <div className="text-center elegant-card rounded-lg p-8 glow-effect">
+            <div className="text-lg mb-2 text-shadow">Loading articles...</div>
+            <div className="animate-pulse w-16 h-1 bg-primary mx-auto rounded-full"></div>
           </div>
         </main>
         <Footer />
@@ -37,11 +38,11 @@ const Index = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 font-inter">
+    <div className="min-h-screen font-inter relative">
       <Banner />
       <Header />
       
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 py-8 relative z-10">
         {/* Top Banner Ad */}
         <AdBanner placement="top" currentPage="/" />
         
@@ -51,13 +52,15 @@ const Index = () => {
             {/* Featured News */}
             {featuredArticle && (
               <section className="animate-fade-in-up">
-                <h2 className="text-2xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-ghana-red pl-4">
+                <h2 className="text-2xl font-playfair font-bold text-foreground mb-6 border-l-4 border-primary pl-4 text-shadow">
                   Featured Story
                 </h2>
-                <NewsCard
-                  article={featuredArticle}
-                  isLarge={true}
-                />
+                <div className="elegant-card rounded-xl p-6 glow-effect">
+                  <NewsCard
+                    article={featuredArticle}
+                    isLarge={true}
+                  />
+                </div>
               </section>
             )}
 
@@ -66,13 +69,13 @@ const Index = () => {
 
             {/* Latest News Grid */}
             <section>
-              <h2 className="text-2xl font-playfair font-bold text-gray-900 mb-6 border-l-4 border-ghana-green pl-4">
+              <h2 className="text-2xl font-playfair font-bold text-foreground mb-6 border-l-4 border-primary pl-4 text-shadow">
                 Latest News
               </h2>
               {currentItems.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {currentItems.map((news, index) => (
-                    <div key={news.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
+                    <div key={news.id} className="animate-fade-in-up elegant-card rounded-xl p-6 hover:glow-effect transition-all duration-300" style={{ animationDelay: `${index * 0.1}s` }}>
                       <NewsCard
                         article={news}
                       />
@@ -80,8 +83,8 @@ const Index = () => {
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
-                  <p className="text-gray-600">No articles available at the moment.</p>
+                <div className="text-center py-8 elegant-card rounded-lg">
+                  <p className="text-muted-foreground">No articles available at the moment.</p>
                 </div>
               )}
             </section>
@@ -91,7 +94,7 @@ const Index = () => {
               <div className="text-center pt-8">
                 <button 
                   onClick={loadMore}
-                  className="bg-ghana-red text-white px-8 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                  className="elegant-card px-8 py-3 rounded-lg font-semibold hover:glow-effect transition-all duration-300 transform hover:-translate-y-1 text-primary hover:text-primary-foreground hover:bg-primary"
                 >
                   Load More Stories
                 </button>
@@ -101,7 +104,7 @@ const Index = () => {
 
           {/* Sidebar */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24">
+            <div className="sticky top-24 elegant-card rounded-xl p-6 glow-effect">
               <Sidebar />
             </div>
           </div>
