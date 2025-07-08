@@ -93,12 +93,9 @@ const Header = () => {
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
                 <div className="text-center">
-                  <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold tracking-tight">
-                    <span className="text-foreground">THE</span>
-                  </h1>
                   <div className="flex items-center justify-center">
-                    <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-serif font-bold text-primary mr-1">+233</span>
-                    <span className="text-sm sm:text-lg md:text-xl lg:text-2xl font-serif font-bold text-foreground">HERALD</span>
+                    <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-primary">+233</span>
+                    <span className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif font-bold text-foreground">Blog-news</span>
                   </div>
                   <div className="text-[8px] sm:text-[10px] md:text-xs font-medium text-muted-foreground uppercase tracking-widest mt-0.5 md:mt-1">
                     Trusted News Since 2024
