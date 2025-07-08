@@ -132,7 +132,7 @@ const Header = () => {
                   <div className="flex items-center space-x-2 px-3 py-1 bg-gray-50 rounded-full">
                     <User className="w-5 h-5 text-gray-600" />
                     <span className="text-sm font-medium text-gray-700">
-                      {profile.full_name || profile.email}
+                      {profile.full_name?.split(' ')[0] || 'User'}
                     </span>
                   </div>
                   
@@ -209,7 +209,7 @@ const Header = () => {
                       <div className="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded">
                         <User className="w-5 h-5 text-gray-600" />
                         <span className="text-sm font-medium text-gray-700">
-                          {profile.full_name || profile.email}
+                          {profile.full_name?.split(' ')[0] || 'User'}
                         </span>
                       </div>
                       
