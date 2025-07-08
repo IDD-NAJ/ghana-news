@@ -77,7 +77,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
           <div className="flex flex-wrap items-center text-xs sm:text-sm text-gray-500 gap-2 sm:gap-4">
             <div className="flex items-center space-x-1">
               <User className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span>News Desk</span>
+              <span>{article.author_name || article.author_email || 'News Desk'}</span>
             </div>
             <div className="flex items-center space-x-1">
               <Clock className="w-3 h-3 sm:w-4 sm:h-4" />

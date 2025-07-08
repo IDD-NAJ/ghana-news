@@ -17,7 +17,13 @@ export const useTrendingArticles = (limit: number = 4) => {
         
         const { data, error } = await supabase
           .from('articles')
-          .select('*')
+          .select(`
+            *,
+            profiles!articles_author_id_fkey(
+              full_name,
+              email
+            )
+          `)
           .eq('published', true)
           .lte('publication_date', new Date().toISOString())
           .order('publication_date', { ascending: false })
@@ -31,7 +37,15 @@ export const useTrendingArticles = (limit: number = 4) => {
         }
 
         console.log('Successfully fetched trending articles:', data?.length || 0);
-        setTrendingArticles(data || []);
+        
+        // Transform the data to flatten the author information
+        const articlesWithAuthor = (data || []).map((article: any) => ({
+          ...article,
+          author_name: article.profiles?.full_name || null,
+          author_email: article.profiles?.email || null,
+        }));
+        
+        setTrendingArticles(articlesWithAuthor);
       } catch (err) {
         console.error('Unexpected error:', err);
         setError('An unexpected error occurred while loading trending articles');

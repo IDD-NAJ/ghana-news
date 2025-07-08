@@ -25,7 +25,13 @@ export const useSearch = (query: string) => {
         
         const { data, error } = await supabase
           .from('articles')
-          .select('*')
+          .select(`
+            *,
+            profiles!articles_author_id_fkey(
+              full_name,
+              email
+            )
+          `)
           .eq('published', true)
           .lte('publication_date', new Date().toISOString())
           .or(`title.ilike.%${query}%,excerpt.ilike.%${query}%,content.ilike.%${query}%`)
@@ -40,7 +46,15 @@ export const useSearch = (query: string) => {
         }
 
         console.log('Search results found:', data?.length || 0);
-        setResults(data || []);
+        
+        // Transform the data to flatten the author information
+        const resultsWithAuthor = (data || []).map((article: any) => ({
+          ...article,
+          author_name: article.profiles?.full_name || null,
+          author_email: article.profiles?.email || null,
+        }));
+        
+        setResults(resultsWithAuthor);
       } catch (err) {
         console.error('Unexpected search error:', err);
         setError('An unexpected error occurred during search');

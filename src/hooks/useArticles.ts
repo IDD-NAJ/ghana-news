@@ -16,6 +16,8 @@ export interface Article {
   updated_at: string;
   publication_date: string;
   slug: string;
+  author_name: string | null;
+  author_email: string | null;
 }
 
 export const useArticles = (category?: string, featured?: boolean) => {
@@ -32,7 +34,13 @@ export const useArticles = (category?: string, featured?: boolean) => {
         
         let query = supabase
           .from('articles')
-          .select('*')
+          .select(`
+            *,
+            profiles!articles_author_id_fkey(
+              full_name,
+              email
+            )
+          `)
           .eq('published', true)
           .lte('publication_date', new Date().toISOString())
           .order('publication_date', { ascending: false });
@@ -55,7 +63,15 @@ export const useArticles = (category?: string, featured?: boolean) => {
         }
 
         console.log('Successfully fetched articles:', data?.length || 0);
-        setArticles(data || []);
+        
+        // Transform the data to flatten the author information
+        const articlesWithAuthor = (data || []).map((article: any) => ({
+          ...article,
+          author_name: article.profiles?.full_name || null,
+          author_email: article.profiles?.email || null,
+        }));
+        
+        setArticles(articlesWithAuthor);
       } catch (err) {
         console.error('Unexpected error:', err);
         setError('An unexpected error occurred while loading articles');
