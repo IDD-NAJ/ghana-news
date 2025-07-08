@@ -19,7 +19,7 @@ export const useAdvertisingInquiry = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
 
-  const submitInquiry = async (inquiryData: Omit<AdvertisingInquiry, 'id' | 'created_at'>) => {
+  const submitInquiry = async (inquiryData: Omit<AdvertisingInquiry, 'id' | 'created_at'>, retryCount = 0) => {
     setLoading(true);
     setError(null);
     setSuccess(false);
@@ -27,16 +27,15 @@ export const useAdvertisingInquiry = () => {
     try {
       console.log('Submitting advertising inquiry:', inquiryData);
       
-      // Using type assertion to work around TypeScript issue with new table
-      const { data, error } = await (supabase as any)
+      const { data, error } = await supabase
         .from('advertising_inquiries')
         .insert({
           name: inquiryData.name.trim(),
           email: inquiryData.email.toLowerCase().trim(),
           company: inquiryData.company.trim(),
-          phone: inquiryData.phone?.trim(),
+          phone: inquiryData.phone?.trim() || null,
           package_type: inquiryData.package_type,
-          budget_range: inquiryData.budget_range,
+          budget_range: inquiryData.budget_range || null,
           message: inquiryData.message.trim()
         })
         .select()
@@ -44,7 +43,15 @@ export const useAdvertisingInquiry = () => {
 
       if (error) {
         console.error('Inquiry submission error:', error);
-        setError('Failed to submit inquiry. Please try again.');
+        
+        // Handle specific error cases
+        if (error.code === 'PGRST301' && retryCount < 2) {
+          console.log(`Retrying submission (attempt ${retryCount + 1})`);
+          await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+          return submitInquiry(inquiryData, retryCount + 1);
+        }
+        
+        setError('Failed to submit inquiry. Please check your connection and try again.');
         return false;
       }
 
@@ -53,7 +60,15 @@ export const useAdvertisingInquiry = () => {
       return true;
     } catch (err) {
       console.error('Unexpected error:', err);
-      setError('An unexpected error occurred. Please try again.');
+      
+      // Handle network errors with retry
+      if ((err instanceof Error && err.message.includes('Failed to fetch')) && retryCount < 2) {
+        console.log(`Retrying due to network error (attempt ${retryCount + 1})`);
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second
+        return submitInquiry(inquiryData, retryCount + 1);
+      }
+      
+      setError('Connection error. Please check your internet connection and try again.');
       return false;
     } finally {
       setLoading(false);
