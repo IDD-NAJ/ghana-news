@@ -112,6 +112,7 @@ const Admin: React.FC = () => {
   const handleAuthSuccess = () => {
     console.log('Auth success callback triggered');
     setIsAuthenticated(true);
+    setIsLoading(false);
     setError(null);
   };
 
