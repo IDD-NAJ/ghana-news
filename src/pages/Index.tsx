@@ -91,38 +91,6 @@ const Index = () => {
             </div>
           </section>
           
-          {/* Trending Categories Section */}
-          <section className="mb-12">
-            <h2 className="text-3xl font-playfair font-bold text-foreground mb-8 text-center text-shadow">
-              Trending Categories
-            </h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-              {[
-                { name: 'Politics', image: 'photo-1605810230434-7631ac76ec81', color: 'from-red-500 to-red-700' },
-                { name: 'Technology', image: 'photo-1518770660439-4636190af475', color: 'from-blue-500 to-blue-700' },
-                { name: 'Sports', image: 'photo-1461749280684-dccba630e2f6', color: 'from-green-500 to-green-700' },
-                { name: 'Business', image: 'photo-1486312338219-ce68d2c6f44d', color: 'from-purple-500 to-purple-700' }
-              ].map((category, index) => (
-                <div 
-                  key={category.name}
-                  className="relative h-32 rounded-xl overflow-hidden elegant-card hover:glow-effect transition-all duration-300 transform hover:scale-105 cursor-pointer group"
-                  style={{ animationDelay: `${index * 0.1}s` }}
-                >
-                  <div 
-                    className="absolute inset-0 bg-cover bg-center"
-                    style={{
-                      backgroundImage: `linear-gradient(45deg, rgba(0,0,0,0.6), rgba(0,0,0,0.3)), url('https://images.unsplash.com/${category.image}?w=400&h=300&fit=crop')`
-                    }}
-                  />
-                  <div className="relative z-10 h-full flex items-center justify-center">
-                    <h3 className="text-white font-bold text-lg text-shadow group-hover:scale-110 transition-transform duration-300">
-                      {category.name}
-                    </h3>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </section>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Main Content */}
