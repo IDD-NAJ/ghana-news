@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { CheckCircle, XCircle, Send, Eye } from "lucide-react";
@@ -48,6 +48,43 @@ export const StoryReviewDialog = ({ story, onClose }: StoryReviewDialogProps) =>
       toast({
         title: "Error",
         description: error.message || "Failed to update story",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDirectPublish = async () => {
+    setIsLoading(true);
+
+    try {
+      // First approve the story, then publish it
+      const updates = {
+        status: 'approved',
+        reviewed_by: profile?.id,
+        reviewed_at: new Date().toISOString(),
+        review_notes: reviewNotes || 'Direct publish by chief author'
+      };
+
+      const { error } = await supabase
+        .from('stories')
+        .update(updates)
+        .eq('id', story.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Story published",
+        description: "Story has been approved and published directly.",
+      });
+
+      onClose();
+      window.location.reload(); // Refresh to update the list
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to publish story",
         variant: "destructive"
       });
     } finally {
@@ -153,12 +190,21 @@ export const StoryReviewDialog = ({ story, onClose }: StoryReviewDialogProps) =>
                     Reject
                   </Button>
                   <Button
+                    variant="outline"
                     onClick={() => handleReview('approved')}
                     disabled={isLoading}
                     className="flex items-center gap-2"
                   >
                     <CheckCircle className="h-4 w-4" />
                     Approve
+                  </Button>
+                  <Button
+                    onClick={handleDirectPublish}
+                    disabled={isLoading}
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Send className="h-4 w-4" />
+                    Publish Now
                   </Button>
                 </>
               )}

@@ -6,14 +6,18 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, XCircle, Eye, FileText, Clock } from "lucide-react";
+import { CheckCircle, XCircle, Eye, FileText, Clock, Send } from "lucide-react";
 import { StoryReviewDialog } from "@/components/StoryReviewDialog";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 const ChiefAuthor = () => {
   const { profile, loading: authLoading } = useAuth();
+  const { toast } = useToast();
   const [selectedStory, setSelectedStory] = useState<any>(null);
+  const [publishingStory, setPublishingStory] = useState<string | null>(null);
   const { stories: pendingStories, loading: pendingLoading } = useStories(undefined, 'pending');
   const { stories: allStories, loading: allLoading } = useStories();
 
@@ -55,6 +59,42 @@ const ChiefAuthor = () => {
     }
   };
 
+  const handleQuickPublish = async (story: any) => {
+    setPublishingStory(story.id);
+
+    try {
+      const updates = {
+        status: 'approved',
+        reviewed_by: profile?.id,
+        reviewed_at: new Date().toISOString(),
+        review_notes: 'Quick publish by chief author'
+      };
+
+      const { error } = await supabase
+        .from('stories')
+        .update(updates)
+        .eq('id', story.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Story published",
+        description: "Story has been published successfully.",
+      });
+
+      // Refresh the page to update the lists
+      window.location.reload();
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to publish story",
+        variant: "destructive"
+      });
+    } finally {
+      setPublishingStory(null);
+    }
+  };
+
   const renderStoryCard = (story: any) => (
     <Card key={story.id} className="hover:shadow-md transition-shadow">
       <CardHeader>
@@ -90,6 +130,18 @@ const ChiefAuthor = () => {
             <Eye className="h-4 w-4" />
             Review
           </Button>
+          
+          {story.status === 'pending' && (
+            <Button
+              size="sm"
+              onClick={() => handleQuickPublish(story)}
+              disabled={publishingStory === story.id}
+              className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700"
+            >
+              <Send className="h-4 w-4" />
+              {publishingStory === story.id ? 'Publishing...' : 'Quick Publish'}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
