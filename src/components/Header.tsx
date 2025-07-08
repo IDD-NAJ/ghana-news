@@ -1,12 +1,34 @@
 
-import React, { useState } from 'react';
-import { Search, Menu, X } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Menu, X, Calendar, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import SearchDialog from './SearchDialog';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [currentDate, setCurrentDate] = useState(new Date());
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentDate(new Date());
+    }, 1000); // update every second
+    return () => clearInterval(timer);
+  }, []);
+
+  // Format date as "Monday, July 7, 2025"
+  const formattedDate = currentDate.toLocaleDateString(undefined, {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+
+  // Format time as "10:30 AM"
+  const formattedTime = currentDate.toLocaleTimeString(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   const navItems = [
     { name: 'Home', path: '/' },
@@ -47,7 +69,18 @@ const Header = () => {
               <span className="animate-pulse">Parliament approves 2024 budget</span>
             </div>
             <div className="hidden md:flex items-center space-x-4">
-              <span>Friday, May 26, 2025</span>
+              <span className="flex items-center bg-white/10 rounded px-3 py-1 text-white font-semibold">
+                <Calendar className="w-4 h-4 mr-2" />
+                {formattedDate}
+              </span>
+              <span className="flex items-center bg-white/10 rounded px-3 py-1 text-white font-semibold">
+                <Clock className="w-4 h-4 mr-2" />
+                {formattedTime}
+              </span>
+              <span className="flex items-center bg-white/10 rounded px-3 py-1 text-white font-semibold">
+                <span className="mr-2">BREAKING</span>
+              </span>
+              <span className="ml-2">Parliament approves 2024 budget</span>
             </div>
           </div>
         </div>
