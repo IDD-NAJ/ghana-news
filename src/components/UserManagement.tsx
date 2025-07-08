@@ -105,12 +105,16 @@ const UserManagement = () => {
   };
 
   const toggleUserVerification = async (userId: string, currentVerified: boolean) => {
+    console.log('toggleUserVerification called:', { userId, currentVerified });
+    
     try {
+      console.log('Attempting to update verification...');
       const { error } = await supabase
         .from('profiles')
         .update({ verified: !currentVerified })
         .eq('id', userId);
 
+      console.log('Update result:', { error });
       if (error) throw error;
 
       toast({
@@ -120,6 +124,7 @@ const UserManagement = () => {
 
       fetchUsers();
     } catch (error: any) {
+      console.error('Verification error:', error);
       toast({
         title: "Error",
         description: error.message || "Failed to update user verification",
