@@ -212,12 +212,15 @@ const BannerManager = () => {
                 New Banner Item
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-2xl">
+            <DialogContent className="max-w-2xl" aria-describedby="banner-form-description">
               <DialogHeader>
                 <DialogTitle>
                   {editingItem ? 'Edit Banner Item' : 'Create New Banner Item'}
                 </DialogTitle>
               </DialogHeader>
+              <div id="banner-form-description" className="sr-only">
+                Form to {editingItem ? 'edit existing' : 'create new'} banner item with fields for type, priority, title, message, and optional link settings.
+              </div>
               <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
