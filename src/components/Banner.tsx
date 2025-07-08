@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, ExternalLink, Clock, Calendar } from 'lucide-react';
+import { supabase } from '../integrations/supabase/client';
 
 interface BannerItem {
   id: string;
@@ -16,6 +17,7 @@ const Banner = () => {
   const [isVisible, setIsVisible] = useState(true);
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
   const [currentDate, setCurrentDate] = useState(new Date('2025-05-26'));
+  const [bannerItems, setBannerItems] = useState<BannerItem[]>([]);
 
   // Update date every minute (keeping the same fixed date)
   useEffect(() => {
@@ -25,27 +27,63 @@ const Banner = () => {
     return () => clearInterval(timer);
   }, []);
 
-  // Sample banner data - in a real app, this would come from an API or CMS
-  const bannerItems: BannerItem[] = [
-    {
-      id: '1',
-      type: 'breaking',
-      title: 'BREAKING',
-      message: 'Parliament approves 2024 budget with significant infrastructure investments',
-      link: '/politics',
-      linkText: 'Read More',
-      priority: 'high'
-    },
-    {
-      id: '2',
-      type: 'announcement',
-      title: 'NEW',
-      message: 'Subscribe to our newsletter for daily news updates and exclusive content',
-      link: '#newsletter',
-      linkText: 'Subscribe',
-      priority: 'medium'
-    }
-  ];
+  // Fetch banner items from database
+  useEffect(() => {
+    const fetchBannerItems = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('banner_items')
+          .select('*')
+          .eq('active', true)
+          .or('expires_at.is.null,expires_at.gt.now()')
+          .order('priority', { ascending: false })
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching banner items:', error);
+          return;
+        }
+
+        // Transform data to match existing interface
+        const transformedItems: BannerItem[] = (data || []).map(item => ({
+          id: item.id,
+          type: item.type as 'breaking' | 'announcement' | 'alert',
+          title: item.title,
+          message: item.message,
+          link: item.link || undefined,
+          linkText: item.link_text || undefined,
+          priority: item.priority as 'high' | 'medium' | 'low',
+          expiresAt: item.expires_at || undefined
+        }));
+
+        setBannerItems(transformedItems);
+      } catch (err) {
+        console.error('Error:', err);
+      }
+    };
+
+    fetchBannerItems();
+
+    // Set up real-time subscription
+    const channel = supabase
+      .channel('banner-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'banner_items'
+        },
+        () => {
+          fetchBannerItems();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, []);
 
   // Auto-rotate banners every 10 seconds
   useEffect(() => {

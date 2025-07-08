@@ -11,6 +11,7 @@ import { Input } from './ui/input';
 import ArticleEditor from './ArticleEditor';
 import ArticleViewDialog from './ArticleViewDialog';
 import ContactMessages from './ContactMessages';
+import BannerManager from './BannerManager';
 
 interface Article {
   id: string;
@@ -199,8 +200,9 @@ const AdminDashboard: React.FC = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-2">
+          <TabsList className="grid w-full grid-cols-3">
             <TabsTrigger value="articles">Articles</TabsTrigger>
+            <TabsTrigger value="banners">Banners</TabsTrigger>
             <TabsTrigger value="messages">
               <Mail className="w-4 h-4 mr-2" />
               Messages
@@ -337,6 +339,10 @@ const AdminDashboard: React.FC = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+          
+          <TabsContent value="banners">
+            <BannerManager />
           </TabsContent>
           
           <TabsContent value="messages">
