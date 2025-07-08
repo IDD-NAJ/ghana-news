@@ -5,9 +5,11 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useAuth } from "@/hooks/useAuth";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { Save, X } from "lucide-react";
+import { Save, X, AlertCircle } from "lucide-react";
+import FeaturedImageUploader from "./FeaturedImageUploader";
 
 interface StoryEditorProps {
   onClose: () => void;
@@ -33,6 +35,7 @@ export const StoryEditor = ({ onClose, onSave, story }: StoryEditorProps) => {
   const { profile } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const [formData, setFormData] = useState({
     title: story?.title || '',
@@ -84,6 +87,13 @@ export const StoryEditor = ({ onClose, onSave, story }: StoryEditorProps) => {
           </DialogTitle>
         </DialogHeader>
 
+        {error && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="space-y-2">
@@ -130,13 +140,11 @@ export const StoryEditor = ({ onClose, onSave, story }: StoryEditorProps) => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="image_url">Image URL</Label>
-            <Input
-              id="image_url"
-              value={formData.image_url}
-              onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-              placeholder="https://example.com/image.jpg"
-              type="url"
+            <Label>Story Image</Label>
+            <FeaturedImageUploader
+              imageUrl={formData.image_url}
+              onImageUrlChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+              onError={setError}
             />
           </div>
 
