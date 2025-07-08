@@ -82,8 +82,8 @@ const Admin: React.FC = () => {
         return;
       }
 
-      if (data.role !== 'admin') {
-        console.log('User is not an admin, role:', data.role);
+      if (data.role !== 'admin' && data.role !== 'chief_author') {
+        console.log('User does not have admin/chief_author access, role:', data.role);
         setError('Access denied. Your account does not have admin privileges.');
         setIsAuthenticated(false);
         await supabase.auth.signOut();
