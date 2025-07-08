@@ -156,28 +156,6 @@ const Index = () => {
             </div>
           </div>
           
-          {/* Statistics Section */}
-          <section className="my-16">
-            <div className="elegant-card rounded-2xl p-8 glow-effect">
-              <h2 className="text-3xl font-playfair font-bold text-foreground mb-8 text-center text-shadow">
-                News at a Glance
-              </h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-                {[
-                  { number: '50K+', label: 'Daily Readers', icon: '👥' },
-                  { number: '1000+', label: 'Articles Published', icon: '📰' },
-                  { number: '24/7', label: 'News Coverage', icon: '⏰' },
-                  { number: '15', label: 'Categories', icon: '📋' }
-                ].map((stat, index) => (
-                  <div key={stat.label} className="text-center animate-fade-in-up" style={{ animationDelay: `${index * 0.1}s` }}>
-                    <div className="text-4xl mb-2">{stat.icon}</div>
-                    <div className="text-3xl font-bold text-primary mb-1">{stat.number}</div>
-                    <div className="text-muted-foreground text-sm">{stat.label}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </section>
 
           {/* Newsletter Section */}
           <section className="my-16">
