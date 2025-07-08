@@ -13,6 +13,7 @@ import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { Plus, Edit, Trash2, Eye, BarChart3 } from 'lucide-react';
 import type { Advertisement } from '@/hooks/useAdvertisements';
+import { AdImageUploader } from './AdImageUploader';
 
 interface AdFormData {
   title: string;
@@ -280,26 +281,19 @@ export const AdManager = () => {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="image_url">Image URL</Label>
-                  <Input
-                    id="image_url"
-                    type="url"
-                    value={formData.image_url}
-                    onChange={(e) => setFormData(prev => ({ ...prev, image_url: e.target.value }))}
-                  />
-                </div>
-                
-                <div>
-                  <Label htmlFor="link_url">Link URL</Label>
-                  <Input
-                    id="link_url"
-                    type="url"
-                    value={formData.link_url}
-                    onChange={(e) => setFormData(prev => ({ ...prev, link_url: e.target.value }))}
-                  />
-                </div>
+              <AdImageUploader
+                currentImageUrl={formData.image_url}
+                onImageUrlChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+              />
+
+              <div>
+                <Label htmlFor="link_url">Link URL</Label>
+                <Input
+                  id="link_url"
+                  type="url"
+                  value={formData.link_url}
+                  onChange={(e) => setFormData(prev => ({ ...prev, link_url: e.target.value }))}
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
