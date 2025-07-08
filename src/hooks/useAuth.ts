@@ -21,24 +21,26 @@ export const useAuth = () => {
   useEffect(() => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
         
         if (session?.user) {
-          // Fetch user profile immediately, not with setTimeout
-          try {
-            const { data: profileData } = await supabase
-              .from('profiles')
-              .select('*')
-              .eq('id', session.user.id)
-              .single();
-            
-            setProfile(profileData);
-          } catch (error) {
-            console.error('Error fetching profile:', error);
-            setProfile(null);
-          }
+          // Fetch user profile with setTimeout to avoid deadlock
+          setTimeout(async () => {
+            try {
+              const { data: profileData } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', session.user.id)
+                .single();
+              
+              setProfile(profileData);
+            } catch (error) {
+              console.error('Error fetching profile:', error);
+              setProfile(null);
+            }
+          }, 0);
         } else {
           setProfile(null);
         }
