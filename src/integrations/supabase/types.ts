@@ -510,40 +510,115 @@ export type Database = {
         Row: {
           active: boolean
           avatar_url: string | null
+          bio: string | null
           company_name: string | null
           created_at: string
           email: string
+          expertise_areas: string[] | null
           full_name: string | null
           id: string
           phone_number: string | null
           role: string
           updated_at: string
+          verified: boolean | null
         }
         Insert: {
           active?: boolean
           avatar_url?: string | null
+          bio?: string | null
           company_name?: string | null
           created_at?: string
           email: string
+          expertise_areas?: string[] | null
           full_name?: string | null
           id: string
           phone_number?: string | null
           role?: string
           updated_at?: string
+          verified?: boolean | null
         }
         Update: {
           active?: boolean
           avatar_url?: string | null
+          bio?: string | null
           company_name?: string | null
           created_at?: string
           email?: string
+          expertise_areas?: string[] | null
           full_name?: string | null
           id?: string
           phone_number?: string | null
           role?: string
           updated_at?: string
+          verified?: boolean | null
         }
         Relationships: []
+      }
+      stories: {
+        Row: {
+          author_id: string
+          category: string
+          content: string
+          created_at: string | null
+          excerpt: string | null
+          id: string
+          image_url: string | null
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          slug: string | null
+          status: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          author_id: string
+          category: string
+          content: string
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          slug?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          author_id?: string
+          category?: string
+          content?: string
+          created_at?: string | null
+          excerpt?: string | null
+          id?: string
+          image_url?: string | null
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          slug?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "stories_author_id_fkey"
+            columns: ["author_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "stories_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tags: {
         Row: {
@@ -710,6 +785,14 @@ export type Database = {
         Args: { user_id: string }
         Returns: boolean
       }
+      promote_to_chief_author: {
+        Args: { user_email: string }
+        Returns: undefined
+      }
+      promote_to_news_anchor: {
+        Args: { user_email: string }
+        Returns: undefined
+      }
       promote_user_to_admin: {
         Args: { user_email: string }
         Returns: undefined
@@ -728,6 +811,10 @@ export type Database = {
           publication_date: string
           rank: number
         }[]
+      }
+      user_has_role: {
+        Args: { check_role: string }
+        Returns: boolean
       }
     }
     Enums: {

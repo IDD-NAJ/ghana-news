@@ -26,6 +26,9 @@ import RSSFeed from "./pages/RSSFeed";
 import Sitemap from "./pages/Sitemap";
 import NotFound from "./pages/NotFound";
 import Admin from "./pages/Admin";
+import Auth from "./pages/Auth";
+import NewsAnchor from "./pages/NewsAnchor";
+import ChiefAuthor from "./pages/ChiefAuthor";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -64,6 +67,9 @@ const App = () => {
                 <Route path="/rss" element={<RSSFeed />} />
                 <Route path="/sitemap" element={<Sitemap />} />
                 <Route path="/admin" element={<Admin />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/news-anchor" element={<NewsAnchor />} />
+                <Route path="/chief-author" element={<ChiefAuthor />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
