@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, XCircle, Eye, FileText, Clock, Send } from "lucide-react";
+import { CheckCircle, XCircle, Eye, FileText, Clock, Send, Plus } from "lucide-react";
 import { StoryReviewDialog } from "@/components/StoryReviewDialog";
+import { QuickArticleEditor } from "@/components/QuickArticleEditor";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
@@ -17,6 +18,7 @@ const ChiefAuthor = () => {
   const { profile, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [selectedStory, setSelectedStory] = useState<any>(null);
+  const [showArticleEditor, setShowArticleEditor] = useState(false);
   const [publishingStory, setPublishingStory] = useState<string | null>(null);
   const { stories: pendingStories, loading: pendingLoading } = useStories(undefined, 'pending');
   const { stories: allStories, loading: allLoading } = useStories();
@@ -153,11 +155,21 @@ const ChiefAuthor = () => {
       
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl font-bold text-foreground">Chief Author Dashboard</h1>
-            <p className="text-muted-foreground mt-2">
-              Review and manage story submissions
-            </p>
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <h1 className="text-3xl font-bold text-foreground">Chief Author Dashboard</h1>
+              <p className="text-muted-foreground mt-2">
+                Review submissions and create new articles
+              </p>
+            </div>
+            
+            <Button 
+              onClick={() => setShowArticleEditor(true)}
+              className="flex items-center gap-2"
+            >
+              <Plus className="h-4 w-4" />
+              Create Article
+            </Button>
           </div>
 
           <Tabs defaultValue="pending" className="w-full">
@@ -220,6 +232,13 @@ const ChiefAuthor = () => {
         <StoryReviewDialog
           story={selectedStory}
           onClose={() => setSelectedStory(null)}
+        />
+      )}
+
+      {/* Article Editor Modal */}
+      {showArticleEditor && (
+        <QuickArticleEditor
+          onClose={() => setShowArticleEditor(false)}
         />
       )}
     </div>
