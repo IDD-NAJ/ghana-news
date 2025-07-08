@@ -169,14 +169,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     console.log('Signing out...');
-    const { error } = await supabase.auth.signOut();
-    console.log('Sign out result:', { error });
-    if (!error) {
-      // Clear local state immediately
+    
+    // Check if there's a valid session before attempting to sign out
+    if (!session) {
+      console.log('No session found, clearing local state only');
+      // Clear local state even if no session
       setUser(null);
       setSession(null);
       setProfile(null);
+      return { error: null };
     }
+    
+    const { error } = await supabase.auth.signOut();
+    console.log('Sign out result:', { error });
+    
+    // Clear local state regardless of the sign out result
+    // This handles cases where session is invalid but we still need to clear UI state
+    if (!error || error.message?.includes('Auth session missing')) {
+      setUser(null);
+      setSession(null);
+      setProfile(null);
+      return { error: null }; // Treat session missing as successful sign out
+    }
+    
     return { error };
   };
 
