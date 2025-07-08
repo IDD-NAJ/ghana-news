@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import { useTrendingArticles } from '../hooks/useTrendingArticles';
 import { useViewTracking } from '../hooks/useViewTracking';
 import NewsletterSubscription from './NewsletterSubscription';
+import { AdSidebar } from './AdSidebar';
+import { AdSponsored } from './AdSponsored';
 
 const TrendingArticleItem = ({ article, index }: { article: any, index: number }) => {
   const { viewCount } = useViewTracking(article.id);
@@ -129,8 +131,14 @@ const Sidebar = () => {
         </div>
       </div>
 
+      {/* Sidebar Advertisements */}
+      <AdSidebar placement="right" currentPage="/" maxAds={2} />
+
       {/* Newsletter */}
       <NewsletterSubscription />
+
+      {/* Sponsored Content */}
+      <AdSponsored currentPage="/" maxAds={1} />
     </aside>
   );
 };

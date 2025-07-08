@@ -15,6 +15,7 @@ import ContactMessages from './ContactMessages';
 import BannerManager from './BannerManager';
 import UserManagement from './UserManagement';
 import { StoryReviewDialog } from './StoryReviewDialog';
+import { AdManager } from './AdManager';
 
 interface Article {
   id: string;
@@ -310,7 +311,7 @@ const AdminDashboard: React.FC = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="stories" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
               Stories
@@ -321,6 +322,7 @@ const AdminDashboard: React.FC = () => {
               )}
             </TabsTrigger>
             <TabsTrigger value="articles">Articles</TabsTrigger>
+            <TabsTrigger value="ads">Advertisements</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="banners">Banners</TabsTrigger>
             <TabsTrigger value="messages">
@@ -418,6 +420,10 @@ const AdminDashboard: React.FC = () => {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+          
+          <TabsContent value="ads">
+            <AdManager />
           </TabsContent>
           
           <TabsContent value="articles">

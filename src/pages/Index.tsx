@@ -6,6 +6,9 @@ import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
 import { usePagination } from '../hooks/usePagination';
 import { useArticles, useFeaturedArticle } from '../hooks/useArticles';
+import { AdBanner } from '../components/AdBanner';
+import { AdInline } from '../components/AdInline';
+import { AdPopup } from '../components/AdPopup';
 
 const Index = () => {
   const { featuredArticle, loading: featuredLoading } = useFeaturedArticle();
@@ -39,6 +42,9 @@ const Index = () => {
       <Header />
       
       <main className="container mx-auto px-4 py-8">
+        {/* Top Banner Ad */}
+        <AdBanner placement="top" currentPage="/" />
+        
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-8">
@@ -54,6 +60,9 @@ const Index = () => {
                 />
               </section>
             )}
+
+            {/* Inline Advertisement */}
+            <AdInline currentPage="/" />
 
             {/* Latest News Grid */}
             <section>
@@ -100,6 +109,9 @@ const Index = () => {
       </main>
 
       <Footer />
+      
+      {/* Popup Advertisement */}
+      <AdPopup currentPage="/" delay={3000} />
     </div>
   );
 };

@@ -14,6 +14,119 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_interactions: {
+        Row: {
+          ad_id: string
+          created_at: string
+          id: string
+          interaction_type: string
+          ip_address: unknown | null
+          page_url: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          ad_id: string
+          created_at?: string
+          id?: string
+          interaction_type: string
+          ip_address?: unknown | null
+          page_url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          ad_id?: string
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          ip_address?: unknown | null
+          page_url?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_interactions_ad_id_fkey"
+            columns: ["ad_id"]
+            isOneToOne: false
+            referencedRelation: "advertisements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      advertisements: {
+        Row: {
+          active: boolean | null
+          ad_type: string
+          budget_spent: number | null
+          click_count: number | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          image_url: string | null
+          impression_count: number | null
+          link_text: string | null
+          link_url: string | null
+          max_budget: number | null
+          placement_position: string | null
+          priority: number | null
+          start_date: string | null
+          target_categories: string[] | null
+          target_pages: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean | null
+          ad_type: string
+          budget_spent?: number | null
+          click_count?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          impression_count?: number | null
+          link_text?: string | null
+          link_url?: string | null
+          max_budget?: number | null
+          placement_position?: string | null
+          priority?: number | null
+          start_date?: string | null
+          target_categories?: string[] | null
+          target_pages?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean | null
+          ad_type?: string
+          budget_spent?: number | null
+          click_count?: number | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          image_url?: string | null
+          impression_count?: number | null
+          link_text?: string | null
+          link_url?: string | null
+          max_budget?: number | null
+          placement_position?: string | null
+          priority?: number | null
+          start_date?: string | null
+          target_categories?: string[] | null
+          target_pages?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       advertising_inquiries: {
         Row: {
           budget_range: string | null
