@@ -131,18 +131,7 @@ const Banner = () => {
   return (
     <div className={getBannerStyles(currentBanner.type, currentBanner.priority)}>
       <div className="container mx-auto flex items-center justify-between">
-        {/* Date Display */}
-        <div className="flex items-center space-x-1 md:space-x-2 bg-white/10 px-2 md:px-3 py-1 rounded-lg">
-          <Calendar className="w-3 h-3 md:w-4 md:h-4" />
-          <span className="text-xs font-semibold whitespace-nowrap hidden sm:inline">
-            {formatDate(currentDate)}
-          </span>
-          <span className="text-xs font-semibold whitespace-nowrap sm:hidden">
-            {currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-          </span>
-        </div>
-
-        <div className="flex items-center space-x-3 flex-1 min-w-0 md:ml-4">
+        <div className="flex items-center space-x-3 flex-1 min-w-0">
           <div className="flex items-center space-x-2">
             {getTypeIcon(currentBanner.type)}
             <span className="bg-white/20 px-2 py-1 rounded text-xs font-bold uppercase tracking-wide">
