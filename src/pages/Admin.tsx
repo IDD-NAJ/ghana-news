@@ -66,17 +66,14 @@ const Admin: React.FC = () => {
         .select('role')
         .eq('id', userId)
         .abortSignal(controller.signal)
-        .single();
+        .maybeSingle();
 
       clearTimeout(timeoutId);
       console.log('Admin check result:', { data, error });
 
       if (error) {
         console.error('Profile error:', error);
-        if (error.code === 'PGRST116') {
-          setError('User profile not found. Please contact the system administrator to set up your admin profile.');
-          await supabase.auth.signOut();
-        } else if (error.name === 'AbortError') {
+        if (error.name === 'AbortError') {
           setError('Admin check timed out. Please check your connection and try again.');
         } else {
           setError(`Failed to verify admin status: ${error.message}`);
@@ -86,15 +83,26 @@ const Admin: React.FC = () => {
         return;
       }
 
-      if (data?.role !== 'admin') {
-        console.log('User is not an admin, role:', data?.role);
+      if (!data) {
+        console.log('No profile found for user:', userId);
+        setError('User profile not found. Please contact the system administrator to set up your admin profile.');
+        setIsAuthenticated(false);
+        await supabase.auth.signOut();
+        setIsLoading(false);
+        return;
+      }
+
+      if (data.role !== 'admin') {
+        console.log('User is not an admin, role:', data.role);
         setError('Access denied. Your account does not have admin privileges.');
         setIsAuthenticated(false);
         await supabase.auth.signOut();
+        setIsLoading(false);
       } else {
         console.log('User is admin, granting access');
         setIsAuthenticated(true);
         setError(null);
+        setIsLoading(false);
       }
     } catch (err) {
       console.error('Unexpected error checking admin status:', err);
@@ -104,7 +112,6 @@ const Admin: React.FC = () => {
         setError('An unexpected error occurred. Please try refreshing the page.');
       }
       setIsAuthenticated(false);
-    } finally {
       setIsLoading(false);
     }
   };
