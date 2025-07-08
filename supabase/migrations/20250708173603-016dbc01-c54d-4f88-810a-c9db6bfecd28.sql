@@ -1,0 +1,51 @@
+-- Function to publish approved stories as articles
+CREATE OR REPLACE FUNCTION public.publish_approved_story()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+AS $$
+BEGIN
+  -- Only proceed if status changed to 'approved'
+  IF NEW.status = 'approved' AND (OLD.status IS NULL OR OLD.status != 'approved') THEN
+    -- Create article from the approved story
+    INSERT INTO public.articles (
+      author_id,
+      title,
+      content,
+      excerpt,
+      category,
+      image_url,
+      slug,
+      published,
+      featured,
+      publication_date,
+      created_at,
+      updated_at
+    ) VALUES (
+      NEW.author_id,
+      NEW.title,
+      NEW.content,
+      NEW.excerpt,
+      NEW.category,
+      NEW.image_url,
+      COALESCE(NEW.slug, lower(replace(NEW.title, ' ', '-'))),
+      true, -- Published immediately
+      false, -- Not featured by default
+      now(), -- Publish immediately
+      now(),
+      now()
+    );
+    
+    -- Update story status to 'published'
+    NEW.status = 'published';
+  END IF;
+  
+  RETURN NEW;
+END;
+$$;
+
+-- Create trigger to automatically publish approved stories
+CREATE TRIGGER trigger_publish_approved_story
+  BEFORE UPDATE ON public.stories
+  FOR EACH ROW
+  EXECUTE FUNCTION public.publish_approved_story();
