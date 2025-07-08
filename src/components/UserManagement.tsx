@@ -333,18 +333,16 @@ const UserManagement = () => {
                       <Edit className="h-4 w-4" />
                       Edit Role
                     </Button>
-                    {/* Show verify button for all users except customers */}
-                    {user.role !== 'customer' && (
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => toggleUserVerification(user.id, user.verified)}
-                        className="flex items-center gap-1"
-                      >
-                        <Shield className="h-4 w-4" />
-                        {user.verified ? 'Unverify' : 'Verify'}
-                      </Button>
-                    )}
+                    {/* Show verify button for all users */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => toggleUserVerification(user.id, user.verified)}
+                      className="flex items-center gap-1"
+                    >
+                      <Shield className="h-4 w-4" />
+                      {user.verified ? 'Unverify' : 'Verify'}
+                    </Button>
                   </div>
                 </div>
               </CardContent>
