@@ -88,7 +88,7 @@ const Header = () => {
 
         {/* Main Header */}
         <div className="container mx-auto px-4 py-3 md:py-4 lg:py-6">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-8 md:gap-12 lg:gap-16">{/* Added gap for spacing */}
             {/* Logo Section */}
             <div className="flex items-center">
               <Link to="/" className="flex items-center">
