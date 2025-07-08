@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/contexts/AuthContext";
 import { useStories } from "@/hooks/useStories";
 import { Navigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";

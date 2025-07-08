@@ -5,6 +5,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import React from "react";
+import { AuthProvider } from "./contexts/AuthContext";
 import Index from "./pages/Index";
 import Politics from "./pages/Politics";
 import Sports from "./pages/Sports";
@@ -43,10 +44,11 @@ const App = () => {
   return (
     <React.StrictMode>
       <QueryClientProvider client={queryClient}>
-        <BrowserRouter>
-          <TooltipProvider delayDuration={300}>
-            <div className="min-h-screen">
-              <Routes>
+        <AuthProvider>
+          <BrowserRouter>
+            <TooltipProvider delayDuration={300}>
+              <div className="min-h-screen">
+                <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/politics" element={<Politics />} />
                 <Route path="/sports" element={<Sports />} />
@@ -78,6 +80,7 @@ const App = () => {
             <Sonner />
           </TooltipProvider>
         </BrowserRouter>
+        </AuthProvider>
       </QueryClientProvider>
     </React.StrictMode>
   );
