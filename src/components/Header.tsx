@@ -63,72 +63,77 @@ const Header = () => {
 
   return (
     <>
-      <header className="bg-white shadow-lg sticky top-0 z-50">
-        {/* Top bar */}
-        <div className="bg-ghana-red text-white text-sm py-2">
-          <div className="container mx-auto px-4 flex justify-between items-center">
-            <div className="flex items-center space-x-4">
-              <span>Breaking News: </span>
-              <span className="animate-pulse">Parliament approves 2024 budget</span>
-            </div>
-            <div className="hidden md:flex items-center space-x-4">
-              <span className="flex items-center bg-white/10 rounded px-3 py-1 text-white font-semibold">
-                <Calendar className="w-4 h-4 mr-2" />
-                {formattedDate}
-              </span>
-              <span className="flex items-center bg-white/10 rounded px-3 py-1 text-white font-semibold">
-                <Clock className="w-4 h-4 mr-2" />
-                {formattedTime}
-              </span>
-              <span className="flex items-center bg-white/10 rounded px-3 py-1 text-white font-semibold">
-                <span className="mr-2">BREAKING</span>
-              </span>
-              <span className="ml-2">Parliament approves 2024 budget</span>
+      <header className="bg-white border-b-2 border-muted sticky top-0 z-50">
+        {/* Top Info Bar */}
+        <div className="bg-muted/30 border-b border-border">
+          <div className="container mx-auto px-4 py-2">
+            <div className="flex justify-between items-center text-sm text-muted-foreground">
+              <div className="flex items-center space-x-6">
+                <span className="flex items-center">
+                  <Calendar className="w-4 h-4 mr-2" />
+                  {formattedDate}
+                </span>
+                <span className="flex items-center">
+                  <Clock className="w-4 h-4 mr-2" />
+                  {formattedTime}
+                </span>
+              </div>
+              <div className="hidden md:block">
+                <span className="text-xs font-medium uppercase tracking-wider">Professional News & Analysis</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Main header */}
-        <div className="container mx-auto px-4 py-4">
+        {/* Main Header */}
+        <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
-            {/* Logo */}
+            {/* Logo Section */}
             <div className="flex items-center">
-              <Link to="/">
-                <h1 className="text-3xl font-playfair font-bold text-ghana-black">
-                  <span className="text-ghana-red">+233</span>
-                  <span className="text-ghana-gold">BLOG</span>
-                  <span className="text-ghana-green">-NEWS</span>
-                </h1>
+              <Link to="/" className="flex items-center">
+                <div className="text-center">
+                  <h1 className="text-4xl font-serif font-bold tracking-tight">
+                    <span className="text-foreground">THE</span>
+                  </h1>
+                  <div className="flex items-center">
+                    <span className="text-2xl font-serif font-bold text-primary mr-1">+233</span>
+                    <span className="text-2xl font-serif font-bold text-foreground">HERALD</span>
+                  </div>
+                  <div className="text-xs font-medium text-muted-foreground uppercase tracking-widest mt-1">
+                    Trusted News Since 2024
+                  </div>
+                </div>
               </Link>
             </div>
 
             {/* Desktop Navigation */}
-            <nav className="hidden lg:flex items-center space-x-8">
-              {navItems.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className="text-gray-700 hover:text-ghana-red transition-colors duration-200 font-medium"
-                >
-                  {item.name}
-                </Link>
-              ))}
+            <nav className="hidden lg:flex items-center">
+              <div className="flex items-center space-x-8">
+                {navItems.map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className="text-foreground hover:text-primary transition-colors duration-200 font-medium text-sm uppercase tracking-wide border-b-2 border-transparent hover:border-primary pb-1"
+                  >
+                    {item.name}
+                  </Link>
+                ))}
+              </div>
             </nav>
 
-            {/* Search, Auth and Mobile Menu */}
+            {/* Right Section */}
             <div className="flex items-center space-x-4">
               <button 
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-muted rounded-full transition-colors"
                 onClick={handleSearchClick}
                 title="Search articles (Ctrl+K)"
               >
-                <Search className="w-5 h-5 text-gray-600" />
+                <Search className="w-5 h-5 text-muted-foreground" />
               </button>
 
               {/* Authentication Section */}
               {user && profile ? (
-                <div className="hidden md:flex items-center space-x-2">
-                  {/* Profile Icon - Clickable */}
+                <div className="hidden md:flex items-center space-x-3">
                   <Link 
                     to={
                       profile.role === 'admin' ? '/admin' :
@@ -136,44 +141,44 @@ const Header = () => {
                       profile.role === 'news_anchor' && profile.verified ? '/news-anchor' :
                       '/'
                     }
-                    className="flex items-center space-x-2 px-3 py-1 bg-gray-50 rounded-full hover:bg-gray-100 transition-colors"
+                    className="flex items-center space-x-2 px-3 py-2 bg-muted/50 rounded hover:bg-muted transition-colors"
                   >
-                    <User className="w-5 h-5 text-gray-600" />
-                    <span className="text-sm font-medium text-gray-700">
+                    <User className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-sm font-medium text-foreground">
                       {profile.full_name?.split(' ')[0] || 'User'}
                     </span>
                   </Link>
                   
                   {profile.role === 'admin' && (
                     <Link to="/admin">
-                      <Button variant="outline" size="sm">Admin</Button>
+                      <Button variant="outline" size="sm" className="text-xs">Dashboard</Button>
                     </Link>
                   )}
                   {profile.role === 'chief_author' && (
                     <Link to="/chief-author">
-                      <Button variant="outline" size="sm">Chief Author</Button>
+                      <Button variant="outline" size="sm" className="text-xs">Dashboard</Button>
                     </Link>
                   )}
                   {profile.role === 'news_anchor' && profile.verified && (
                     <Link to="/news-anchor">
-                      <Button variant="outline" size="sm">News Anchor</Button>
+                      <Button variant="outline" size="sm" className="text-xs">Dashboard</Button>
                     </Link>
                   )}
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => signOut()}
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 text-xs"
                   >
-                    <LogOut className="w-4 h-4" />
+                    <LogOut className="w-3 h-3" />
                     Sign Out
                   </Button>
                 </div>
               ) : (
-                <div className="hidden md:flex items-center space-x-2">
+                <div className="hidden md:flex items-center">
                   <Link to="/auth">
-                    <Button variant="outline" size="sm" className="flex items-center gap-1">
-                      <User className="w-4 h-4" />
+                    <Button variant="outline" size="sm" className="flex items-center gap-1 text-xs">
+                      <User className="w-3 h-3" />
                       Sign In
                     </Button>
                   </Link>
@@ -182,27 +187,29 @@ const Header = () => {
               
               {/* Mobile menu button */}
               <button
-                className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="lg:hidden p-2 hover:bg-muted rounded-full transition-colors"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
               >
                 {isMenuOpen ? (
-                  <X className="w-6 h-6 text-gray-600" />
+                  <X className="w-6 h-6 text-muted-foreground" />
                 ) : (
-                  <Menu className="w-6 h-6 text-gray-600" />
+                  <Menu className="w-6 h-6 text-muted-foreground" />
                 )}
               </button>
             </div>
           </div>
+        </div>
 
-          {/* Mobile Navigation */}
-          {isMenuOpen && (
-            <div className="lg:hidden mt-4 py-4 border-t">
+        {/* Mobile Navigation */}
+        {isMenuOpen && (
+          <div className="lg:hidden border-t bg-muted/20">
+            <div className="container mx-auto px-4 py-4">
               <nav className="flex flex-col space-y-4">
                 {navItems.map((item) => (
                   <Link
                     key={item.name}
                     to={item.path}
-                    className="text-gray-700 hover:text-ghana-red transition-colors duration-200 font-medium py-2"
+                    className="text-foreground hover:text-primary transition-colors duration-200 font-medium py-2 px-2 hover:bg-muted/50 rounded text-sm uppercase tracking-wide"
                     onClick={() => setIsMenuOpen(false)}
                   >
                     {item.name}
@@ -213,7 +220,6 @@ const Header = () => {
                 <div className="border-t pt-4 mt-4">
                   {user && profile ? (
                     <div className="space-y-2">
-                      {/* Mobile Profile Info - Clickable */}
                       <Link 
                         to={
                           profile.role === 'admin' ? '/admin' :
@@ -222,27 +228,24 @@ const Header = () => {
                           '/'
                         }
                         onClick={() => setIsMenuOpen(false)}
-                        className="flex items-center space-x-2 px-3 py-2 bg-gray-50 rounded hover:bg-gray-100 transition-colors"
+                        className="flex items-center space-x-2 px-3 py-2 bg-muted/50 rounded hover:bg-muted transition-colors"
                       >
-                        <User className="w-5 h-5 text-gray-600" />
-                        <span className="text-sm font-medium text-gray-700">
+                        <User className="w-4 h-4 text-muted-foreground" />
+                        <span className="text-sm font-medium text-foreground">
                           {profile.full_name?.split(' ')[0] || 'User'}
                         </span>
                       </Link>
                       
-                      {profile.role === 'admin' && (
-                        <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
-                          <Button variant="outline" size="sm" className="w-full">Admin</Button>
-                        </Link>
-                      )}
-                      {profile.role === 'chief_author' && (
-                        <Link to="/chief-author" onClick={() => setIsMenuOpen(false)}>
-                          <Button variant="outline" size="sm" className="w-full">Chief Author</Button>
-                        </Link>
-                      )}
-                      {profile.role === 'news_anchor' && profile.verified && (
-                        <Link to="/news-anchor" onClick={() => setIsMenuOpen(false)}>
-                          <Button variant="outline" size="sm" className="w-full">News Anchor</Button>
+                      {(profile.role === 'admin' || profile.role === 'chief_author' || (profile.role === 'news_anchor' && profile.verified)) && (
+                        <Link 
+                          to={
+                            profile.role === 'admin' ? '/admin' :
+                            profile.role === 'chief_author' ? '/chief-author' :
+                            '/news-anchor'
+                          } 
+                          onClick={() => setIsMenuOpen(false)}
+                        >
+                          <Button variant="outline" size="sm" className="w-full text-xs">Dashboard</Button>
                         </Link>
                       )}
                       <Button
@@ -252,16 +255,16 @@ const Header = () => {
                           signOut();
                           setIsMenuOpen(false);
                         }}
-                        className="w-full flex items-center gap-1"
+                        className="w-full flex items-center gap-1 text-xs"
                       >
-                        <LogOut className="w-4 h-4" />
+                        <LogOut className="w-3 h-3" />
                         Sign Out
                       </Button>
                     </div>
                   ) : (
                     <Link to="/auth" onClick={() => setIsMenuOpen(false)}>
-                      <Button variant="outline" size="sm" className="w-full flex items-center gap-1">
-                        <User className="w-4 h-4" />
+                      <Button variant="outline" size="sm" className="w-full flex items-center gap-1 text-xs">
+                        <User className="w-3 h-3" />
                         Sign In
                       </Button>
                     </Link>
@@ -269,8 +272,8 @@ const Header = () => {
                 </div>
               </nav>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </header>
 
       {/* Search Dialog */}
