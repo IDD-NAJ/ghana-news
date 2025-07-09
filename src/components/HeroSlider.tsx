@@ -1,5 +1,4 @@
 import React from 'react';
-import { Play, ArrowRight, TrendingUp } from 'lucide-react';
 import {
   Carousel,
   CarouselContent,
@@ -15,111 +14,81 @@ interface SlideData {
   backgroundImage: string;
   ctaText: string;
   secondaryCtaText: string;
-  category: string;
 }
 
 const slides: SlideData[] = [
   {
     id: '1',
-    title: 'Breaking News That Matters',
-    subtitle: 'Stay ahead with real-time updates and comprehensive coverage from Ghana and across the globe.',
+    title: 'Stay Informed with +233Blog-news',
+    subtitle: 'Your trusted source for breaking news, in-depth analysis, and stories that matter in Ghana and beyond.',
     backgroundImage: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1920&h=1080&fit=crop',
-    ctaText: 'Read Latest News',
-    secondaryCtaText: 'Watch Live',
-    category: 'Breaking News'
+    ctaText: 'Explore Latest News',
+    secondaryCtaText: 'Subscribe Newsletter'
   },
   {
     id: '2',
-    title: 'In-Depth Analysis & Reports',
-    subtitle: 'Expert insights and detailed investigations that uncover the stories behind the headlines.',
+    title: 'Breaking News & Updates',
+    subtitle: 'Get the latest headlines and developments from Ghana and around the world as they happen.',
     backgroundImage: 'https://images.unsplash.com/photo-1495020689067-958852a7765e?w=1920&h=1080&fit=crop',
-    ctaText: 'Explore Analysis',
-    secondaryCtaText: 'Expert Views',
-    category: 'Analysis'
+    ctaText: 'Read Breaking News',
+    secondaryCtaText: 'Follow Updates'
   },
   {
     id: '3',
-    title: 'Local Stories, Global Impact',
-    subtitle: 'Connecting Ghana to the world through compelling journalism and authentic storytelling.',
+    title: 'In-Depth Analysis',
+    subtitle: 'Expert commentary and detailed coverage of the stories shaping our world today.',
     backgroundImage: 'https://images.unsplash.com/photo-1586339949216-35c4842f5b4e?w=1920&h=1080&fit=crop',
-    ctaText: 'Discover Stories',
-    secondaryCtaText: 'Subscribe',
-    category: 'Featured'
+    ctaText: 'Read Analysis',
+    secondaryCtaText: 'Expert Views'
   }
 ];
 
 export const HeroSlider = () => {
   return (
-    <section className="relative h-[80vh] overflow-hidden">
+    <section className="relative h-[60vh] overflow-hidden">
       <Carousel className="w-full h-full" opts={{ loop: true, align: "start" }}>
         <CarouselContent className="h-full">
           {slides.map((slide, index) => (
             <CarouselItem key={slide.id} className="h-full">
               <div className="relative h-full">
-                {/* Background with enhanced gradient overlay */}
                 <div 
                   className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                   style={{
-                    backgroundImage: `url('${slide.backgroundImage}')`
+                    backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('${slide.backgroundImage}')`
                   }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/50 to-transparent" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20" />
-                
-                {/* Content */}
                 <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
-                  <div className="max-w-3xl text-white">
-                    {/* Category Badge */}
-                    <div className="flex items-center gap-2 mb-6 animate-fade-in-up">
-                      <TrendingUp className="w-5 h-5 text-primary" />
-                      <span className="bg-primary/20 backdrop-blur-sm text-primary-foreground px-4 py-2 rounded-full text-sm font-semibold border border-primary/30">
-                        {slide.category}
-                      </span>
-                    </div>
-                    
-                    {/* Title */}
-                    <h1 className="text-5xl md:text-7xl font-bold mb-6 text-shadow-lg leading-tight animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
-                      <span className="bg-gradient-to-r from-white via-white to-primary-foreground bg-clip-text text-transparent">
-                        {slide.title}
-                      </span>
+                  <div className="max-w-2xl text-white">
+                    <h1 className="text-4xl md:text-6xl font-playfair font-bold mb-4 text-shadow animate-fade-in-up">
+                      {slide.title.includes('+233Blog-news') ? (
+                        <>
+                          {slide.title.split('+233Blog-news')[0]}
+                          <span className="text-primary-foreground">+233Blog-news</span>
+                          {slide.title.split('+233Blog-news')[1]}
+                        </>
+                      ) : (
+                        slide.title
+                      )}
                     </h1>
-                    
-                    {/* Subtitle */}
-                    <p className="text-xl md:text-2xl mb-8 text-gray-200 font-light leading-relaxed animate-fade-in-up max-w-2xl" style={{ animationDelay: '0.2s' }}>
+                    <p className="text-lg md:text-xl mb-8 text-shadow animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                       {slide.subtitle}
                     </p>
-                    
-                    {/* CTA Buttons */}
-                    <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
-                      <button className="group flex items-center gap-3 bg-primary hover:bg-primary/90 text-primary-foreground px-8 py-4 rounded-lg font-semibold transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/25">
-                        <span>{slide.ctaText}</span>
-                        <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                      <button className="elegant-card px-8 py-3 rounded-lg font-semibold hover:glow-effect transition-all duration-300 text-foreground hover:scale-105">
+                        {slide.ctaText}
                       </button>
-                      <button className="group flex items-center gap-3 bg-white/10 backdrop-blur-sm border-2 border-white/30 text-white px-8 py-4 rounded-lg font-semibold hover:bg-white/20 transition-all duration-300 hover:scale-105">
-                        <Play className="w-5 h-5" />
-                        <span>{slide.secondaryCtaText}</span>
+                      <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-foreground transition-all duration-300">
+                        {slide.secondaryCtaText}
                       </button>
                     </div>
                   </div>
                 </div>
-                
-                {/* Decorative elements */}
-                <div className="absolute bottom-8 left-8 w-24 h-1 bg-gradient-to-r from-primary to-transparent opacity-80"></div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        
-        {/* Navigation */}
-        <CarouselPrevious className="absolute left-8 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 hover:scale-110 transition-all duration-300 w-12 h-12" />
-        <CarouselNext className="absolute right-8 top-1/2 -translate-y-1/2 bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 hover:scale-110 transition-all duration-300 w-12 h-12" />
-        
-        {/* Slide indicators */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
-          {slides.map((_, index) => (
-            <div key={index} className="w-2 h-2 rounded-full bg-white/40 hover:bg-white/80 transition-colors cursor-pointer"></div>
-          ))}
-        </div>
+        <CarouselPrevious className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/10 border-white/20 text-white hover:bg-white/20" />
+        <CarouselNext className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/10 border-white/20 text-white hover:bg-white/20" />
       </Carousel>
     </section>
   );
