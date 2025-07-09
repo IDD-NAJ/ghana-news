@@ -15,6 +15,8 @@ export interface DraftArticle {
   updated_at: string;
   publication_date: string;
   slug: string;
+  author_name: string | null;
+  author_email: string | null;
 }
 
 export const useDraftArticles = () => {
@@ -30,7 +32,13 @@ export const useDraftArticles = () => {
         
         const { data, error } = await supabase
           .from('articles')
-          .select('*')
+          .select(`
+            *,
+            profiles!articles_author_id_fkey(
+              full_name,
+              email
+            )
+          `)
           .eq('published', false)
           .order('created_at', { ascending: false });
 
@@ -42,7 +50,15 @@ export const useDraftArticles = () => {
         }
 
         console.log('Successfully fetched draft articles:', data?.length || 0);
-        setDraftArticles(data || []);
+        
+        // Transform the data to flatten the author information
+        const articlesWithAuthor = (data || []).map((article: any) => ({
+          ...article,
+          author_name: article.profiles?.full_name || null,
+          author_email: article.profiles?.email || null,
+        }));
+        
+        setDraftArticles(articlesWithAuthor);
       } catch (err) {
         console.error('Unexpected error:', err);
         setError('An unexpected error occurred while loading draft articles');
