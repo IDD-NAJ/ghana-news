@@ -45,7 +45,7 @@ const slides: SlideData[] = [
 
 export const HeroSlider = () => {
   return (
-    <section className="relative h-[70vh] overflow-hidden">
+    <section className="relative h-[40vh] overflow-hidden">
       <Carousel className="w-full h-full" opts={{ loop: true, align: "start" }}>
         <CarouselContent className="h-full">
           {slides.map((slide, index) => (
