@@ -22,6 +22,8 @@ interface Article {
   updated_at: string;
   publication_date: string;
   author_id: string;
+  author_name?: string | null;
+  author_email?: string | null;
 }
 
 const Story = () => {
@@ -45,7 +47,7 @@ const Story = () => {
       
       const { data, error } = await supabase
         .from('articles')
-        .select('*')
+        .select(`*, profiles!articles_author_id_fkey(full_name, email)`)
         .eq('id', articleId)
         .eq('published', true)
         .lte('publication_date', new Date().toISOString()) // Only show if publication date has passed
@@ -58,10 +60,14 @@ const Story = () => {
         return;
       }
 
-      console.log('Fetched article:', data);
-      console.log('Article publication date:', data.publication_date);
-      console.log('Current time:', new Date().toISOString());
-      setArticle(data);
+      // Flatten author info
+      const articleWithAuthor = {
+        ...data,
+        author_name: data.profiles?.full_name || null,
+        author_email: data.profiles?.email || null,
+      };
+
+      setArticle(articleWithAuthor);
     } catch (err) {
       console.error('Unexpected error:', err);
       setError('Failed to load article');
@@ -176,7 +182,7 @@ const Story = () => {
                   <div className="flex flex-wrap items-center gap-4 lg:gap-6 text-gray-600">
                     <div className="flex items-center space-x-2">
                       <User className="w-4 h-4 lg:w-5 lg:h-5" />
-                      <span className="font-medium text-sm lg:text-base">News Desk</span>
+                      <span className="font-medium text-sm lg:text-base">{article.author_name || article.author_email || 'News Desk'}</span>
                     </div>
                     <div className="flex items-center space-x-2">
                       <Clock className="w-4 h-4 lg:w-5 lg:h-5" />
