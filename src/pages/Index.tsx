@@ -42,12 +42,10 @@ const Index = () => {
     <div className="min-h-screen font-inter relative">
       <Banner />
       <Header />
-      
+      {/* Move HeroSlider above <main> */}
+      <HeroSlider />
       <main className="relative z-10">
-        {/* Hero Slider */}
-        <HeroSlider />
-
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-0"> {/* Changed py-8 to py-0 to remove top padding */}
           {/* Top Banner Ad */}
           <AdBanner placement="top" currentPage="/" />
           

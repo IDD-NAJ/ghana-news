@@ -30,6 +30,7 @@ import Admin from "./pages/Admin";
 import Auth from "./pages/Auth";
 import NewsAnchor from "./pages/NewsAnchor";
 import ChiefAuthor from "./pages/ChiefAuthor";
+import Newsletter from "./pages/Newsletter";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,6 +73,7 @@ const App = () => {
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/news-anchor" element={<NewsAnchor />} />
                 <Route path="/chief-author" element={<ChiefAuthor />} />
+                <Route path="/newsletter" element={<Newsletter />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
