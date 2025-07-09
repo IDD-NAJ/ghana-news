@@ -38,7 +38,7 @@ const Careers = () => {
 
   const benefits = [
     {
-      icon: Heart,
+      icon: Briefcase,
       title: "Health & Wellness",
       description: "Comprehensive health insurance and wellness programs for all employees"
     },
