@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import NewsCard from '../components/NewsCard';
 import Sidebar from '../components/Sidebar';
 import Footer from '../components/Footer';
+import { HeroSlider } from '../components/HeroSlider';
 import { usePagination } from '../hooks/usePagination';
 import { useArticles, useFeaturedArticle } from '../hooks/useArticles';
 import { AdBanner } from '../components/AdBanner';
@@ -43,33 +44,8 @@ const Index = () => {
       <Header />
       
       <main className="relative z-10">
-        {/* Hero Section */}
-        <section className="relative h-[60vh] overflow-hidden">
-          <div 
-            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-            style={{
-              backgroundImage: `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1920&h=1080&fit=crop')`
-            }}
-          />
-          <div className="relative z-10 container mx-auto px-4 h-full flex items-center">
-            <div className="max-w-2xl text-white">
-              <h1 className="text-4xl md:text-6xl font-playfair font-bold mb-4 text-shadow animate-fade-in-up">
-                Stay Informed with <span className="text-primary-foreground">+233Blog-news</span>
-              </h1>
-              <p className="text-lg md:text-xl mb-8 text-shadow animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                Your trusted source for breaking news, in-depth analysis, and stories that matter in Ghana and beyond.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-                <button className="elegant-card px-8 py-3 rounded-lg font-semibold hover:glow-effect transition-all duration-300 text-foreground hover:scale-105">
-                  Explore Latest News
-                </button>
-                <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-foreground transition-all duration-300">
-                  Subscribe Newsletter
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
+        {/* Hero Slider */}
+        <HeroSlider />
 
         <div className="container mx-auto px-4 py-8">
           {/* Top Banner Ad */}
