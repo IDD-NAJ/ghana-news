@@ -27,7 +27,7 @@ interface Article {
 }
 
 const Story = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const navigate = useNavigate();
   const [article, setArticle] = useState<Article | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,19 +36,19 @@ const Story = () => {
   const { images: articleImages, loading: imagesLoading } = useArticleImages(article?.id);
 
   useEffect(() => {
-    if (id) {
-      fetchArticle(id);
+    if (slug) {
+      fetchArticle(slug);
     }
-  }, [id]);
+  }, [slug]);
 
-  const fetchArticle = async (articleId: string) => {
+  const fetchArticle = async (slug: string) => {
     try {
-      console.log('Fetching article with ID:', articleId);
+      console.log('Fetching article with slug:', slug);
       
       const { data, error } = await supabase
         .from('articles')
         .select(`*, profiles!articles_author_id_fkey(full_name, email)`)
-        .eq('id', articleId)
+        .eq('slug', slug)
         .eq('published', true)
         .lte('publication_date', new Date().toISOString()) // Only show if publication date has passed
         .single();

@@ -27,7 +27,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
     return `${Math.ceil(diffDays / 365)} years ago`;
   };
 
-  const storyUrl = `/story/${article.id}/${article.slug}`;
+  const storyUrl = `/story/${article.slug}`;
 
   return (
     <Link to={storyUrl} className="block">

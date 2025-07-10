@@ -42,7 +42,7 @@ const TrendingArticleItem = ({ article, index }: { article: any, index: number }
   return (
     <div className="group">
       <Link 
-        to={`/story/${article.id}/${article.slug}`}
+        to={`/story/${article.slug}`}
         className="block cursor-pointer"
       >
         <h4 className="font-medium text-gray-900 group-hover:text-ghana-red transition-colors mb-2 line-clamp-2">

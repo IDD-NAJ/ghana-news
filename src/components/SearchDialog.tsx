@@ -108,7 +108,7 @@ const SearchDialog: React.FC<SearchDialogProps> = ({ open, onOpenChange }) => {
                 asChild
               >
                 <Link
-                  to={`/story/${article.id}/${article.slug}`}
+                  to={`/story/${article.slug}`}
                   className="block w-full"
                   onClick={() => onOpenChange(false)}
                 >
