@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { MessageSquare, Plus, X } from "lucide-react";
+import { MessageSquare, Plus, X, Download } from "lucide-react";
 
 interface NotificationSetting {
   id: string;
@@ -159,6 +159,37 @@ export const NotificationSettings = () => {
     }
   };
 
+  const downloadNewsWorkflow = async () => {
+    try {
+      const response = await fetch('/n8n-news-automation-workflow.json');
+      const workflowData = await response.json();
+      
+      const dataStr = JSON.stringify(workflowData, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'n8n-news-automation-workflow.json';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      toast({
+        title: "Download Started",
+        description: "n8n news automation workflow downloaded successfully"
+      });
+    } catch (error: any) {
+      console.error("Error downloading workflow:", error);
+      toast({
+        title: "Error",
+        description: "Failed to download workflow file",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (loading) {
     return <div className="flex justify-center p-8">Loading notification settings...</div>;
   }
@@ -258,6 +289,37 @@ export const NotificationSettings = () => {
               )}
             </div>
           </form>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>n8n Workflow Downloads</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-col items-center gap-4 p-6 border rounded-lg bg-card">
+            <div className="text-center">
+              <h4 className="font-medium mb-2">News Automation Workflow</h4>
+              <p className="text-sm text-muted-foreground">
+                Complete automated news pipeline that fetches, processes, and submits article drafts
+              </p>
+            </div>
+            
+            <Button onClick={downloadNewsWorkflow} className="flex items-center gap-2">
+              <Download className="h-4 w-4" />
+              Download News Automation Workflow
+            </Button>
+            
+            <div className="text-xs text-muted-foreground text-center max-w-md">
+              <p className="mb-2">This workflow includes:</p>
+              <ul className="list-disc list-inside text-left space-y-1">
+                <li>Automated RSS feed monitoring</li>
+                <li>Website content scraping</li>
+                <li>Content processing and filtering</li>
+                <li>Draft article submission to your system</li>
+              </ul>
+            </div>
+          </div>
         </CardContent>
       </Card>
 
