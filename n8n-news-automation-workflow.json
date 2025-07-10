@@ -75,6 +75,11 @@
             "leftValue": "={{ $json.rss_feed_url }}",
             "rightValue": null,
             "operator": "isNotEqual"
+          },
+          {
+            "leftValue": "={{ typeof $json.rss_feed_url }}",
+            "rightValue": "undefined",
+            "operator": "isNotEqual"
           }
         ],
         "combineOperation": "all"
@@ -87,9 +92,10 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.rss_feed_url || '' }}",
+        "url": "={{ $json.rss_feed_url }}",
         "options": {
-          "ignoreSSLIssues": true
+          "ignoreSSLIssues": true,
+          "timeout": 30000
         }
       },
       "id": "6",
