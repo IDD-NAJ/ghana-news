@@ -4,7 +4,7 @@ import { Download } from 'lucide-react';
 
 const WorkflowDownloader: React.FC = () => {
   const workflowData = {
-    "name": "WhatsApp Article Notifications",
+    "name": "Telegram Article Notifications",
     "nodes": [
       {
         "parameters": {
@@ -21,22 +21,21 @@ const WorkflowDownloader: React.FC = () => {
       },
       {
         "parameters": {
-          "authentication": "phoneNumberId",
           "resource": "message",
-          "operation": "send",
-          "recipientPhoneNumber": "={{ $json.recipients.join(',') }}",
-          "messageType": "text",
-          "message": "📰 *Article {{ $json.action | upper }}*\n\n*Title:* {{ $json.title }}\n*Category:* {{ $json.category }}\n{% if $json.reviewer_name %}*Reviewer:* {{ $json.reviewer_name }}\n{% endif %}\n{% if $json.action === 'approved' %}✅ This article has been published and is now live!{% else %}❌ This article was rejected and will not be published.{% endif %}\n\n*Draft ID:* {{ $json.draft_id }}"
+          "operation": "sendMessage",
+          "chatId": "={{ $json.telegram_chat_ids.join(',') }}",
+          "text": "📰 *Article {{ $json.action | upper }}*\n\n*Title:* {{ $json.title }}\n*Category:* {{ $json.category }}\n{% if $json.reviewer_name %}*Reviewer:* {{ $json.reviewer_name }}\n{% endif %}\n{% if $json.action === 'approved' %}✅ This article has been published and is now live!{% else %}❌ This article was rejected and will not be published.{% endif %}\n\n*Draft ID:* {{ $json.draft_id }}",
+          "parseMode": "Markdown"
         },
-        "id": "whatsapp-send",
-        "name": "WhatsApp Business",
-        "type": "n8n-nodes-base.whatsApp",
+        "id": "telegram-send",
+        "name": "Telegram",
+        "type": "n8n-nodes-base.telegram",
         "typeVersion": 1,
         "position": [460, 300],
         "credentials": {
-          "whatsAppApi": {
+          "telegramApi": {
             "id": "1",
-            "name": "WhatsApp Business API"
+            "name": "Telegram Bot API"
           }
         }
       },
@@ -51,7 +50,7 @@ const WorkflowDownloader: React.FC = () => {
             "conditions": [
               {
                 "id": "condition-1",
-                "leftValue": "={{ $json.recipients }}",
+                "leftValue": "={{ $json.telegram_chat_ids }}",
                 "rightValue": "",
                 "operator": {
                   "type": "array",
@@ -86,7 +85,7 @@ const WorkflowDownloader: React.FC = () => {
         "main": [
           [
             {
-              "node": "WhatsApp Business",
+              "node": "Telegram",
               "type": "main",
               "index": 0
             }
@@ -103,7 +102,7 @@ const WorkflowDownloader: React.FC = () => {
       "templateCredsSetupCompleted": true,
       "instanceId": "your-instance-id"
     },
-    "id": "whatsapp-workflow",
+    "id": "telegram-workflow",
     "tags": []
   };
 
@@ -114,7 +113,7 @@ const WorkflowDownloader: React.FC = () => {
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'n8n-whatsapp-workflow.json';
+    link.download = 'n8n-telegram-workflow.json';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -124,7 +123,7 @@ const WorkflowDownloader: React.FC = () => {
   return (
     <div className="flex flex-col items-center gap-4 p-6 border rounded-lg bg-card">
       <div className="text-center">
-        <h3 className="text-lg font-semibold mb-2">n8n WhatsApp Workflow</h3>
+        <h3 className="text-lg font-semibold mb-2">n8n Telegram Workflow</h3>
         <p className="text-muted-foreground text-sm">
           Download the workflow JSON file to import into your n8n instance
         </p>
@@ -139,7 +138,7 @@ const WorkflowDownloader: React.FC = () => {
         <p>After downloading:</p>
         <ol className="list-decimal list-inside text-left mt-2 space-y-1">
           <li>Import this file into n8n</li>
-          <li>Configure your WhatsApp Business credentials</li>
+          <li>Configure your Telegram Bot API credentials</li>
           <li>Copy the webhook URL from the Webhook node</li>
           <li>Paste it into your admin notification settings</li>
         </ol>
