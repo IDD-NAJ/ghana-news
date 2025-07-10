@@ -70,8 +70,14 @@
             "leftValue": "={{ $json.rss_feed_url }}",
             "rightValue": "",
             "operator": "isNotEmpty"
+          },
+          {
+            "leftValue": "={{ $json.rss_feed_url }}",
+            "rightValue": null,
+            "operator": "isNotEqual"
           }
-        ]
+        ],
+        "combineOperation": "all"
       },
       "id": "5",
       "name": "Has RSS Feed?",
