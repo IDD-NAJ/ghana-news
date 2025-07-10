@@ -13,10 +13,13 @@ const Admin: React.FC = () => {
     checkAuthStatus();
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      (event, session) => {
         console.log('Auth state change:', event, session?.user?.id);
         if (session?.user) {
-          await checkAdminStatus(session.user.id);
+          // Use setTimeout to prevent blocking the auth state change callback
+          setTimeout(() => {
+            checkAdminStatus(session.user.id);
+          }, 0);
         } else {
           setIsAuthenticated(false);
           setIsLoading(false);
