@@ -10,6 +10,7 @@ import { useArticles, useFeaturedArticle } from '../hooks/useArticles';
 import { AdBanner } from '../components/AdBanner';
 import { AdInline } from '../components/AdInline';
 import { AdPopup } from '../components/AdPopup';
+import WorkflowDownloader from '../components/WorkflowDownloader';
 
 const Index = () => {
   const { featuredArticle, loading: featuredLoading } = useFeaturedArticle();
@@ -86,6 +87,14 @@ const Index = () => {
 
               {/* Inline Advertisement */}
               <AdInline currentPage="/" />
+
+              {/* Workflow Downloader */}
+              <section className="animate-fade-in-up">
+                <h2 className="text-2xl font-playfair font-bold text-foreground mb-6 border-l-4 border-primary pl-4 text-shadow">
+                  n8n Integration
+                </h2>
+                <WorkflowDownloader />
+              </section>
 
               {/* Latest News Grid */}
               <section>
