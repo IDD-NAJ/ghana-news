@@ -91,6 +91,8 @@ const BannerManager = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
+    console.log('Form submission started', { formData, editingItem });
+    
     try {
       const submitData = {
         ...formData,
@@ -98,6 +100,8 @@ const BannerManager = () => {
         link: formData.link || null,
         link_text: formData.link_text || null
       };
+
+      console.log('Submit data prepared', submitData);
 
       if (editingItem) {
         const { error } = await supabase
@@ -112,6 +116,7 @@ const BannerManager = () => {
           description: "Banner item updated successfully"
         });
       } else {
+        console.log('Creating new banner item...');
         const { error } = await supabase
           .from('banner_items')
           .insert([submitData]);
@@ -131,7 +136,7 @@ const BannerManager = () => {
       console.error('Error saving banner item:', error);
       toast({
         title: "Error",
-        description: "Failed to save banner item",
+        description: error.message || "Failed to save banner item",
         variant: "destructive"
       });
     }
