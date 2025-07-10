@@ -81,7 +81,10 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.rss_feed_url }}"
+        "url": "={{ $json.rss_feed_url || '' }}",
+        "options": {
+          "ignoreSSLIssues": true
+        }
       },
       "id": "6",
       "name": "Fetch RSS Content",
