@@ -738,24 +738,27 @@ export type Database = {
           created_at: string
           id: string
           notification_recipients: string[] | null
+          telegram_bot_token: string | null
+          telegram_chat_ids: string[] | null
           updated_at: string
-          whatsapp_webhook_url: string | null
         }
         Insert: {
           active?: boolean
           created_at?: string
           id?: string
           notification_recipients?: string[] | null
+          telegram_bot_token?: string | null
+          telegram_chat_ids?: string[] | null
           updated_at?: string
-          whatsapp_webhook_url?: string | null
         }
         Update: {
           active?: boolean
           created_at?: string
           id?: string
           notification_recipients?: string[] | null
+          telegram_bot_token?: string | null
+          telegram_chat_ids?: string[] | null
           updated_at?: string
-          whatsapp_webhook_url?: string | null
         }
         Relationships: []
       }

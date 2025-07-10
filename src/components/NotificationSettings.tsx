@@ -11,7 +11,8 @@ import { MessageSquare, Plus, X } from "lucide-react";
 
 interface NotificationSetting {
   id: string;
-  whatsapp_webhook_url: string;
+  telegram_bot_token: string;
+  telegram_chat_ids: string[];
   notification_recipients: string[];
   active: boolean;
   created_at: string;
@@ -23,8 +24,8 @@ export const NotificationSettings = () => {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
-    whatsapp_webhook_url: "",
-    notification_recipients: [] as string[],
+    telegram_bot_token: "",
+    telegram_chat_ids: [] as string[],
     active: true
   });
   const [newRecipient, setNewRecipient] = useState("");
@@ -37,8 +38,8 @@ export const NotificationSettings = () => {
   useEffect(() => {
     if (settings) {
       setFormData({
-        whatsapp_webhook_url: settings.whatsapp_webhook_url || "",
-        notification_recipients: settings.notification_recipients || [],
+        telegram_bot_token: settings.telegram_bot_token || "",
+        telegram_chat_ids: settings.telegram_chat_ids || [],
         active: settings.active
       });
     }
@@ -75,8 +76,8 @@ export const NotificationSettings = () => {
 
     try {
       const submitData = {
-        whatsapp_webhook_url: formData.whatsapp_webhook_url || null,
-        notification_recipients: formData.notification_recipients,
+        telegram_bot_token: formData.telegram_bot_token || null,
+        telegram_chat_ids: formData.telegram_chat_ids,
         active: formData.active
       };
 
@@ -114,10 +115,10 @@ export const NotificationSettings = () => {
   };
 
   const addRecipient = () => {
-    if (newRecipient.trim() && !formData.notification_recipients.includes(newRecipient.trim())) {
+    if (newRecipient.trim() && !formData.telegram_chat_ids.includes(newRecipient.trim())) {
       setFormData(prev => ({
         ...prev,
-        notification_recipients: [...prev.notification_recipients, newRecipient.trim()]
+        telegram_chat_ids: [...prev.telegram_chat_ids, newRecipient.trim()]
       }));
       setNewRecipient("");
     }
@@ -126,13 +127,13 @@ export const NotificationSettings = () => {
   const removeRecipient = (recipient: string) => {
     setFormData(prev => ({
       ...prev,
-      notification_recipients: prev.notification_recipients.filter(r => r !== recipient)
+      telegram_chat_ids: prev.telegram_chat_ids.filter(r => r !== recipient)
     }));
   };
 
   const testNotification = async () => {
     try {
-      const { error } = await supabase.functions.invoke("send-whatsapp-notification", {
+      const { error } = await supabase.functions.invoke("send-telegram-notification", {
         body: {
           draft_id: "test",
           action: "approved",
@@ -146,7 +147,7 @@ export const NotificationSettings = () => {
 
       toast({
         title: "Test Sent",
-        description: "Test WhatsApp notification has been sent"
+        description: "Test Telegram notification has been sent"
       });
     } catch (error: any) {
       console.error("Error sending test notification:", error);
@@ -165,46 +166,46 @@ export const NotificationSettings = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-2xl font-bold">WhatsApp Notifications</h2>
-        <p className="text-muted-foreground">Configure WhatsApp notifications for article approvals</p>
+        <h2 className="text-2xl font-bold">Telegram Notifications</h2>
+        <p className="text-muted-foreground">Configure Telegram notifications for article approvals</p>
       </div>
 
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <MessageSquare className="h-5 w-5" />
-            WhatsApp Settings
+            Telegram Settings
           </CardTitle>
         </CardHeader>
         
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <Label htmlFor="webhook">WhatsApp Webhook URL</Label>
+              <Label htmlFor="bot-token">Telegram Bot Token</Label>
               <Input
-                id="webhook"
-                type="url"
-                value={formData.whatsapp_webhook_url}
+                id="bot-token"
+                type="text"
+                value={formData.telegram_bot_token}
                 onChange={(e) => setFormData(prev => ({ 
                   ...prev, 
-                  whatsapp_webhook_url: e.target.value 
+                  telegram_bot_token: e.target.value 
                 }))}
-                placeholder="https://your-whatsapp-webhook-url.com"
+                placeholder="123456789:ABCdefGHIjklMNOpqrsTUVwxyz"
                 className="mt-1"
               />
               <p className="text-xs text-muted-foreground mt-1">
-                Configure this webhook in your WhatsApp Business API or service like Twilio, Meta Business, etc.
+                Get this token from @BotFather on Telegram after creating your bot.
               </p>
             </div>
 
             <div>
-              <Label>Notification Recipients</Label>
+              <Label>Telegram Chat IDs</Label>
               <div className="space-y-3 mt-2">
                 <div className="flex gap-2">
                   <Input
                     value={newRecipient}
                     onChange={(e) => setNewRecipient(e.target.value)}
-                    placeholder="Phone number or WhatsApp ID"
+                    placeholder="Chat ID (e.g., -123456789 for groups, 123456789 for users)"
                     onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addRecipient())}
                   />
                   <Button type="button" onClick={addRecipient} size="sm">
@@ -212,9 +213,9 @@ export const NotificationSettings = () => {
                   </Button>
                 </div>
                 
-                {formData.notification_recipients.length > 0 && (
+                {formData.telegram_chat_ids.length > 0 && (
                   <div className="flex flex-wrap gap-2">
-                    {formData.notification_recipients.map((recipient, index) => (
+                    {formData.telegram_chat_ids.map((recipient, index) => (
                       <Badge key={index} variant="secondary" className="flex items-center gap-1">
                         {recipient}
                         <Button
@@ -231,6 +232,9 @@ export const NotificationSettings = () => {
                   </div>
                 )}
               </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                To get chat ID: message your bot, then visit https://api.telegram.org/bot[YOUR_BOT_TOKEN]/getUpdates
+              </p>
             </div>
 
             <div className="flex items-center space-x-2">
@@ -239,7 +243,7 @@ export const NotificationSettings = () => {
                 checked={formData.active}
                 onCheckedChange={(checked) => setFormData(prev => ({ ...prev, active: checked }))}
               />
-              <Label htmlFor="active">Enable WhatsApp notifications</Label>
+              <Label htmlFor="active">Enable Telegram notifications</Label>
             </div>
 
             <div className="flex gap-3 pt-4 border-t">
@@ -247,7 +251,7 @@ export const NotificationSettings = () => {
                 {saving ? "Saving..." : "Save Settings"}
               </Button>
               
-              {formData.whatsapp_webhook_url && formData.active && (
+              {formData.telegram_bot_token && formData.active && (
                 <Button type="button" variant="outline" onClick={testNotification}>
                   Test Notification
                 </Button>
@@ -266,7 +270,7 @@ export const NotificationSettings = () => {
             <h4 className="font-medium mb-2">n8n Integration Endpoints:</h4>
             <div className="bg-muted p-3 rounded text-sm font-mono space-y-1">
               <div><strong>Submit Draft:</strong> POST /functions/v1/n8n-submit-draft</div>
-              <div><strong>Send Notification:</strong> POST /functions/v1/send-whatsapp-notification</div>
+              <div><strong>Send Notification:</strong> POST /functions/v1/send-telegram-notification</div>
             </div>
           </div>
           

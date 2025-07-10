@@ -1,5 +1,5 @@
 {
-  "name": "WhatsApp Article Notifications",
+  "name": "Telegram Article Notifications",
   "nodes": [
     {
       "parameters": {
@@ -19,25 +19,24 @@
     },
     {
       "parameters": {
-        "authentication": "phoneNumberId",
         "resource": "message",
-        "operation": "send",
-        "recipientPhoneNumber": "={{ $json.recipients.join(',') }}",
-        "messageType": "text",
-        "message": "📰 *Article {{ $json.action | upper }}*\n\n*Title:* {{ $json.title }}\n*Category:* {{ $json.category }}\n{% if $json.reviewer_name %}*Reviewer:* {{ $json.reviewer_name }}\n{% endif %}\n{% if $json.action === 'approved' %}✅ This article has been published and is now live!{% else %}❌ This article was rejected and will not be published.{% endif %}\n\n*Draft ID:* {{ $json.draft_id }}"
+        "operation": "sendMessage",
+        "chatId": "={{ $json.chat_ids.join(',') }}",
+        "text": "📰 *Article {{ $json.action | upper }}*\n\n*Title:* {{ $json.title }}\n*Category:* {{ $json.category }}\n{% if $json.reviewer_name %}*Reviewer:* {{ $json.reviewer_name }}\n{% endif %}\n{% if $json.action === 'approved' %}✅ This article has been published and is now live!{% else %}❌ This article was rejected and will not be published.{% endif %}\n\n*Draft ID:* {{ $json.draft_id }}",
+        "parseMode": "Markdown"
       },
-      "id": "whatsapp-send",
-      "name": "WhatsApp Business",
-      "type": "n8n-nodes-base.whatsApp",
+      "id": "telegram-send",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
       "typeVersion": 1,
       "position": [
         460,
         300
       ],
       "credentials": {
-        "whatsAppApi": {
+        "telegramApi": {
           "id": "1",
-          "name": "WhatsApp Business API"
+          "name": "Telegram Bot API"
         }
       }
     },
@@ -52,7 +51,7 @@
           "conditions": [
             {
               "id": "condition-1",
-              "leftValue": "={{ $json.recipients }}",
+              "leftValue": "={{ $json.chat_ids }}",
               "rightValue": "",
               "operator": {
                 "type": "array",
@@ -90,7 +89,7 @@
       "main": [
         [
           {
-            "node": "WhatsApp Business",
+            "node": "Telegram",
             "type": "main",
             "index": 0
           }
@@ -107,6 +106,6 @@
     "templateCredsSetupCompleted": true,
     "instanceId": "your-instance-id"
   },
-  "id": "whatsapp-workflow",
+  "id": "telegram-workflow",
   "tags": []
 }

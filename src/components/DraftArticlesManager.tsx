@@ -93,8 +93,8 @@ export const DraftArticlesManager = () => {
 
       if (error) throw error;
 
-      // Send WhatsApp notification
-      await supabase.functions.invoke("send-whatsapp-notification", {
+      // Send Telegram notification
+      await supabase.functions.invoke("send-telegram-notification", {
         body: {
           draft_id: draft.id,
           action: "approved",
@@ -149,8 +149,8 @@ export const DraftArticlesManager = () => {
 
       if (error) throw error;
 
-      // Send WhatsApp notification
-      await supabase.functions.invoke("send-whatsapp-notification", {
+      // Send Telegram notification
+      await supabase.functions.invoke("send-telegram-notification", {
         body: {
           draft_id: draft.id,
           action: "rejected",
