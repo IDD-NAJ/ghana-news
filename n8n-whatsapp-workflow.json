@@ -1,0 +1,112 @@
+{
+  "name": "WhatsApp Article Notifications",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "article-notification",
+        "options": {}
+      },
+      "id": "webhook-trigger",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        240,
+        300
+      ],
+      "webhookId": "auto-generated"
+    },
+    {
+      "parameters": {
+        "authentication": "phoneNumberId",
+        "resource": "message",
+        "operation": "send",
+        "recipientPhoneNumber": "={{ $json.recipients.join(',') }}",
+        "messageType": "text",
+        "message": "📰 *Article {{ $json.action | upper }}*\n\n*Title:* {{ $json.title }}\n*Category:* {{ $json.category }}\n{% if $json.reviewer_name %}*Reviewer:* {{ $json.reviewer_name }}\n{% endif %}\n{% if $json.action === 'approved' %}✅ This article has been published and is now live!{% else %}❌ This article was rejected and will not be published.{% endif %}\n\n*Draft ID:* {{ $json.draft_id }}"
+      },
+      "id": "whatsapp-send",
+      "name": "WhatsApp Business",
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        460,
+        300
+      ],
+      "credentials": {
+        "whatsAppApi": {
+          "id": "1",
+          "name": "WhatsApp Business API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "condition-1",
+              "leftValue": "={{ $json.recipients }}",
+              "rightValue": "",
+              "operator": {
+                "type": "array",
+                "operation": "notEmpty"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-recipients",
+      "name": "Check Recipients",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        350,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Check Recipients",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Recipients": {
+      "main": [
+        [
+          {
+            "node": "WhatsApp Business",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "your-instance-id"
+  },
+  "id": "whatsapp-workflow",
+  "tags": []
+}
