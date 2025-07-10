@@ -522,6 +522,78 @@ export type Database = {
         }
         Relationships: []
       }
+      draft_articles: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string | null
+          original_content: string
+          original_title: string
+          original_url: string | null
+          paraphrased_content: string
+          paraphrased_excerpt: string | null
+          paraphrased_title: string
+          review_notes: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          source_id: string | null
+          status: string
+          suggested_category: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          original_content: string
+          original_title: string
+          original_url?: string | null
+          paraphrased_content: string
+          paraphrased_excerpt?: string | null
+          paraphrased_title: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_id?: string | null
+          status?: string
+          suggested_category: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string | null
+          original_content?: string
+          original_title?: string
+          original_url?: string | null
+          paraphrased_content?: string
+          paraphrased_excerpt?: string | null
+          paraphrased_title?: string
+          review_notes?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          source_id?: string | null
+          status?: string
+          suggested_category?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "draft_articles_reviewed_by_fkey"
+            columns: ["reviewed_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "draft_articles_source_id_fkey"
+            columns: ["source_id"]
+            isOneToOne: false
+            referencedRelation: "news_sources"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       moderation_actions: {
         Row: {
           action_type: string
@@ -603,6 +675,39 @@ export type Database = {
         }
         Relationships: []
       }
+      news_sources: {
+        Row: {
+          active: boolean
+          api_endpoint: string | null
+          created_at: string
+          id: string
+          name: string
+          rss_feed_url: string | null
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          active?: boolean
+          api_endpoint?: string | null
+          created_at?: string
+          id?: string
+          name: string
+          rss_feed_url?: string | null
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          active?: boolean
+          api_endpoint?: string | null
+          created_at?: string
+          id?: string
+          name?: string
+          rss_feed_url?: string | null
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
       newsletter_subscriptions: {
         Row: {
           created_at: string
@@ -624,6 +729,33 @@ export type Database = {
           id?: string
           subscribed?: boolean
           updated_at?: string
+        }
+        Relationships: []
+      }
+      notification_settings: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          notification_recipients: string[] | null
+          updated_at: string
+          whatsapp_webhook_url: string | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          notification_recipients?: string[] | null
+          updated_at?: string
+          whatsapp_webhook_url?: string | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          notification_recipients?: string[] | null
+          updated_at?: string
+          whatsapp_webhook_url?: string | null
         }
         Relationships: []
       }

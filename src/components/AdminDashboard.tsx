@@ -16,6 +16,9 @@ import BannerManager from './BannerManager';
 import UserManagement from './UserManagement';
 import { StoryReviewDialog } from './StoryReviewDialog';
 import { AdManager } from './AdManager';
+import { DraftArticlesManager } from './DraftArticlesManager';
+import { NewsSourcesManager } from './NewsSourcesManager';
+import { NotificationSettings } from './NotificationSettings';
 
 interface Article {
   id: string;
@@ -311,7 +314,7 @@ const AdminDashboard: React.FC = () => {
 
       <main className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-9">
             <TabsTrigger value="stories" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
               Stories
@@ -322,6 +325,9 @@ const AdminDashboard: React.FC = () => {
               )}
             </TabsTrigger>
             <TabsTrigger value="articles">Articles</TabsTrigger>
+            <TabsTrigger value="drafts">Drafts</TabsTrigger>
+            <TabsTrigger value="sources">Sources</TabsTrigger>
+            <TabsTrigger value="notifications">WhatsApp</TabsTrigger>
             <TabsTrigger value="ads">Advertisements</TabsTrigger>
             <TabsTrigger value="users">Users</TabsTrigger>
             <TabsTrigger value="banners">Banners</TabsTrigger>
@@ -422,6 +428,18 @@ const AdminDashboard: React.FC = () => {
             </Card>
           </TabsContent>
           
+          <TabsContent value="drafts">
+            <DraftArticlesManager />
+          </TabsContent>
+
+          <TabsContent value="sources">
+            <NewsSourcesManager />
+          </TabsContent>
+
+          <TabsContent value="notifications">
+            <NotificationSettings />
+          </TabsContent>
+
           <TabsContent value="ads">
             <AdManager />
           </TabsContent>
