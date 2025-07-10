@@ -12,7 +12,7 @@
           ]
         }
       },
-      "id": "schedule-trigger",
+      "id": "1",
       "name": "Schedule Every 2 Hours",
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1,
@@ -21,55 +21,43 @@
     {
       "parameters": {
         "url": "https://xpmclamtmlogogcpogbq.supabase.co/rest/v1/news_sources",
-        "authentication": "genericCredentialType",
-        "genericAuthType": "httpHeaderAuth",
-        "httpHeaderAuth": {
-          "name": "apikey",
-          "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwbWNsYW10bWxvZ29nY3BvZ2JxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyNzY3NDYsImV4cCI6MjA2Mzg1Mjc0Nn0.Q8Xob5r1aRxjz4W24J7XRCXqxswkBTMcLKXJSXwJCqA"
-        },
-        "options": {}
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhwbWNsYW10bWxvZ29nY3BvZ2JxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyNzY3NDYsImV4cCI6MjA2Mzg1Mjc0Nn0.Q8Xob5r1aRxjz4W24J7XRCXqxswkBTMcLKXJSXwJCqA"
+            }
+          ]
+        }
       },
-      "id": "fetch-sources",
+      "id": "2",
       "name": "Fetch Active News Sources",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
+      "typeVersion": 4,
       "position": [460, 300]
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict"
-          },
-          "conditions": [
-            {
-              "id": "condition-1",
-              "leftValue": "={{ $json.active }}",
-              "rightValue": true,
-              "operator": {
-                "type": "boolean",
-                "operation": "equal"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
+        "conditions": [
+          {
+            "leftValue": "={{ $json.active }}",
+            "rightValue": true,
+            "operator": "equal"
+          }
+        ]
       },
-      "id": "filter-active",
+      "id": "3",
       "name": "Filter Active Sources",
       "type": "n8n-nodes-base.filter",
-      "typeVersion": 1,
+      "typeVersion": 2,
       "position": [680, 300]
     },
     {
       "parameters": {
-        "batchSize": 1,
-        "options": {}
+        "batchSize": 1
       },
-      "id": "split-sources",
+      "id": "4",
       "name": "Split Into Batches",
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
@@ -77,28 +65,15 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict"
-          },
-          "conditions": [
-            {
-              "id": "condition-1",
-              "leftValue": "={{ $json.rss_feed_url }}",
-              "rightValue": "",
-              "operator": {
-                "type": "string",
-                "operation": "isNotEmpty"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
+        "conditions": [
+          {
+            "leftValue": "={{ $json.rss_feed_url }}",
+            "rightValue": "",
+            "operator": "isNotEmpty"
+          }
+        ]
       },
-      "id": "check-rss",
+      "id": "5",
       "name": "Has RSS Feed?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2,
@@ -106,10 +81,9 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.rss_feed_url }}",
-        "options": {}
+        "url": "={{ $json.rss_feed_url }}"
       },
-      "id": "fetch-rss",
+      "id": "6",
       "name": "Fetch RSS Content",
       "type": "n8n-nodes-base.rssFeedRead",
       "typeVersion": 1,
@@ -117,20 +91,19 @@
     },
     {
       "parameters": {
-        "url": "={{ $json.url }}",
-        "options": {}
+        "url": "={{ $json.url }}"
       },
-      "id": "scrape-website",
+      "id": "7",
       "name": "Scrape Website",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
+      "typeVersion": 4,
       "position": [1340, 280]
     },
     {
       "parameters": {
-        "jsCode": "// Parse HTML content and extract articles\nif (typeof require === 'undefined') {\n  // Fallback if cheerio is not available\n  return [{\n    original_title: 'Website Content',\n    original_content: 'Content extracted from website',\n    original_url: $input.first().json.url || '',\n    source_name: 'Web Source',\n    source_url: $input.first().json.url || '',\n    suggested_category: 'News',\n    image_url: null\n  }];\n}\n\nconst cheerio = require('cheerio');\nconst inputData = $input.first().json;\nconst htmlContent = inputData.data || inputData.body || '';\n\nif (!htmlContent) {\n  return [];\n}\n\nconst $ = cheerio.load(htmlContent);\nconst articles = [];\n\n// Common article selectors\nconst articleSelectors = [\n  'article',\n  '.article',\n  '.news-item',\n  '.post',\n  '.story'\n];\n\nfor (const selector of articleSelectors) {\n  $(selector).each((i, element) => {\n    if (i >= 5) return false; // Limit to 5 articles\n    \n    const $article = $(element);\n    const title = $article.find('h1, h2, h3, .title, .headline').first().text().trim();\n    const content = $article.find('p').text().trim();\n    const link = $article.find('a').first().attr('href');\n    \n    if (title && content && content.length > 100) {\n      articles.push({\n        original_title: title,\n        original_content: content.length > 2000 ? content.substring(0, 2000) + '...' : content,\n        original_url: link && link.startsWith('http') ? link : (inputData.url || ''),\n        source_name: 'Web Source',\n        source_url: inputData.url || '',\n        suggested_category: 'News',\n        image_url: $article.find('img').first().attr('src') || null\n      });\n    }\n  });\n  \n  if (articles.length > 0) break;\n}\n\n// Fallback: try generic approach\nif (articles.length === 0) {\n  const title = $('title').text() || $('h1').first().text();\n  const content = $('p').map((i, el) => $(el).text()).get().join(' ').trim();\n  \n  if (title && content && content.length > 200) {\n    articles.push({\n      original_title: title,\n      original_content: content.substring(0, 2000),\n      original_url: inputData.url || '',\n      source_name: 'Web Source', \n      source_url: inputData.url || '',\n      suggested_category: 'News',\n      image_url: $('meta[property=\"og:image\"]').attr('content') || null\n    });\n  }\n}\n\nreturn articles;"
+        "jsCode": "const inputData = $input.first().json;\nconst htmlContent = inputData.data || inputData.body || '';\n\nif (!htmlContent) {\n  return [];\n}\n\nconst articles = [];\n\n// Simple text extraction from HTML\nconst cleanText = htmlContent.replace(/<script[^>]*>[\\s\\S]*?<\\/script>/gi, '')\n  .replace(/<style[^>]*>[\\s\\S]*?<\\/style>/gi, '')\n  .replace(/<[^>]*>/g, ' ')\n  .replace(/\\s+/g, ' ')\n  .trim();\n\nif (cleanText.length > 200) {\n  articles.push({\n    original_title: 'Web Article',\n    original_content: cleanText.substring(0, 2000),\n    original_url: inputData.url || '',\n    source_name: 'Web Source',\n    source_url: inputData.url || '',\n    suggested_category: 'News',\n    image_url: null\n  });\n}\n\nreturn articles;"
       },
-      "id": "parse-html",
+      "id": "8",
       "name": "Parse HTML Articles",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -138,9 +111,9 @@
     },
     {
       "parameters": {
-        "jsCode": "// Process RSS feed items\nconst items = $input.all();\nconst articles = [];\n\nfor (const item of items) {\n  const data = item.json;\n  \n  // Extract article data from RSS\n  const article = {\n    original_title: data.title || '',\n    original_content: data.content || data.description || data.summary || '',\n    original_url: data.link || data.url || '',\n    source_name: 'RSS Source', // Will be enriched later\n    source_url: data.link || data.url || '',\n    suggested_category: data.category || 'News',\n    image_url: data.enclosure?.url || data.image || null\n  };\n  \n  // Only include if we have title and substantial content\n  if (article.original_title && article.original_content && article.original_content.length > 100) {\n    // Clean HTML from content\n    article.original_content = article.original_content.replace(/<[^>]*>/g, '').trim();\n    // Limit content length\n    if (article.original_content.length > 2000) {\n      article.original_content = article.original_content.substring(0, 2000) + '...';\n    }\n    articles.push(article);\n  }\n}\n\nreturn articles.slice(0, 10); // Limit to 10 articles per RSS feed"
+        "jsCode": "const items = $input.all();\nconst articles = [];\n\nfor (const item of items) {\n  const data = item.json;\n  \n  const article = {\n    original_title: data.title || '',\n    original_content: (data.content || data.description || data.summary || '').replace(/<[^>]*>/g, '').trim(),\n    original_url: data.link || data.url || '',\n    source_name: 'RSS Source',\n    source_url: data.link || data.url || '',\n    suggested_category: data.category || 'News',\n    image_url: null\n  };\n  \n  if (article.original_title && article.original_content && article.original_content.length > 100) {\n    if (article.original_content.length > 2000) {\n      article.original_content = article.original_content.substring(0, 2000) + '...';\n    }\n    articles.push(article);\n  }\n}\n\nreturn articles.slice(0, 10);"
       },
-      "id": "process-rss",
+      "id": "9",
       "name": "Process RSS Items",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -148,11 +121,9 @@
     },
     {
       "parameters": {
-        "mode": "combine",
-        "combinationMode": "multiplex",
-        "options": {}
+        "mode": "combine"
       },
-      "id": "merge-articles",
+      "id": "10",
       "name": "Merge All Articles",
       "type": "n8n-nodes-base.merge",
       "typeVersion": 2,
@@ -160,44 +131,28 @@
     },
     {
       "parameters": {
-        "conditions": {
-          "options": {
-            "caseSensitive": true,
-            "leftValue": "",
-            "typeValidation": "strict"
+        "conditions": [
+          {
+            "leftValue": "={{ $json.original_content.length }}",
+            "rightValue": 200,
+            "operator": "largerEqual"
           },
-          "conditions": [
-            {
-              "id": "condition-1",
-              "leftValue": "={{ $json.original_content.length }}",
-              "rightValue": 200,
-              "operator": {
-                "type": "number",
-                "operation": "gte"
-              }
-            },
-            {
-              "id": "condition-2",
-              "leftValue": "={{ $json.original_title.length }}",
-              "rightValue": 10,
-              "operator": {
-                "type": "number",
-                "operation": "gte"
-              }
-            }
-          ],
-          "combinator": "and"
-        },
-        "options": {}
+          {
+            "leftValue": "={{ $json.original_title.length }}",
+            "rightValue": 10,
+            "operator": "largerEqual"
+          }
+        ]
       },
-      "id": "filter-quality",
+      "id": "11",
       "name": "Filter Quality Content",
       "type": "n8n-nodes-base.filter",
-      "typeVersion": 1,
+      "typeVersion": 2,
       "position": [2000, 200]
     },
     {
       "parameters": {
+        "method": "POST",
         "url": "https://xpmclamtmlogogcpogbq.supabase.co/functions/v1/n8n-submit-draft",
         "sendHeaders": true,
         "headerParameters": {
@@ -213,52 +168,19 @@
           ]
         },
         "sendBody": true,
-        "contentType": "json",
-        "bodyParameters": {
-          "parameters": [
-            {
-              "name": "source_name",
-              "value": "={{ $json.source_name }}"
-            },
-            {
-              "name": "source_url",
-              "value": "={{ $json.source_url }}"
-            },
-            {
-              "name": "original_url",
-              "value": "={{ $json.original_url }}"
-            },
-            {
-              "name": "original_title",
-              "value": "={{ $json.original_title }}"
-            },
-            {
-              "name": "original_content",
-              "value": "={{ $json.original_content }}"
-            },
-            {
-              "name": "suggested_category",
-              "value": "={{ $json.suggested_category }}"
-            },
-            {
-              "name": "image_url",
-              "value": "={{ $json.image_url }}"
-            }
-          ]
-        },
-        "options": {}
+        "body": "={\n  \"source_name\": \"{{ $json.source_name }}\",\n  \"source_url\": \"{{ $json.source_url }}\",\n  \"original_url\": \"{{ $json.original_url }}\",\n  \"original_title\": \"{{ $json.original_title }}\",\n  \"original_content\": \"{{ $json.original_content }}\",\n  \"suggested_category\": \"{{ $json.suggested_category }}\",\n  \"image_url\": \"{{ $json.image_url }}\"\n}"
       },
-      "id": "submit-draft",
+      "id": "12",
       "name": "Submit to Draft API",
       "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 3,
+      "typeVersion": 4,
       "position": [2220, 200]
     },
     {
       "parameters": {
-        "jsCode": "// Log successful submissions\nconst results = $input.all();\nlet successful = 0;\nlet failed = 0;\n\nfor (const result of results) {\n  if (result.json.success) {\n    successful++;\n  } else {\n    failed++;\n    console.log('Failed submission:', result.json.error);\n  }\n}\n\nconsole.log(`Workflow completed: ${successful} successful, ${failed} failed submissions`);\n\nreturn [{\n  successful_submissions: successful,\n  failed_submissions: failed,\n  total_processed: results.length,\n  timestamp: new Date().toISOString()\n}];"
+        "jsCode": "const results = $input.all();\nlet successful = 0;\nlet failed = 0;\n\nfor (const result of results) {\n  if (result.json && result.json.success) {\n    successful++;\n  } else {\n    failed++;\n  }\n}\n\nconsole.log('Workflow completed:', successful, 'successful,', failed, 'failed submissions');\n\nreturn [{\n  successful_submissions: successful,\n  failed_submissions: failed,\n  total_processed: results.length,\n  timestamp: new Date().toISOString()\n}];"
       },
-      "id": "log-results",
+      "id": "13",
       "name": "Log Results",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -266,139 +188,139 @@
     }
   ],
   "connections": {
-    "Schedule Every 2 Hours": {
+    "1": {
       "main": [
         [
           {
-            "node": "Fetch Active News Sources",
+            "node": "2",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Fetch Active News Sources": {
+    "2": {
       "main": [
         [
           {
-            "node": "Filter Active Sources",
+            "node": "3",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Filter Active Sources": {
+    "3": {
       "main": [
         [
           {
-            "node": "Split Into Batches",
+            "node": "4",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Split Into Batches": {
+    "4": {
       "main": [
         [
           {
-            "node": "Has RSS Feed?",
+            "node": "5",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Has RSS Feed?": {
+    "5": {
       "main": [
         [
           {
-            "node": "Fetch RSS Content",
+            "node": "6",
             "type": "main",
             "index": 0
           }
         ],
         [
           {
-            "node": "Scrape Website",
+            "node": "7",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Fetch RSS Content": {
+    "6": {
       "main": [
         [
           {
-            "node": "Process RSS Items",
+            "node": "9",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Scrape Website": {
+    "7": {
       "main": [
         [
           {
-            "node": "Parse HTML Articles",
+            "node": "8",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Process RSS Items": {
+    "8": {
       "main": [
         [
           {
-            "node": "Merge All Articles",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Parse HTML Articles": {
-      "main": [
-        [
-          {
-            "node": "Merge All Articles",
+            "node": "10",
             "type": "main",
             "index": 1
           }
         ]
       ]
     },
-    "Merge All Articles": {
+    "9": {
       "main": [
         [
           {
-            "node": "Filter Quality Content",
+            "node": "10",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Filter Quality Content": {
+    "10": {
       "main": [
         [
           {
-            "node": "Submit to Draft API",
+            "node": "11",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Submit to Draft API": {
+    "11": {
       "main": [
         [
           {
-            "node": "Log Results",
+            "node": "12",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "12": {
+      "main": [
+        [
+          {
+            "node": "13",
             "type": "main",
             "index": 0
           }
