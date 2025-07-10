@@ -190,7 +190,7 @@ const Sitemap = () => {
               If you can't find what you're looking for, don't hesitate to contact us. We're here to help!
             </p>
             <div className="space-y-2">
-              <p className="text-lg font-semibold text-ghana-green">info@233blognews.com</p>
+              <p className="text-lg font-semibold text-ghana-green">info@233news.online</p>
               <p className="text-gray-600">+233 24 123 4567</p>
             </div>
           </div>
