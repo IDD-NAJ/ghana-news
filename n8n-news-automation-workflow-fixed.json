@@ -49,7 +49,7 @@
     },
     {
       "parameters": {
-        "jsCode": "const source = $input.first().json;\n\n// Check if this source has an RSS feed\nif (source.rss_feed_url && source.rss_feed_url.trim() !== '') {\n  // Return data for RSS processing\n  return [{\n    ...source,\n    processing_type: 'rss',\n    feed_url: source.rss_feed_url\n  }];\n} else {\n  // Return data for web scraping\n  return [{\n    ...source,\n    processing_type: 'scrape',\n    scrape_url: source.url\n  }];\n}"
+        "jsCode": "const source = $input.first().json;\n\n// Only process sources with RSS feeds - skip others\nif (source.rss_feed_url && source.rss_feed_url.trim() !== '') {\n  // Return data for RSS processing\n  return [{\n    ...source,\n    processing_type: 'rss',\n    feed_url: source.rss_feed_url\n  }];\n} else {\n  // Skip sources without RSS feeds\n  console.log(`Skipping ${source.name} - no RSS feed available`);\n  return [];\n}"
       },
       "id": "4",
       "name": "Determine Processing Type",
