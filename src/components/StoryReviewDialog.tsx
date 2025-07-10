@@ -37,6 +37,25 @@ export const StoryReviewDialog = ({ story, onClose }: StoryReviewDialogProps) =>
 
       if (error) throw error;
 
+      // Send Telegram notification for approved/rejected stories
+      if (action === 'approved' || action === 'rejected') {
+        try {
+          await supabase.functions.invoke("send-telegram-notification", {
+            body: {
+              draft_id: story.id,
+              action: action,
+              title: story.title,
+              category: story.category,
+              reviewer_name: profile?.full_name || profile?.email || "Unknown Reviewer"
+            }
+          });
+          console.log("Telegram notification sent for story review");
+        } catch (notificationError) {
+          console.error("Failed to send Telegram notification:", notificationError);
+          // Don't fail the main operation if notification fails
+        }
+      }
+
       toast({
         title: "Story updated",
         description: `Story has been ${action}.`,
@@ -73,6 +92,23 @@ export const StoryReviewDialog = ({ story, onClose }: StoryReviewDialogProps) =>
         .eq('id', story.id);
 
       if (error) throw error;
+
+      // Send Telegram notification for direct publish
+      try {
+        await supabase.functions.invoke("send-telegram-notification", {
+          body: {
+            draft_id: story.id,
+            action: "approved",
+            title: story.title,
+            category: story.category,
+            reviewer_name: profile?.full_name || profile?.email || "Unknown Reviewer"
+          }
+        });
+        console.log("Telegram notification sent for direct publish");
+      } catch (notificationError) {
+        console.error("Failed to send Telegram notification:", notificationError);
+        // Don't fail the main operation if notification fails
+      }
 
       toast({
         title: "Story published",
