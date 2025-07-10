@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../integrations/supabase/client';
+import { useAuth } from '../contexts/AuthContext';
 import { Button } from './ui/button';
 import { Card, CardHeader, CardTitle, CardContent } from './ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table';
@@ -28,6 +29,7 @@ interface BannerItem {
 }
 
 const BannerManager = () => {
+  const { isAdmin } = useAuth();
   const [bannerItems, setBannerItems] = useState<BannerItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showDialog, setShowDialog] = useState(false);
@@ -54,8 +56,12 @@ const BannerManager = () => {
   const { toast } = useToast();
 
   useEffect(() => {
-    fetchBannerItems();
-  }, []);
+    if (isAdmin()) {
+      fetchBannerItems();
+    } else {
+      setIsLoading(false);
+    }
+  }, [isAdmin]);
 
   const fetchBannerItems = async () => {
     try {
@@ -196,6 +202,22 @@ const BannerManager = () => {
       minute: '2-digit'
     });
   };
+
+  // Show unauthorized message if not admin
+  if (!isAdmin()) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle>Banner Management</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="text-center py-8 text-red-600">
+            You don't have permission to manage banner items. Admin access required.
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   return (
     <Card>
