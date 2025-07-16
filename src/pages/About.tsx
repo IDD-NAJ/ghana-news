@@ -1,10 +1,41 @@
 import React from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
+import { Helmet } from 'react-helmet-async';
 
 const About = () => {
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
+      <Helmet>
+        <title>About Us | +233News</title>
+        <meta name="description" content="Learn about +233News, Ghana's premier digital news platform dedicated to accurate, timely, and comprehensive journalism." />
+        <meta property="og:title" content="About Us | +233News" />
+        <meta property="og:description" content="Learn about +233News, Ghana's premier digital news platform dedicated to accurate, timely, and comprehensive journalism." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://233news.online/about" />
+        <meta property="og:image" content="/favicon.ico" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="About Us | +233News" />
+        <meta name="twitter:description" content="Learn about +233News, Ghana's premier digital news platform dedicated to accurate, timely, and comprehensive journalism." />
+        <meta name="twitter:image" content="/favicon.ico" />
+        <link rel="canonical" href="https://233news.online/about" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            'name': '+233News',
+            'url': 'https://233news.online/',
+            'logo': '/favicon.ico',
+            'sameAs': [
+              'https://facebook.com/233blognews',
+              'https://twitter.com/233blognews',
+              'https://instagram.com/233blognews',
+              'https://youtube.com/233blognews'
+            ],
+            'description': "Ghana's leading news platform covering politics, sports, entertainment, business and more."
+          })}
+        </script>
+      </Helmet>
       <Header />
       
       <main className="container mx-auto px-4 py-8">

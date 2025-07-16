@@ -1,0 +1,16 @@
+{
+  "name": "+233News",
+  "short_name": "+233News",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#c8102e",
+  "description": "Ghana's leading news platform covering politics, sports, entertainment, business and more.",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+} 

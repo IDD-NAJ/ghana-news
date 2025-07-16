@@ -4,6 +4,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Link } from 'react-router-dom';
 import { ExternalLink, FileText, Users, Briefcase } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 
 const Sitemap = () => {
   const siteStructure = [
@@ -52,6 +53,19 @@ const Sitemap = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
+      <Helmet>
+        <title>Sitemap | +233News</title>
+        <meta name="description" content="Explore the full sitemap of +233News to quickly find news, articles, and resources across our platform." />
+        <meta property="og:title" content="Sitemap | +233News" />
+        <meta property="og:description" content="Explore the full sitemap of +233News to quickly find news, articles, and resources across our platform." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://233news.online/sitemap" />
+        <meta property="og:image" content="/favicon.ico" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Sitemap | +233News" />
+        <meta name="twitter:description" content="Explore the full sitemap of +233News to quickly find news, articles, and resources across our platform." />
+        <meta name="twitter:image" content="/favicon.ico" />
+      </Helmet>
       <Header />
       
       <main className="container mx-auto px-4 py-8">

@@ -41,6 +41,7 @@ const NewsCard: React.FC<NewsCardProps> = ({
             <img
               src={article.image_url}
               alt={article.title}
+              loading="lazy"
               className={`w-full object-cover transition-transform duration-300 hover:scale-105 ${
                 isLarge ? 'h-64 lg:h-full' : 'h-48'
               }`}

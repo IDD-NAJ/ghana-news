@@ -11,6 +11,7 @@ import { AdBanner } from '../components/AdBanner';
 import { AdInline } from '../components/AdInline';
 import { AdPopup } from '../components/AdPopup';
 import WorkflowDownloader from '../components/WorkflowDownloader';
+import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
   const { featuredArticle, loading: featuredLoading } = useFeaturedArticle();
@@ -26,6 +27,10 @@ const Index = () => {
   if (isLoading) {
     return (
       <div className="min-h-screen font-inter">
+        <Helmet>
+          <title>+233News - Ghana's Premier News Platform</title>
+          <meta name="description" content="Ghana's leading news platform covering politics, sports, entertainment, business and more." />
+        </Helmet>
         <Banner />
         <Header />
         <main className="container mx-auto px-4 py-8">
@@ -41,6 +46,36 @@ const Index = () => {
 
   return (
     <div className="min-h-screen font-inter relative">
+      <Helmet>
+        <title>+233News - Ghana's Premier News Platform</title>
+        <meta name="description" content="Ghana's leading news platform covering politics, sports, entertainment, business and more." />
+        <meta property="og:title" content="+233News - Ghana's Premier News Platform" />
+        <meta property="og:description" content="Ghana's leading news platform covering politics, sports, entertainment, business and more." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://233news.online/" />
+        <meta property="og:image" content="/favicon.ico" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="+233News - Ghana's Premier News Platform" />
+        <meta name="twitter:description" content="Ghana's leading news platform covering politics, sports, entertainment, business and more." />
+        <meta name="twitter:image" content="/favicon.ico" />
+        <link rel="canonical" href="https://233news.online/" />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Organization',
+            'name': '+233News',
+            'url': 'https://233news.online/',
+            'logo': '/favicon.ico',
+            'sameAs': [
+              'https://facebook.com/233blognews',
+              'https://twitter.com/233blognews',
+              'https://instagram.com/233blognews',
+              'https://youtube.com/233blognews'
+            ],
+            'description': "Ghana's leading news platform covering politics, sports, entertainment, business and more."
+          })}
+        </script>
+      </Helmet>
       <Banner />
       <Header />
       {/* Move HeroSlider above <main> */}

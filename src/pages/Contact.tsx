@@ -5,6 +5,7 @@ import Footer from '../components/Footer';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 import { supabase } from '../integrations/supabase/client';
 import { useToast } from '../hooks/use-toast';
+import { Helmet } from 'react-helmet-async';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -69,6 +70,19 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
+      <Helmet>
+        <title>Contact Us | +233News</title>
+        <meta name="description" content="Contact +233News for inquiries, feedback, or support. We're here to help you with all your news and information needs." />
+        <meta property="og:title" content="Contact Us | +233News" />
+        <meta property="og:description" content="Contact +233News for inquiries, feedback, or support. We're here to help you with all your news and information needs." />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://233news.online/contact" />
+        <meta property="og:image" content="/favicon.ico" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Contact Us | +233News" />
+        <meta name="twitter:description" content="Contact +233News for inquiries, feedback, or support. We're here to help you with all your news and information needs." />
+        <meta name="twitter:image" content="/favicon.ico" />
+      </Helmet>
       <Header />
       
       <main className="container mx-auto px-4 py-8">

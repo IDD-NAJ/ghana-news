@@ -31,6 +31,7 @@ import Auth from "./pages/Auth";
 import NewsAnchor from "./pages/NewsAnchor";
 import ChiefAuthor from "./pages/ChiefAuthor";
 import Newsletter from "./pages/Newsletter";
+import { HelmetProvider } from 'react-helmet-async';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -44,12 +45,13 @@ const queryClient = new QueryClient({
 const App = () => {
   return (
     <React.StrictMode>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <BrowserRouter>
-            <TooltipProvider delayDuration={300}>
-              <div className="min-h-screen">
-                <Routes>
+      <HelmetProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            <BrowserRouter>
+              <TooltipProvider delayDuration={300}>
+                <div className="min-h-screen">
+                  <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/politics" element={<Politics />} />
                 <Route path="/sports" element={<Sports />} />
@@ -77,15 +79,16 @@ const App = () => {
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
-            </div>
-            <Toaster />
-            <Sonner />
-          </TooltipProvider>
-        </BrowserRouter>
+                <Toaster />
+                <Sonner />
+              </div>
+            </TooltipProvider>
+          </BrowserRouter>
         </AuthProvider>
       </QueryClientProvider>
-    </React.StrictMode>
-  );
+    </HelmetProvider>
+  </React.StrictMode>
+);
 };
 
 export default App;

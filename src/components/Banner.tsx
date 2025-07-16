@@ -11,6 +11,12 @@ interface BannerItem {
   linkText?: string;
   priority: 'high' | 'medium' | 'low';
   expiresAt?: string;
+  image_url?: string; // Ensure this is present
+}
+
+// Add a type guard function above the Banner component
+function hasImageUrl(banner: any): banner is { image_url: string } {
+  return banner && typeof banner.image_url === 'string';
 }
 
 const Banner = () => {
@@ -53,7 +59,8 @@ const Banner = () => {
           link: item.link || undefined,
           linkText: item.link_text || undefined,
           priority: item.priority as 'high' | 'medium' | 'low',
-          expiresAt: item.expires_at || undefined
+          expiresAt: item.expires_at || undefined,
+          image_url: item.image_url || undefined // Always include image_url
         }));
 
         setBannerItems(transformedItems);
@@ -218,6 +225,14 @@ const Banner = () => {
           </button>
         </div>
       </div>
+      {currentBanner && hasImageUrl(currentBanner) && (
+        <img
+          src={currentBanner.image_url}
+          alt={currentBanner.title || 'Banner image'}
+          loading="lazy"
+          className="w-full h-auto object-cover"
+        />
+      )}
     </div>
   );
 };

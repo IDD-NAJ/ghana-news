@@ -7,6 +7,7 @@ import Footer from '../components/Footer';
 import ViewCount from '../components/ViewCount';
 import { supabase } from '../integrations/supabase/client';
 import { useArticleImages } from '../hooks/useArticleImages';
+import { Helmet } from 'react-helmet-async';
 
 interface Article {
   id: string;
@@ -141,6 +142,44 @@ const Story = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 font-inter">
+      <Helmet>
+        <title>{article ? `${article.title} | +233News` : 'Article | +233News'}</title>
+        <meta name="description" content={article ? article.excerpt || article.content?.slice(0, 150) : 'Read the latest news article on +233News.'} />
+        <meta property="og:title" content={article ? `${article.title} | +233News` : 'Article | +233News'} />
+        <meta property="og:description" content={article ? article.excerpt || article.content?.slice(0, 150) : 'Read the latest news article on +233News.'} />
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={`https://233news.online/story/${article ? article.slug : ''}`} />
+        <meta property="og:image" content={article && article.image_url ? article.image_url : '/favicon.ico'} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={article ? `${article.title} | +233News` : 'Article | +233News'} />
+        <meta name="twitter:description" content={article ? article.excerpt || article.content?.slice(0, 150) : 'Read the latest news article on +233News.'} />
+        <meta name="twitter:image" content={article && article.image_url ? article.image_url : '/favicon.ico'} />
+        {article && (
+          <link rel="canonical" href={`https://233news.online/story/${article.slug}`} />
+        )}
+        {article && (
+          <script type="application/ld+json">
+            {JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'NewsArticle',
+              'headline': article.title,
+              'image': article.image_url ? [article.image_url] : undefined,
+              'datePublished': article.publication_date || article.created_at,
+              'dateModified': article.updated_at,
+              'author': article.author_name ? { '@type': 'Person', 'name': article.author_name } : undefined,
+              'publisher': {
+                '@type': 'Organization',
+                'name': '+233News',
+                'logo': {
+                  '@type': 'ImageObject',
+                  'url': '/favicon.ico'
+                }
+              },
+              'description': article.excerpt || article.content?.slice(0, 150)
+            })}
+          </script>
+        )}
+      </Helmet>
       <Header />
       
       <main className="container mx-auto px-4 py-8">
@@ -159,11 +198,12 @@ const Story = () => {
             <div className="bg-white rounded-lg shadow-md overflow-hidden mb-8">
               <div className="relative">
                 {/* Featured Image */}
-                {article.image_url && (
+                {article?.image_url && (
                   <img
                     src={article.image_url}
                     alt={article.title}
-                    className="w-full h-96 object-cover"
+                    loading="lazy"
+                    className="w-full h-auto object-cover rounded-lg mb-6"
                   />
                 )}
                 <div className="absolute top-4 left-4">
