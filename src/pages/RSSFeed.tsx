@@ -46,7 +46,7 @@ const RSSFeed = () => {
                 <h2 className="text-2xl font-semibold text-slate-700 mb-4">Stay Updated with RSS</h2>
                 <p className="text-gray-700 leading-relaxed mb-4">
                   RSS (Really Simple Syndication) feeds allow you to stay updated with the latest news from 
-                  +233BLOG-NEWS without visiting our website. Subscribe to our feeds using your favorite RSS 
+                  +233News without visiting our website. Subscribe to our feeds using your favorite RSS 
                   reader and never miss important news from Ghana.
                 </p>
                 <p className="text-gray-700 leading-relaxed">

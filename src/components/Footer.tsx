@@ -33,8 +33,7 @@ const Footer = () => {
           <div className="lg:col-span-2">
             <h2 className="text-3xl font-playfair font-bold mb-4">
               <span className="text-slate-300">+233</span>
-              <span className="text-slate-400">BLOG</span>
-              <span className="text-slate-500">-NEWS</span>
+              <span className="text-slate-400">News</span>
             </h2>
             <p className="text-gray-300 mb-6 max-w-md">
               Ghana's premier news platform delivering accurate, timely, and comprehensive 
@@ -111,7 +110,7 @@ const Footer = () => {
             
             <div className="text-center md:text-right">
               <p className="text-gray-400 text-sm">
-                © 2025 +233BLOG-NEWS. All rights reserved.
+                © 2025 +233News. All rights reserved.
               </p>
               <p className="text-gray-500 text-xs mt-1">
                 Powered by passion for Ghana

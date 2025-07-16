@@ -95,7 +95,7 @@ const Header = () => {
                 <div className="text-center">
                   <div className="flex items-center justify-center">
                     <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-serif font-bold text-primary">+233</span>
-                    <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-serif font-bold text-foreground">Blog-news</span>
+                    <span className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl font-serif font-bold text-foreground">News</span>
                   </div>
                 </div>
               </Link>

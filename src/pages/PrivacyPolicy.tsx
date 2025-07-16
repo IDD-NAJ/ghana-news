@@ -21,7 +21,7 @@ const PrivacyPolicy = () => {
             <section>
               <h2 className="text-2xl font-semibold text-slate-700 mb-4">Introduction</h2>
               <p className="text-gray-700 leading-relaxed">
-                +233BLOG-NEWS ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy 
+                +233News ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy 
                 explains how we collect, use, disclose, and safeguard your information when you visit our website 
                 and use our services.
               </p>

@@ -20,11 +20,11 @@ const Newsletter: React.FC = () => {
           </div>
           <h1 className="text-3xl md:text-5xl font-bold font-playfair mb-4 text-blue-800 dark:text-blue-200">Subscribe to Our Newsletter</h1>
           <p className="text-lg text-muted-foreground mb-6">
-            Get the latest news, analysis, and exclusive stories delivered straight to your inbox. Stay informed with +233Blog-news.
+            Get the latest news, analysis, and exclusive stories delivered straight to your inbox. Stay informed with +233News.
           </p>
           {/* Testimonial/Quote */}
           <blockquote className="italic text-base text-muted-foreground mb-6 border-l-4 border-primary pl-4">
-            “The +233Blog-news newsletter keeps me ahead of the curve every week!”
+            “The +233News newsletter keeps me ahead of the curve every week!”
           </blockquote>
           {/* Feature List */}
           <ul className="flex flex-col sm:flex-row justify-center gap-4 mb-8 text-sm text-foreground/80">

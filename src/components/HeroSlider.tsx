@@ -20,7 +20,7 @@ export const HeroSlider = () => {
       {/* Content */}
       <div className="relative z-10 w-full flex flex-col items-center justify-center px-4">
         <h1 className="text-4xl md:text-6xl font-playfair font-bold mb-4 text-white drop-shadow-lg">
-          Stay Informed with <span className="text-primary-foreground">+233Blog-news</span>
+          Stay Informed with <span className="text-primary-foreground">+233News</span>
         </h1>
         <p className="text-lg md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto drop-shadow">
           Your trusted source for breaking news, in-depth analysis, and stories that matter in Ghana and beyond.

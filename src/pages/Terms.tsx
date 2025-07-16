@@ -22,7 +22,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-semibold text-ghana-red mb-4">Acceptance of Terms</h2>
               <p className="text-gray-700 leading-relaxed">
-                By accessing and using +233BLOG-NEWS website and services, you accept and agree to be bound 
+                By accessing and using +233News website and services, you accept and agree to be bound 
                 by the terms and provision of this agreement. If you do not agree to abide by the above, 
                 please do not use this service.
               </p>
@@ -31,7 +31,7 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-semibold text-ghana-red mb-4">Use License</h2>
               <p className="text-gray-700 leading-relaxed mb-4">
-                Permission is granted to temporarily download one copy of the materials on +233BLOG-NEWS 
+                Permission is granted to temporarily download one copy of the materials on +233News 
                 website for personal, non-commercial transitory viewing only. This is the grant of a license, 
                 not a transfer of title, and under this license you may not:
               </p>
@@ -47,7 +47,7 @@ const Terms = () => {
               <h2 className="text-2xl font-semibold text-ghana-red mb-4">User Content</h2>
               <p className="text-gray-700 leading-relaxed">
                 Users may submit comments, feedback, and other content to our website. By submitting content, 
-                you grant +233BLOG-NEWS a non-exclusive, royalty-free, perpetual license to use, modify, and 
+                you grant +233News a non-exclusive, royalty-free, perpetual license to use, modify, and 
                 display such content. You are responsible for ensuring that your content does not violate any 
                 laws or infringe on the rights of others.
               </p>
@@ -78,16 +78,16 @@ const Terms = () => {
             <section>
               <h2 className="text-2xl font-semibold text-ghana-red mb-4">Limitations</h2>
               <p className="text-gray-700 leading-relaxed">
-                In no event shall +233BLOG-NEWS or its suppliers be liable for any damages (including, without 
+                In no event shall +233News or its suppliers be liable for any damages (including, without 
                 limitation, damages for loss of data or profit, or due to business interruption) arising out 
-                of the use or inability to use the materials on +233BLOG-NEWS website.
+                of the use or inability to use the materials on +233News website.
               </p>
             </section>
 
             <section>
               <h2 className="text-2xl font-semibold text-ghana-red mb-4">Revisions</h2>
               <p className="text-gray-700 leading-relaxed">
-                +233BLOG-NEWS may revise these terms of service for its website at any time without notice. 
+                +233News may revise these terms of service for its website at any time without notice. 
                 By using this website, you are agreeing to be bound by the then current version of these 
                 terms of service.
               </p>

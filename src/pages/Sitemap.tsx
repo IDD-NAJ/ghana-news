@@ -64,7 +64,7 @@ const Sitemap = () => {
           <div className="bg-white rounded-lg shadow-lg p-8 mb-12">
             <h2 className="text-2xl font-semibold text-ghana-red mb-4">Website Navigation</h2>
             <p className="text-gray-700 leading-relaxed">
-              This sitemap provides an overview of all the pages and sections available on +233BLOG-NEWS. 
+              This sitemap provides an overview of all the pages and sections available on +233News. 
               Use this page to quickly find the content you're looking for or to explore different areas 
               of our website.
             </p>

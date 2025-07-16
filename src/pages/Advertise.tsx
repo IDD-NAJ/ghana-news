@@ -114,7 +114,7 @@ const Advertise = () => {
           {/* Why Choose Us */}
           <section className="mb-12">
             <h2 className="text-3xl font-playfair font-bold text-gray-900 mb-8 text-center">
-              Why Advertise With +233BLOG-NEWS?
+              Why Advertise With +233News?
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               <div className="bg-white rounded-lg shadow-lg p-8 hover:shadow-xl transition-shadow duration-200">
